@@ -1,0 +1,39 @@
+{
+    "name": "zendframework/zend-skeleton-installer",
+    "description": "Installer plugin for Zend Framework skeleton application",
+    "type": "composer-plugin",
+    "license": "BSD-3-Clause",
+    "require": {
+        "php" : "^5.6 || ^7.0",
+        "composer-plugin-api": "^1.0"
+    },
+    "require-dev": {
+        "composer/composer": "^1.0",
+        "phpunit/phpunit": "^4.8",
+        "squizlabs/php_codesniffer": "^2.3.1"
+    },
+    "extra": {
+        "class": "Zend\\SkeletonInstaller\\Plugin"
+    },
+    "autoload": {
+        "psr-4": {
+            "Zend\\SkeletonInstaller\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ZendTest\\SkeletonInstaller\\": "test/"
+        }
+    },
+    "scripts": {
+        "check": [
+            "@cs",
+            "@test"
+        ],
+        "coveralls": "coveralls",
+        "cs": "phpcs",
+        "cs-fix": "phpcbf",
+        "test": "phpunit",
+        "test-coverage": "phpunit --coverage-clover clover.xml"
+    }
+}

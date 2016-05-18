@@ -1,0 +1,8 @@
+docs_dir: doc/book
+site_dir: doc/html
+pages:
+    - index.md
+site_name: zend-skeleton-installer
+site_description: 'Skeleton Installer: Composer plugin for initial ZendSkeletonApplication installation'
+repo_url: 'https://github.com/zendframework/zend-skeleton-installer'
+copyright: 'Copyright (c) 2016 <a href="http://www.zend.com/">Zend Technologies USA Inc.</a>'
