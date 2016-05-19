@@ -1,0 +1,70 @@
+<?php
+/**
+ * @link      http://github.com/zendframework/zend-skeleton-installer for the canonical source repository
+ * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license   http://framework.zend.com/license/new-bsd New BSD License
+ */
+
+namespace Zend\SkeletonInstaller;
+
+class OptionalPackage
+{
+    private $constraint;
+
+    private $dev = false;
+
+    private $module;
+
+    private $name;
+
+    private $prompt;
+
+    public function __construct(array $spec)
+    {
+        $this->constraint = $spec['constraint'];
+        $this->name = $spec['name'];
+        $this->prompt = $spec['prompt'];
+
+        if (array_key_exists('dev', $spec)) {
+            $this->dev = (bool) $spec['dev'];
+        }
+
+        if (isset($spec['module'])) {
+            $this->module = $spec['module'];
+        }
+    }
+
+    public static function isValidSpec(array $spec)
+    {
+        return (
+            array_key_exists('name', $spec)
+            && array_key_exists('constraint', $spec)
+            && array_key_exists('prompt', $spec)
+        );
+    }
+
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    public function getPrompt()
+    {
+        return $this->prompt;
+    }
+
+    public function getConstraint()
+    {
+        return $this->constraint;
+    }
+
+    public function isDev()
+    {
+        return $this->dev;
+    }
+
+    public function getModule()
+    {
+        return $this->module;
+    }
+}

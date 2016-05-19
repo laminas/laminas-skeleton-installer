@@ -8,10 +8,8 @@
 namespace Zend\SkeletonInstaller;
 
 use Composer\Composer;
-use Composer\Factory;
 use Composer\DependencyResolver\Operation\UninstallOperation;
 use Composer\IO\IOInterface;
-use Composer\Json\JsonFile;
 
 /**
  * Uninstall the plugin from the project.
@@ -22,6 +20,8 @@ use Composer\Json\JsonFile;
  */
 class Uninstaller
 {
+    use ComposerJsonRetrievalTrait;
+
     /**
      * @var Composer
      */
@@ -51,17 +51,6 @@ class Uninstaller
         $this->removePluginInstall();
         $this->removePluginFromComposer();
         $this->io->write('<info>    Complete!</info>');
-    }
-
-    /**
-     * Retrieve the project composer.json as a JsonFile.
-     *
-     * @return JsonFile
-     */
-    private function getComposerJson()
-    {
-        $composerFile = Factory::getComposerFile();
-        return new JsonFile($composerFile);
     }
 
     /**

@@ -31,14 +31,29 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     /**
      * Provide composer event listeners.
      *
+     * This particular combination will ensure that the plugin works under each
+     * of the following scenarios:
+     *
+     * - create-project
+     * - install, with or without a composer.lock
+     * - update, with or without a composer.lock
+     *
+     * After any of the above have run at least once, the plugin will uninstall
+     * itself.
+     *
      * @return array
      */
     public static function getSubscribedEvents()
     {
         return [
-            'post-create-project-cmd' => 'uninstallPlugin',
-            'post-install-cmd' => 'uninstallPlugin',
-            'post-update-cmd' => 'uninstallPlugin',
+            'post-install-cmd' => [
+                ['installOptionalDependencies', 1000],
+                ['uninstallPlugin', 1],
+            ],
+            'post-update-cmd' => [
+                ['installOptionalDependencies', 1000],
+                ['uninstallPlugin', 1],
+            ],
         ];
     }
 
@@ -52,6 +67,17 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     {
         $this->composer = $composer;
         $this->io = $io;
+    }
+
+    /**
+     * Install optional dependencies, if any.
+     *
+     * @param ScriptEvent $event
+     */
+    public function installOptionalDependencies(ScriptEvent $event)
+    {
+        $installer = new OptionalPackagesInstaller($this->composer, $this->io);
+        $installer();
     }
 
     /**
