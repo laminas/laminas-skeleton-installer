@@ -54,6 +54,16 @@ class Collection implements
     }
 
     /**
+     * Cast collection to an array.
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        return $this->items;
+    }
+
+    /**
      * Apply a callback to each item in the collection.
      *
      * @param callable $callback
@@ -97,6 +107,24 @@ class Collection implements
     {
         return $this->reduce($this->items, function ($filtered, $item) use ($callback) {
             if ($callback($item)) {
+                $filtered[] = $item;
+            }
+            return $filtered;
+        }, new static([]));
+    }
+
+    /**
+     * Filter the collection using a callback; reject any items matching the callback.
+     *
+     * Filter callback should return true for values to reject.
+     *
+     * @param callable $callback
+     * @return static
+     */
+    public function reject(callable $callback)
+    {
+        return $this->reduce($this->items, function ($filtered, $item) use ($callback) {
+            if (! $callback($item)) {
                 $filtered[] = $item;
             }
             return $filtered;

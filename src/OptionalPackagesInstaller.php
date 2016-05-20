@@ -78,12 +78,25 @@ class OptionalPackagesInstaller
 
         $this->io->write('<info>Updating root package</info>');
 
-        $this->updateComposerJson($packagesToInstall);
-        $package = $this->updateRootPackage($this->composer->getPackage(), $packagesToInstall);
-
         // Run an installer update
-        $this->io->write('<info>    Running an update to get install optional packages</info>');
-        $this->createInstaller($package)->run();
+        $this->io->write('<info>    Running an update to install optional packages</info>');
+        $package = $this->updateRootPackage($this->composer->getPackage(), $packagesToInstall);
+        $result = $this->createInstaller($package, $packagesToInstall)->run();
+
+        if (0 !== $result) {
+            $this->io->write('<error>Error installing optional packages. Run with verbosity to debug');
+            return;
+        }
+
+        // Update the composer.json
+        $this->io->write('<info>    Updating composer.json</info>');
+        $this->updateComposerJson($packagesToInstall);
+
+        // Update the modules list
+        $this->io->write('<info>    Updating module configuration</info>');
+        $this->injectModulesIntoConfiguration($packagesToInstall->reject(function ($package) {
+            return empty($package->getModule());
+        }));
     }
 
     /**
@@ -236,12 +249,14 @@ class OptionalPackagesInstaller
      * - It uses the updated root package
      * - It uses a new EventDispatcher, to prevent triggering already accumulated plugins
      * - It marks the operation as an update
+     * - It specifies an update whitelist of only the new packages to install
      * - It disables plugins
      *
      * @param \Composer\Package\RootPackage
+     * @param Collection $packagesToInstall
      * @return ComposerInstaller
      */
-    private function createInstaller($package)
+    private function createInstaller($package, Collection $packagesToInstall)
     {
         $installer = new ComposerInstaller(
             $this->io,
@@ -256,7 +271,31 @@ class OptionalPackagesInstaller
         );
         $installer->setUpdate();
         $installer->disablePlugins();
+        $installer->setUpdateWhitelist(
+            $packagesToInstall->map(function ($package) {
+                return $package->getName();
+            })
+            ->toArray()
+        );
 
         return $installer;
+    }
+
+    /**
+     * Inject modules into application configuration.
+     *
+     * This assumes that:
+     *
+     * - config/modules.config.php exists
+     * - config/development.config.php.dist exists
+     *
+     * Modules marked as `isDev()` will be pushed into the development module
+     * list, while all others will go into the general modules list.
+     *
+     * @param Collection $modulesToInstall
+     * @return void
+     */
+    private function injectModulesIntoConfiguration(Collection $modulesToInstall)
+    {
     }
 }
