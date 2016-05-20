@@ -22,6 +22,8 @@ class Uninstaller
 {
     use ComposerJsonRetrievalTrait;
 
+    const PLUGIN_NAME = 'zendframework/zend-skeleton-installer';
+
     /**
      * @var Composer
      */
@@ -47,7 +49,7 @@ class Uninstaller
      */
     public function __invoke()
     {
-        $this->io->write('<info>Removing mwop/plugin...</info>');
+        $this->io->write(sprintf('<info>Removing %s...</info>', self::PLUGIN_NAME));
         $this->removePluginInstall();
         $this->removePluginFromComposer();
         $this->io->write('<info>    Complete!</info>');
@@ -60,7 +62,7 @@ class Uninstaller
     {
         $installer = $this->composer->getInstallationManager();
         $repository = $this->composer->getRepositoryManager()->getLocalRepository();
-        $package = $repository->findPackage('zendframework/zend-skeleton-installer', '*');
+        $package = $repository->findPackage(self::PLUGIN_NAME, '*');
 
         if (! $package) {
             $this->io->write('<info>    Package not installed; nothing to do.</info>');
@@ -68,7 +70,7 @@ class Uninstaller
         }
 
         $installer->uninstall($repository, new UninstallOperation($package));
-        $this->io->write('<info>    Removed plugin installation.</info>');
+        $this->io->write(sprintf('<info>    Removed plugin %s.</info>', self::PLUGIN_NAME));
     }
 
     /**
@@ -80,7 +82,7 @@ class Uninstaller
 
         $composerJson = $this->getComposerJson();
         $json = $composerJson->read();
-        unset($json['require']['mwop/plugin']);
+        unset($json['require'][self::PLUGIN_NAME]);
         $composerJson->write($json);
     }
 }
