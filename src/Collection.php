@@ -105,7 +105,7 @@ class Collection implements
      */
     public function filter(callable $callback)
     {
-        return $this->reduce($this->items, function ($filtered, $item) use ($callback) {
+        return $this->reduce(function ($filtered, $item) use ($callback) {
             if ($callback($item)) {
                 $filtered[] = $item;
             }
@@ -123,7 +123,7 @@ class Collection implements
      */
     public function reject(callable $callback)
     {
-        return $this->reduce($this->items, function ($filtered, $item) use ($callback) {
+        return $this->reduce(function ($filtered, $item) use ($callback) {
             if (! $callback($item)) {
                 $filtered[] = $item;
             }
@@ -141,7 +141,7 @@ class Collection implements
      */
     public function map(callable $callback)
     {
-        return $this->reduce($this->items, function ($results, $item) use ($callback) {
+        return $this->reduce(function ($results, $item) use ($callback) {
             $results[] = $callback($item);
             return $results;
         }, new static([]));
