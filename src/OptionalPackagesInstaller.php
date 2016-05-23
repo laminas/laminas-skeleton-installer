@@ -31,9 +31,19 @@ class OptionalPackagesInstaller
     use ComposerJsonRetrievalTrait;
 
     /**
+     * @var callable Factory for creating a ComponentInstaller instance.
+     */
+    private $componentInstallerFactory = [OptionalPackagesInstaller::class, 'createComponentInstaller'];
+
+    /**
      * @var Composer
      */
     private $composer;
+
+    /**
+     * @var callable Factory for creating a ComposerInstaller instance.
+     */
+    private $installerFactory = [OptionalPackagesInstaller::class, 'createInstaller'];
 
     /**
      * @var IOInterface
@@ -83,8 +93,7 @@ class OptionalPackagesInstaller
         // Prompt for minimal install
         if ($this->requestMinimalInstall()) {
             // If a minimal install is requested, remove optional package information
-            $this->io->write('<info>    Removing optional packages from composer.json</info>');
-            $this->updateComposerJson(new Collection([]));
+            $this->removeOptionalPackages();
             return;
         }
 
@@ -100,6 +109,7 @@ class OptionalPackagesInstaller
         // If no optional packages were selected, do nothing.
         if ($packagesToInstall->isEmpty()) {
             $this->io->write('<info>    No optional packages selected to install</info>');
+            $this->removeOptionalPackages();
             return;
         }
 
@@ -203,6 +213,15 @@ class OptionalPackagesInstaller
     }
 
     /**
+     * Remove optional packages after a minimal install or failure to select packages.
+     */
+    private function removeOptionalPackages()
+    {
+        $this->io->write('<info>    Removing optional packages from composer.json</info>');
+        $this->updateComposerJson(new Collection([]));
+    }
+
+    /**
      * Update the composer.json definition.
      *
      * Adds all packages to the appropriate require or require-dev sections of
@@ -296,20 +315,14 @@ class OptionalPackagesInstaller
     private function runInstaller(PackageInterface $package, Collection $packagesToInstall)
     {
         $this->io->write('<info>    Running an update to install optional packages</info>');
-        $composer = $this->composer;
-        $eventDispatcher = new EventDispatcher($composer, $this->io);
 
-        $installer = new ComposerInstaller(
+        $installer = call_user_func(
+            $this->installerFactory,
+            $this->composer,
             $this->io,
-            $composer->getConfig(),
-            $package,
-            $composer->getDownloadManager(),
-            $composer->getRepositoryManager(),
-            $composer->getLocker(),
-            $composer->getInstallationManager(),
-            $eventDispatcher,
-            $composer->getAutoloadGenerator()
+            $package
         );
+
         $installer->disablePlugins();
         $installer->setUpdate();
         $installer->setUpdateWhitelist(
@@ -320,6 +333,29 @@ class OptionalPackagesInstaller
         );
 
         return $installer->run();
+    }
+
+    /**
+     * Create an Installer instance.
+     *
+     * Private static factory, to allow slip-streaming in a mock as needed for
+     * testing.
+     */
+    private static function createInstaller(Composer $composer, IOInterface $io, PackageInterface $package)
+    {
+        $eventDispatcher = new EventDispatcher($composer, $io);
+
+        return new ComposerInstaller(
+            $io,
+            $composer->getConfig(),
+            $package,
+            $composer->getDownloadManager(),
+            $composer->getRepositoryManager(),
+            $composer->getLocker(),
+            $composer->getInstallationManager(),
+            $eventDispatcher,
+            $composer->getAutoloadGenerator()
+        );
     }
 
     /**
@@ -337,7 +373,7 @@ class OptionalPackagesInstaller
         $this->io->write('<info>Updating application configuration...</info>');
 
         // Initialize the ComponentInstaller
-        $componentInstaller = new ComponentInstaller();
+        $componentInstaller = call_user_func($this->componentInstallerFactory);
         $componentInstaller->activate($this->composer, $this->io);
 
         // Grab the local repository so we can do package lookups
@@ -378,5 +414,17 @@ class OptionalPackagesInstaller
                 new InstallOperation($package)
             ));
         });
+    }
+
+    /**
+     * Create and return a ComponentInstaller instance.
+     *
+     * Allows slipstreaming a mock into the instance when required.
+     *
+     * @return ComponentInstaller
+     */
+    private static function createComponentInstaller()
+    {
+        return new ComponentInstaller();
     }
 }

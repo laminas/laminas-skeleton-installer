@@ -7,93 +7,352 @@
 
 namespace Zend\SkeletonInstaller;
 
+use Composer\Composer;
+use Composer\DependencyResolver\DefaultPolicy;
+use Composer\DependencyResolver\Operation\InstallOperation;
+use Composer\DependencyResolver\Pool;
+use Composer\DependencyResolver\Request;
+use Composer\Installer;
+use Composer\IO\IOInterface;
+use Composer\Package\Link;
+use Composer\Package\PackageInterface;
+use Composer\Package\RootPackageInterface;
+use Composer\Repository\CompositeRepository;
+use Composer\Repository\RepositoryInterface;
+use Composer\Repository\RepositoryManager;
+use Composer\Script\PackageEvent;
+use org\bovigo\vfs\vfsStream;
+use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit_Framework_TestCase as TestCase;
+use Prophecy\Argument;
+use ReflectionProperty;
 use Zend\SkeletonInstaller\OptionalPackagesInstaller;
+use Zend\ComponentInstaller\ComponentInstaller;
 
 class OptionalPackagesInstallerTest extends TestCase
 {
-    public function assertModuleEnabled($module, $package, $appConfig, $composer)
+    public function setUp()
     {
-        // This will do two things:
-        // - assert that the package was added to composer
-        // - assert that the application configuration now references the module
+        $this->composer = $this->prophesize(Composer::class);
+        $this->io = $this->prophesize(IOInterface::class);
+
+        $this->installer = new OptionalPackagesInstaller(
+            $this->composer->reveal(),
+            $this->io->reveal()
+        );
     }
 
-    public function assertModuleNotEnabled($module, $package, $appConfig, $composer)
+    protected function setUpComposerJson($data = null)
     {
-        // This will do two things:
-        // - assert that the package was NOT added to composer
-        // - assert that the application configuration DOES NOT reference the module
+        $project = vfsStream::setup('project');
+        vfsStream::newFile('composer.json')
+            ->at($project)
+            ->setContent($this->createComposerJson($data));
+
+        $r = new ReflectionProperty($this->installer, 'composerFileFactory');
+        $r->setAccessible(true);
+        $r->setValue($this->installer, function () {
+            return vfsStream::url('project/composer.json');
+        });
     }
 
-    public function assertDevelopmentModuleEnabled($module, $package, $appConfig, $composer)
+    protected function createComposerJson($data)
     {
-        // This will do two things:
-        // - assert that the package was added to composer as a dev requirement
-        // - assert that the development configuration now references the module
+        $data = $data ?: $this->getDefaultComposerData();
+        return json_encode($data);
     }
 
-    public function assertDevelopmentModuleNotEnabled($module, $package, $appConfig, $composer)
+    protected function getDefaultComposerData()
     {
-        // This will do two things:
-        // - assert that the package was NOT added to composer as a dev requirement
-        // - assert that the development configuration DOES NOT reference the module
+        return [
+            'name' => 'test/project',
+            'type' => 'project',
+            'description' => 'This is a test project',
+            'require' => [
+                'zendframework/zend-skeleton-installer' => '^1.0.0-dev@dev',
+            ],
+        ];
     }
 
-    public function assertPackageInstalled($package, $composer)
+    protected function setUpComposerInstaller(array $expectedPackages, $expectedReturn = 0)
     {
-        // This will assert that the given package was added as a requirement
-        // to composer.
+        $installer = $this->prophesize(Installer::class);
+        $installer->disablePlugins()->shouldBeCalled();
+        $installer->setUpdate()->shouldBeCalled();
+        $installer->setUpdateWhitelist($expectedPackages)->shouldBeCalled();
+        $installer->run()->willReturn($expectedReturn);
+
+        $r = new ReflectionProperty($this->installer, 'installerFactory');
+        $r->setAccessible(true);
+        $r->setValue($this->installer, function () use ($installer) {
+            return $installer->reveal();
+        });
     }
 
-    public function assertDevPackageInstalled($package, $composer)
+    protected function setUpApplicationConfig(array $packages)
     {
-        // This will assert that the given package was added as a DEVELOPMENT
-        // requirement to composer.
-    }
+        $componentInstaller = $this->prophesize(ComponentInstaller::class);
+        $componentInstaller->activate($this->composer->reveal(), $this->io->reveal())->shouldBeCalled();
+        $localRepository = $this->prophesize(RepositoryInterface::class);
 
-    public function setUpPromptExpectations($moduleEnabled, $io)
-    {
-        // This will setup the $io expectations, indicating a "n" response for
-        // all prompts EXCEPT the one for the specific module to enable.
-        //
-        // It will ALWAYS set an expectation that the "minimal" option was
-        // answered as "n".
+        foreach ($packages as $name => $constraint) {
+            $package = $this->prophesize(PackageInterface::class)->reveal();
+            $localRepository->findPackage($name, $constraint)->willReturn($package);
+            $componentInstaller->onPostPackageInstall(Argument::that(function ($arg) use ($package) {
+                if (! $arg instanceof PackageEvent) {
+                    return false;
+                }
+
+                $operation = $arg->getOperation();
+                if (! $operation instanceof InstallOperation) {
+                    return false;
+                }
+
+                return $package === $operation->getPackage();
+            }))->shouldBeCalled();
+        }
+
+        $repoManager = $this->prophesize(RepositoryManager::class);
+        $repoManager->getLocalRepository()->willReturn($localRepository->reveal());
+        $this->composer->getRepositoryManager()->willReturn($repoManager->reveal());
+
+        $r = new ReflectionProperty($this->installer, 'componentInstallerFactory');
+        $r->setAccessible(true);
+        $r->setValue($this->installer, function () use ($componentInstaller) {
+            return $componentInstaller->reveal();
+        });
     }
 
     public function testDoesNothingIfRootPackageHasNoOptionalDependenciesDefined()
     {
-        $this->markTestIncomplete();
+        $package = $this->prophesize(RootPackageInterface::class);
+        $package->getExtra()->willReturn([]);
+        $this->composer->getPackage()->willReturn($package->reveal());
+
+        $this->io->write(Argument::any())->shouldNotBeCalled();
+
+        $installer = $this->installer;
+        $this->assertNull($installer());
     }
 
-    public function testChoosingMinimalInstallSkipsAllOtherPrompts()
+    public function testChoosingMinimalInstallSkipsInstallation()
     {
-        $this->markTestIncomplete();
+        $package = $this->prophesize(RootPackageInterface::class);
+        $package->getExtra()->willReturn([
+            'zend-skeleton-installer' => [
+                [
+                    'name'       => 'zendframework/zend-db',
+                    'constraint' => '^2.5',
+                    'prompt'     => 'This is a prompt',
+                    'module'     => true,
+                ],
+            ],
+        ]);
+        $this->composer->getPackage()->willReturn($package->reveal());
+
+        $this->io->ask(Argument::that(function ($arg) {
+            if (! is_array($arg)) {
+                return false;
+            }
+            $prompt = array_shift($arg);
+            return (false !== strpos($prompt, 'Do you want a minimal install'));
+        }), 'y')->willReturn('y');
+        $this->io->write(Argument::containingString('Removing optional packages from composer.json'))->shouldBeCalled();
+        $this->io->write(Argument::containingString('Updating composer.json'))->shouldBeCalled();
+
+        $this->setUpComposerJson();
+
+        $installer = $this->installer;
+        $this->assertNull($installer());
+
+        $json = file_get_contents(vfsStream::url('project/composer.json'));
+        $composer = json_decode($json, true);
+        $this->assertFalse(isset($composer['extra']['zend-skeleton-installer']));
     }
 
-    public function testAddsNewRequiredPackageToComposerJsonAndTriggersUpdate()
+    public function testChoosingNoOptionalPackagesDuringPromptsSkipsInstallation()
     {
-        $this->markTestIncomplete();
+        $package = $this->prophesize(RootPackageInterface::class);
+        $package->getExtra()->willReturn([
+            'zend-skeleton-installer' => [
+                [
+                    'name'       => 'zendframework/zend-db',
+                    'constraint' => '^2.5',
+                    'prompt'     => 'This is a prompt',
+                    'module'     => true,
+                ],
+            ],
+        ]);
+        $this->composer->getPackage()->willReturn($package->reveal());
+
+        $this->io->ask(Argument::that(function ($arg) {
+            if (! is_array($arg)) {
+                return false;
+            }
+            $prompt = array_shift($arg);
+            return (false !== strpos($prompt, 'Do you want a minimal install'));
+        }), 'y')->willReturn('n');
+
+        $this->io->ask(Argument::that(function ($arg) {
+            if (! is_array($arg)) {
+                return false;
+            }
+            $prompt = array_shift($arg);
+            return (false !== strpos($prompt, 'This is a prompt'))
+                && (false !== strpos($prompt, 'y/N'));
+        }), 'n')->willReturn('n');
+
+        $this->io->write(Argument::containingString('No optional packages selected'))->shouldBeCalled();
+        $this->io->write(Argument::containingString('Removing optional packages from composer.json'))->shouldBeCalled();
+        $this->io->write(Argument::containingString('Updating composer.json'))->shouldBeCalled();
+
+        $this->setUpComposerJson();
+
+        $installer = $this->installer;
+        $this->assertNull($installer());
+
+        $json = file_get_contents(vfsStream::url('project/composer.json'));
+        $composer = json_decode($json, true);
+        $this->assertFalse(isset($composer['extra']['zend-skeleton-installer']));
     }
 
-    /**
-     * @depends testAddsNewRequiredPackageToComposerJsonAndTriggersUpdate
-     */
-    public function testUpdatesModuleConfigToAddModule()
+    public function testInstallerFailureShouldLeaveOptionalPackagesIntact()
     {
-        $this->markTestIncomplete();
+        $package = $this->prophesize(RootPackageInterface::class);
+        $package->getExtra()->willReturn([
+            'zend-skeleton-installer' => [
+                [
+                    'name'       => 'zendframework/zend-db',
+                    'constraint' => '^2.5',
+                    'prompt'     => 'This is a prompt',
+                    'module'     => true,
+                ],
+            ],
+        ]);
+        $this->composer->getPackage()->willReturn($package->reveal());
+
+        $this->io->ask(Argument::that(function ($arg) {
+            if (! is_array($arg)) {
+                return false;
+            }
+            $prompt = array_shift($arg);
+            return (false !== strpos($prompt, 'Do you want a minimal install'));
+        }), 'y')->willReturn('n');
+
+        $this->io->ask(Argument::that(function ($arg) {
+            if (! is_array($arg)) {
+                return false;
+            }
+            $prompt = array_shift($arg);
+            return (false !== strpos($prompt, 'This is a prompt'))
+                && (false !== strpos($prompt, 'y/N'));
+        }), 'n')->willReturn('y');
+
+        $this->io->write(Argument::containingString('Will install zendframework/zend-db'))->shouldBeCalled();
+        $this->io->write(Argument::containingString(
+            'When prompted to install as a module, select application.config.php or modules.config.php'
+        ))->shouldBeCalled();
+        $this->io->write(Argument::containingString('No optional packages selected'))->shouldNotBeCalled();
+
+        $this->io->write(Argument::containingString('Updating root package'))->shouldBeCalled();
+        $package->getRequires()->willReturn([]);
+        $package->setRequires(Argument::that(function ($arg) {
+            if (! is_array($arg)) {
+                return false;
+            }
+
+            if (! array_key_exists('zendframework/zend-db', $arg)) {
+                return false;
+            }
+
+            if (! $arg['zendframework/zend-db'] instanceof Link) {
+                return false;
+            }
+
+            return true;
+        }))->shouldBeCalled();
+
+        $this->setUpComposerInstaller(['zendframework/zend-db'], 1);
+
+        $this->io
+            ->write(Argument::containingString('Running an update to install optional packages'))
+            ->shouldBeCalled();
+
+        $this->io->write(Argument::containingString('Error installing optional packages'))->shouldBeCalled();
+
+        $installer = $this->installer;
+        $this->assertNull($installer());
     }
 
-    public function testAddsNewDevRequirementPackageToComposerJsonAndTriggersUpdate()
+    public function testAddingAnOptionalPackageAddsItToComposerAndUpdatesAppConfig()
     {
-        $this->markTestIncomplete();
-    }
+        $package = $this->prophesize(RootPackageInterface::class);
+        $package->getExtra()->willReturn([
+            'zend-skeleton-installer' => [
+                [
+                    'name'       => 'zendframework/zend-db',
+                    'constraint' => '^2.5',
+                    'prompt'     => 'This is a prompt',
+                    'module'     => true,
+                ],
+            ],
+        ]);
+        $this->composer->getPackage()->willReturn($package->reveal());
 
-    /**
-     * @depends testAddsNewDevRequirementPackageToComposerJsonAndTriggersUpdate
-     */
-    public function testUpdatesDevelopmentConfigToAddModule()
-    {
-        $this->markTestIncomplete();
+        $this->io->ask(Argument::that(function ($arg) {
+            if (! is_array($arg)) {
+                return false;
+            }
+            $prompt = array_shift($arg);
+            return (false !== strpos($prompt, 'Do you want a minimal install'));
+        }), 'y')->willReturn('n');
+
+        $this->io->ask(Argument::that(function ($arg) {
+            if (! is_array($arg)) {
+                return false;
+            }
+            $prompt = array_shift($arg);
+            return (false !== strpos($prompt, 'This is a prompt'))
+                && (false !== strpos($prompt, 'y/N'));
+        }), 'n')->willReturn('y');
+
+        $this->io->write(Argument::containingString('Will install zendframework/zend-db'))->shouldBeCalled();
+        $this->io->write(Argument::containingString(
+            'When prompted to install as a module, select application.config.php or modules.config.php'
+        ))->shouldBeCalled();
+        $this->io->write(Argument::containingString('No optional packages selected'))->shouldNotBeCalled();
+
+        $this->io->write(Argument::containingString('Updating root package'))->shouldBeCalled();
+        $package->getRequires()->willReturn([]);
+        $package->setRequires(Argument::that(function ($arg) {
+            if (! is_array($arg)) {
+                return false;
+            }
+
+            if (! array_key_exists('zendframework/zend-db', $arg)) {
+                return false;
+            }
+
+            if (! $arg['zendframework/zend-db'] instanceof Link) {
+                return false;
+            }
+
+            return true;
+        }))->shouldBeCalled();
+
+        $this->setUpComposerInstaller(['zendframework/zend-db']);
+
+        $this->io
+            ->write(Argument::containingString('Running an update to install optional packages'))
+            ->shouldBeCalled();
+
+        $this->setUpComposerJson();
+        $this->io->write(Argument::containingString('Updating composer.json'))->shouldBeCalled();
+
+        $this->setUpApplicationConfig(['zendframework/zend-db' => '^2.5']);
+        $this->io->write(Argument::containingString('Updating application configuration'))->shouldBeCalled();
+
+        $installer = $this->installer;
+        $this->assertNull($installer());
     }
 }
