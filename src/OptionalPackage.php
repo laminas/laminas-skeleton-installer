@@ -29,7 +29,7 @@ class OptionalPackage
             $this->dev = (bool) $spec['dev'];
         }
 
-        if (isset($spec['module'])) {
+        if (array_key_exists('module', $spec)) {
             $this->module = (bool) $spec['module'];
         }
     }
