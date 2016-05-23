@@ -155,7 +155,7 @@ class Collection implements
      */
     public function offsetExists($offset)
     {
-        return array_key_exists($this->items, $offset);
+        return array_key_exists($offset, $this->items);
     }
 
     /**
