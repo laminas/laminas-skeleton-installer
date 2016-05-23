@@ -47,11 +47,11 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     {
         return [
             'post-install-cmd' => [
-                ['installOptionalDependencies'],
+                ['installOptionalDependencies', 1000],
                 ['uninstallPlugin'],
             ],
             'post-update-cmd' => [
-                ['installOptionalDependencies'],
+                ['installOptionalDependencies', 1000],
                 ['uninstallPlugin'],
             ],
         ];

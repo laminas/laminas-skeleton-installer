@@ -219,6 +219,16 @@ class Collection implements
     }
 
     /**
+     * Is the collection empty?
+     *
+     * @return bool
+     */
+    public function isEmpty()
+    {
+        return 0 === $this->count();
+    }
+
+    /**
      * Traversable: Iterate the collection.
      *
      * @return ArrayIterator

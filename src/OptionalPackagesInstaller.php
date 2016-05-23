@@ -8,13 +8,20 @@
 namespace Zend\SkeletonInstaller;
 
 use Composer\Composer;
+use Composer\DependencyResolver\DefaultPolicy;
 use Composer\DependencyResolver\Operation\InstallOperation;
+use Composer\DependencyResolver\Pool;
+use Composer\DependencyResolver\Request;
 use Composer\EventDispatcher\EventDispatcher;
 use Composer\Installer as ComposerInstaller;
 use Composer\IO\IOInterface;
 use Composer\Package\AliasPackage;
 use Composer\Package\Link;
+use Composer\Package\PackageInterface;
 use Composer\Package\Version\VersionParser;
+use Composer\Repository\CompositeRepository;
+use Composer\Script\PackageEvent;
+use Zend\ComponentInstaller\ComponentInstaller;
 
 /**
  * Prompt for and install optional packages.
@@ -33,6 +40,21 @@ class OptionalPackagesInstaller
      */
     private $io;
 
+    // @codingStandardsIgnoreStart
+    /**
+     * @var string[]
+     */
+    private $packageConfigPrompts = [
+        'require'     => '<info>    When prompted to install as a module, select application.config.php or modules.config.php</info>',
+        'require-dev' => '<info>    When prompted to install as a module, select development.config.php.dist</info>',
+    ];
+    // @codingStandardsIgnoreEnd
+
+    /**
+     * @var VersionParser
+     */
+    private $versionParser;
+
     /**
      * @param Composer $composer
      * @param IOInterface $io
@@ -41,6 +63,7 @@ class OptionalPackagesInstaller
     {
         $this->composer = $composer;
         $this->io = $io;
+        $this->versionParser = new VersionParser();
     }
 
     /**
@@ -53,13 +76,15 @@ class OptionalPackagesInstaller
             ->filter([OptionalPackage::class, 'isValidSpec']);
 
         // If none are found, do nothing.
-        if (0 === $optionalPackages->count()) {
+        if ($optionalPackages->isEmpty()) {
             return;
         }
 
         // Prompt for minimal install
         if ($this->requestMinimalInstall()) {
-            // If a minimal install is requested, do nothing.
+            // If a minimal install is requested, remove optional package information
+            $this->io->write('<info>    Removing optional packages from composer.json</info>');
+            $this->updateComposerJson(new Collection([]));
             return;
         }
 
@@ -68,35 +93,28 @@ class OptionalPackagesInstaller
             ->map(function ($spec) {
                 return new OptionalPackage($spec);
             })
-            ->filter($this->promptForPackage());
+            ->filter(function ($package) {
+                return $this->promptForPackage($package);
+            });
 
         // If no optional packages were selected, do nothing.
-        if (0 === $packagesToInstall->count()) {
+        if ($packagesToInstall->isEmpty()) {
             $this->io->write('<info>    No optional packages selected to install</info>');
             return;
         }
 
-        $this->io->write('<info>Updating root package</info>');
-
         // Run an installer update
-        $this->io->write('<info>    Running an update to install optional packages</info>');
         $package = $this->updateRootPackage($this->composer->getPackage(), $packagesToInstall);
-        $result = $this->createInstaller($package, $packagesToInstall)->run();
-
-        if (0 !== $result) {
+        if (0 !== $this->runInstaller($package, $packagesToInstall)) {
             $this->io->write('<error>Error installing optional packages. Run with verbosity to debug');
             return;
         }
 
         // Update the composer.json
-        $this->io->write('<info>    Updating composer.json</info>');
         $this->updateComposerJson($packagesToInstall);
 
-        // Update the modules list
-        $this->io->write('<info>    Updating module configuration</info>');
-        $this->injectModulesIntoConfiguration($packagesToInstall->reject(function ($package) {
-            return empty($package->getModule());
-        }));
+        // Update application configuration
+        $this->updateApplicationConfiguration($packagesToInstall);
     }
 
     /**
@@ -136,7 +154,7 @@ class OptionalPackagesInstaller
                 return false;
             }
 
-            if ('y' !== $answer) {
+            if ('y' === $answer) {
                 return true;
             }
 
@@ -147,57 +165,74 @@ class OptionalPackagesInstaller
     /**
      * Create the callback for emitting and handling a package prompt.
      *
-     * @return callable
+     * @param OptionalPackage $package
+     * @return bool
      */
-    private function promptForPackage()
+    private function promptForPackage(OptionalPackage $package)
     {
-        return function (OptionalPackage $package) {
-            $question = [sprintf(
-                "\n    <question>%s</question> <comment>y/N</comment>\n",
-                $package->getPrompt()
-            )];
+        $question = [sprintf(
+            "\n    <question>%s</question> <comment>y/N</comment>\n",
+            $package->getPrompt()
+        )];
 
-            while (true) {
-                $answer = $this->io->ask($question, 'n');
-                $answer = strtolower($answer);
+        while (true) {
+            $answer = $this->io->ask($question, 'n');
+            $answer = strtolower($answer);
 
-                if ('n' === $answer) {
-                    return false;
-                }
-
-                if ('y' !== $answer) {
-                    return true;
-                }
-
-                $this->io->write('<error>Invalid answer</error>');
+            if ('n' === $answer) {
+                return false;
             }
-        };
+
+            if ('y' === $answer) {
+                $this->io->write(sprintf(
+                    '<info>    Will install %s (%s)</info>',
+                    $package->getName(),
+                    $package->getConstraint()
+                ));
+                if ($package->isModule()) {
+                    $extra = $package->isDev()
+                        ? $this->packageConfigPrompts['require-dev']
+                        : $this->packageConfigPrompts['require'];
+                    $this->io->write($extra);
+                }
+                return true;
+            }
+
+            $this->io->write('<error>Invalid answer</error>');
+        }
     }
 
     /**
      * Update the composer.json definition.
      *
+     * Adds all packages to the appropriate require or require-dev sections of
+     * the composer.json, and removes the extra.zend-skeleton-installer node.
+     *
      * @param Collection $packagesToInstall
      */
     private function updateComposerJson(Collection $packagesToInstall)
     {
+        $this->io->write('<info>    Updating composer.json</info>');
         $composerJson = $this->getComposerJson();
-        $json = $packagesToInstall->reduce($this->updateComposerRequirement(), $composerJson->read());
+        $json = $packagesToInstall->reduce(function ($composer, $package) {
+            return $this->updateComposerRequirement($composer, $package);
+        }, $composerJson->read());
+        unset($json['extra']['zend-skeleton-installer']);
         $composerJson->write($json);
     }
 
     /**
-     * Creates callback for updating the composer definition.
+     * Add a package to the composer definition.
      *
-     * @return callable
+     * @param array $composer
+     * @param OptionalPackage $package
+     * @return array
      */
-    private function updateComposerRequirement()
+    private function updateComposerRequirement(array $composer, OptionalPackage $package)
     {
-        return function ($composer, $package) {
-            $key = $package->isDev() ? 'require-dev' : 'require';
-            $composer[$key][$package->getName()] = $package->getConstraint();
-            return $composer;
-        };
+        $key = $package->isDev() ? 'require-dev' : 'require';
+        $composer[$key][$package->getName()] = $package->getConstraint();
+        return $composer;
     }
 
     /**
@@ -209,40 +244,41 @@ class OptionalPackagesInstaller
      */
     private function updateRootPackage($package, Collection $packagesToInstall)
     {
-        $requires = $packagesToInstall->reduce($this->updateRootPackageRequirement(), $package->getRequires());
-        $package->setRequires($requires);
+        $this->io->write('<info>Updating root package</info>');
+        $package->setRequires($packagesToInstall->reduce(function ($requires, $package) {
+            return $this->addRootPackageRequirement($requires, $package);
+        }, $package->getRequires()));
         return $package;
     }
 
     /**
-     * Creates a callback for updating the root package requirements.
+     * Add a requirement to the root package.
      *
-     * @return callable
+     * @param array $requires
+     * @param OptionalPackage $package
+     * @return array
      */
-    private function updateRootPackageRequirement(array $requires)
+    private function addRootPackageRequirement(array $requires, OptionalPackage $package)
     {
-        $versionParser = new VersionParser();
-        return function ($requires, $package) use ($versionParser) {
-            $name = $package->getName();
-            $constraint = $package->getConstraint();
-            $description = $package->isDev()
-                ? 'requires for development'
-                : 'requires';
+        $name = $package->getName();
+        $constraint = $package->getConstraint();
+        $description = $package->isDev()
+            ? 'requires for development'
+            : 'requires';
 
-            $requires[$name] = new Link(
-                '__root__',
-                $name,
-                $versionParser->parseConstraints($constraint),
-                $description,
-                $constraint
-            );
+        $requires[$name] = new Link(
+            '__root__',
+            $name,
+            $this->versionParser->parseConstraints($constraint),
+            $description,
+            $constraint
+        );
 
-            return $requires;
-        };
+        return $requires;
     }
 
     /**
-     * Creates and returns a configured instance of the Composer installer.
+     * Creates and runs a Composer installer instance, returning the results.
      *
      * The instance has the following modifications:
      *
@@ -252,25 +288,30 @@ class OptionalPackagesInstaller
      * - It specifies an update whitelist of only the new packages to install
      * - It disables plugins
      *
-     * @param \Composer\Package\RootPackage
+     * @param Composer $composer
+     * @param PackageInterface $package
      * @param Collection $packagesToInstall
-     * @return ComposerInstaller
+     * @return int
      */
-    private function createInstaller($package, Collection $packagesToInstall)
+    private function runInstaller(PackageInterface $package, Collection $packagesToInstall)
     {
+        $this->io->write('<info>    Running an update to install optional packages</info>');
+        $composer = $this->composer;
+        $eventDispatcher = new EventDispatcher($composer, $this->io);
+
         $installer = new ComposerInstaller(
             $this->io,
-            $this->composer->getConfig(),
+            $composer->getConfig(),
             $package,
-            $this->composer->getDownloadManager(),
-            $this->composer->getRepositoryManager(),
-            $this->composer->getLocker(),
-            $this->composer->getInstallationManager(),
-            new EventDispatcher($this->composer, $this->io),
-            $this->composer->getAutoloadGenerator()
+            $composer->getDownloadManager(),
+            $composer->getRepositoryManager(),
+            $composer->getLocker(),
+            $composer->getInstallationManager(),
+            $eventDispatcher,
+            $composer->getAutoloadGenerator()
         );
-        $installer->setUpdate();
         $installer->disablePlugins();
+        $installer->setUpdate();
         $installer->setUpdateWhitelist(
             $packagesToInstall->map(function ($package) {
                 return $package->getName();
@@ -278,24 +319,64 @@ class OptionalPackagesInstaller
             ->toArray()
         );
 
-        return $installer;
+        return $installer->run();
     }
 
     /**
-     * Inject modules into application configuration.
+     * Update application configuration.
      *
-     * This assumes that:
+     * For each package to install, creates a new PackageEvent with relevant
+     * details and passes it to the ComponentInstaller::onPostPackageInstall
+     * event handler in order to update the application configuration.
      *
-     * - config/modules.config.php exists
-     * - config/development.config.php.dist exists
-     *
-     * Modules marked as `isDev()` will be pushed into the development module
-     * list, while all others will go into the general modules list.
-     *
-     * @param Collection $modulesToInstall
+     * @param Collection $packagesToInstall
      * @return void
      */
-    private function injectModulesIntoConfiguration(Collection $modulesToInstall)
+    private function updateApplicationConfiguration(Collection $packagesToInstall)
     {
+        $this->io->write('<info>Updating application configuration...</info>');
+
+        // Initialize the ComponentInstaller
+        $componentInstaller = new ComponentInstaller();
+        $componentInstaller->activate($this->composer, $this->io);
+
+        // Grab the local repository so we can do package lookups
+        $localRepository = $this->composer->getRepositoryManager()->getLocalRepository();
+
+        // Empty stubs for the PackageEvent
+        $policy = new DefaultPolicy();
+        $pool = new Pool();
+        $compositeRepository = new CompositeRepository([]);
+        $request = new Request();
+
+        $packagesToInstall->each(function ($optionalPackage) use (
+            $componentInstaller,
+            $localRepository,
+            $policy,
+            $pool,
+            $compositeRepository,
+            $request
+        ) {
+            // Lookup the package
+            $package = $localRepository->findPackage($optionalPackage->getName(), $optionalPackage->getConstraint());
+
+            if (! $package) {
+                return;
+            }
+
+            // Install application configuration
+            $componentInstaller->onPostPackageInstall(new PackageEvent(
+                'post-package-install',
+                $this->composer,
+                $this->io,
+                true,
+                $policy,
+                $pool,
+                $compositeRepository,
+                $request,
+                [],
+                new InstallOperation($package)
+            ));
+        });
     }
 }

@@ -13,7 +13,7 @@ class OptionalPackage
 
     private $dev = false;
 
-    private $module;
+    private $module = false;
 
     private $name;
 
@@ -30,7 +30,7 @@ class OptionalPackage
         }
 
         if (isset($spec['module'])) {
-            $this->module = $spec['module'];
+            $this->module = (bool) $spec['module'];
         }
     }
 
@@ -63,7 +63,7 @@ class OptionalPackage
         return $this->dev;
     }
 
-    public function getModule()
+    public function isModule()
     {
         return $this->module;
     }
