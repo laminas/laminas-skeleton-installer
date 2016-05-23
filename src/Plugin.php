@@ -45,15 +45,14 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
+        $subscribers = [
+            ['installOptionalDependencies', 1000],
+            ['uninstallPlugin'],
+        ];
+
         return [
-            'post-install-cmd' => [
-                ['installOptionalDependencies', 1000],
-                ['uninstallPlugin'],
-            ],
-            'post-update-cmd' => [
-                ['installOptionalDependencies', 1000],
-                ['uninstallPlugin'],
-            ],
+            'post-install-cmd' => $subscribers,
+            'post-update-cmd' => $subscribers,
         ];
     }
 

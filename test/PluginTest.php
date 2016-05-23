@@ -16,11 +16,28 @@ class PluginTest extends TestCase
 {
     public function testActivateSetsComposerAndIoProperties()
     {
-        $this->markTestIncomplete();
+        $composer = $this->prophesize(Composer::class)->reveal();
+        $io = $this->prophesize(IOInterface::class)->reveal();
+
+        $plugin = new Plugin();
+        $plugin->activate($composer, $io);
+
+        $this->assertAttributeSame($composer, 'composer', $plugin);
+        $this->assertAttributeSame($io, 'io', $plugin);
     }
 
     public function testSubscribesToExpectedEvents()
     {
-        $this->markTestIncomplete();
+        $subscribers = Plugin::getSubscribedEvents();
+        $this->assertArrayHasKey('post-install-cmd', $subscribers);
+        $this->assertArrayHasKey('post-update-cmd', $subscribers);
+
+        $expected = [
+            ['installOptionalDependencies', 1000],
+            ['uninstallPlugin'],
+        ];
+
+        $this->assertEquals($expected, $subscribers['post-install-cmd']);
+        $this->assertEquals($expected, $subscribers['post-update-cmd']);
     }
 }
