@@ -8,5 +8,8 @@ the ZendSkeletonApplication. It prompts for common requirements, adding packages
 to the composer requirements for each selection, and then uninstalls itself on
 completion.
 
+The installer requires [zend-component-installer](https://zendframework.github.io/zend-component-installer/),
+and we recommend requiring that component in your project skeleton as well.
+
 - File issues at https://github.com/zendframework/zend-skeleton-installer/issues
-- Documentation is at http://framework.zend.com/manual/current/en/index.html#zend-skeleton-installer
+- Documentation is at https://zendframework.github.io/zend-skeleton-installer/
