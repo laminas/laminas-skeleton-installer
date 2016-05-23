@@ -15,7 +15,7 @@ env:
     - GH_USER_NAME="Matthew Weier O'Phinney"
     - GH_USER_EMAIL=matthew@weierophinney.net
     - GH_REF=github.com/zendframework/zend-skeleton-installer.git
-    - secure: ""
+    - secure: "bnjv8L2XfZ7PgJc3y75tpe9Kiz3mtdg1Z9MBRPblHRLXezhn/7qMMS4GLnt0mBP4JPCSeXVGplp34ogvecFl/Y7v+w1b857tnhzz+AFuWdnV8gOOrNNE2KhbsX6bgh/W0djd9HiyN/B0E/Z2vf3fQuOZEvzQ+WEKmJS2rku6TOHAt2Ec7TKMCsmV+Y1fH+/P20w08CHEUreeWuqw+5uPWZFUyryfB3Aw/Dh+FyZjydnCuWzJBJm5VhDLf6mP1N/RO/5DoklrGZqByo6ZXKJmSfAUS9m3USa+qzKyEYvPzOZgznrKO6wmVaS1ohDdtx6/W5Jkwx6GsrrMwJdoq3Oij0Q2/05q7iQQOQrDKYrNg+dZ9AlwjUP/pCQmsv17aiYqmwnptfY938g1N6ly2t7G0cUdREa7ycGeTtZVsZR/F1rL8deAJAsTr9sll5iOThCraEE2x4liKh/foHH4OH1W/ae7g2GgdIp+IxW66/FOYX1XYIhZhUIq2fc9lUz//uAOZ8aOF/FUozLhA41XICEe2T0/X2ej59Rb62w9rn8PNk62/YaWA9QbFaGX8i2hSwDrELO27r1gYiePA6aLGWngfXQALIf4y/lwH+mv5Ce/nKFtb4umOTAWtxrKfa3l4gA9aKftdusqgxX6iFVxj1sXwnIvbaCH7AIHccl7xUyc9q0="
 
 
 matrix:
