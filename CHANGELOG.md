@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 0.1.2 - 2016-06-02
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Allows using zend-component-installer `^0.2` stable versions.
+
 ## 0.1.1 - 2016-06-02
 
 ### Added
