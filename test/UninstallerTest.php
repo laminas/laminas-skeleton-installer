@@ -12,6 +12,8 @@ use Composer\DependencyResolver\Operation\UninstallOperation;
 use Composer\Factory;
 use Composer\Installer\InstallationManager;
 use Composer\IO\IOInterface;
+use Composer\Package\Locker;
+use Composer\Package\AliasPackage;
 use Composer\Package\PackageInterface;
 use Composer\Repository\RepositoryInterface;
 use Composer\Repository\RepositoryManager;
@@ -41,13 +43,66 @@ class UninstallerTest extends TestCase
         return $io;
     }
 
+    protected function createLockPackages($repository, $locker)
+    {
+        $required = $this->prophesize(PackageInterface::class);
+        $required->getName()->willReturn('some/required');
+        $required->isDev()->willReturn(false);
+
+        $dev = $this->prophesize(PackageInterface::class);
+        $dev->getName()->willReturn('some/dev');
+        $dev->isDev()->willReturn(true);
+
+        $skeleton = $this->prophesize(PackageInterface::class);
+        $skeleton->getName()->willReturn('zendframework/zend-skeleton-installer');
+        $skeleton->isDev()->shouldNotBeCalled();
+
+        $alias = $this->prophesize(AliasPackage::class);
+        $alias->getName()->willReturn('some/alias');
+        $alias->isDev()->willReturn(false);
+
+        $repository->getPackages()->willReturn([
+            $required->reveal(),
+            $dev->reveal(),
+            $skeleton->reveal(),
+            $alias->reveal(),
+        ]);
+
+        $locker->getPlatformRequirements(false)->willReturn([]);
+        $locker->getPlatformRequirements(true)->willReturn([]);
+        $locker->getMinimumStability()->willReturn('stable');
+        $locker->getStabilityFlags()->willReturn([]);
+        $locker->getPreferStable()->willReturn(true);
+        $locker->getPreferLowest()->willReturn(false);
+        $locker->getPlatformOverrides()->willReturn([]);
+
+        $locker->setLockData(
+            [$required->reveal()],
+            [$dev->reveal()],
+            [],
+            [],
+            [$alias->reveal()],
+            'stable',
+            [],
+            true,
+            false,
+            []
+        )->willReturn(true);
+    }
+
     protected function setUpComposerAndDependencies()
     {
         $composer = $this->prophesize(Composer::class);
 
         $package = $this->prophesize(PackageInterface::class);
-        $repository = $this->prophesize(RepositoryInterface::class);
+        $this->repository = $repository = $this->prophesize(RepositoryInterface::class);
         $repository->findPackage(Uninstaller::PLUGIN_NAME, '*')->willReturn($package->reveal());
+        $repository->getPackages()->willReturn([
+        ]);
+
+        $locker = $this->prophesize(Locker::class);
+        $this->createLockPackages($repository, $locker);
+        $composer->getLocker()->willReturn($locker->reveal());
 
         $repoManager = $this->prophesize(RepositoryManager::class);
         $repoManager->getLocalRepository()->willReturn($repository->reveal());

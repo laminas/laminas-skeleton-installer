@@ -10,6 +10,8 @@ namespace Zend\SkeletonInstaller;
 use Composer\Composer;
 use Composer\DependencyResolver\Operation\UninstallOperation;
 use Composer\IO\IOInterface;
+use Composer\Package\AliasPackage;
+use Composer\Repository\RepositoryInterface;
 
 /**
  * Uninstall the plugin from the project.
@@ -71,6 +73,7 @@ class Uninstaller
 
         $installer->uninstall($repository, new UninstallOperation($package));
         $this->io->write(sprintf('<info>    Removed plugin %s.</info>', self::PLUGIN_NAME));
+        $this->updateLockFile($repository);
     }
 
     /**
@@ -84,5 +87,51 @@ class Uninstaller
         $json = $composerJson->read();
         unset($json['require'][self::PLUGIN_NAME]);
         $composerJson->write($json);
+    }
+
+    /**
+     * Update the lock file
+     *
+     * @param RepositoryInterface $repository
+     */
+    private function updateLockFile(RepositoryInterface $repository)
+    {
+        $locker = $this->composer->getLocker();
+        $allPackages = Collection::create($repository->getPackages())
+            ->reject(function ($package) {
+                return self::PLUGIN_NAME === $package->getName();
+            });
+
+        $aliases = $allPackages->filter(function ($package) {
+            return $package instanceof AliasPackage;
+        });
+
+        $devPackages = $allPackages->filter(function ($package) {
+            return $package->isDev();
+        });
+
+        $packages = $allPackages->filter(function ($package) {
+            return (! $package instanceof AliasPackage && ! $package->isDev());
+        });
+
+        $platformReqs = $locker->getPlatformRequirements(false);
+        $platformDevReqs = array_diff($locker->getPlatformRequirements(true), $platformReqs);
+
+        $result = $locker->setLockData(
+            $packages->toArray(),
+            $devPackages->toArray(),
+            $platformReqs,
+            $platformDevReqs,
+            $aliases->toArray(),
+            $locker->getMinimumStability(),
+            $locker->getStabilityFlags(),
+            $locker->getPreferStable(),
+            $locker->getPreferLowest(),
+            $locker->getPlatformOverrides()
+        );
+
+        if (! $result) {
+            $this->io->write('<error>Unable to update lock file after removal of zend-skeleton-installer</error>');
+        }
     }
 }
