@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 0.1.3 - 2016-06-27
+
+### Added
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#4](https://github.com/zendframework/zend-skeleton-installer/pull/4) updates
+  the minimum accepted zend-component-installer version to 0.3.
+
 ## 0.1.2 - 2016-06-02
 
 ### Added
