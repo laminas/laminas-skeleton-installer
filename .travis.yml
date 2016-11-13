@@ -27,13 +27,13 @@ matrix:
         - PATH="$HOME/.local/bin:$PATH"
     - php: 7
       env:
-        - EXECUTE_CS_CHECK=true
+        - CS_CHECK=true
     - php: hhvm
   allow_failures:
     - php: hhvm
 
 before_install:
-  - if [[ $EXECUTE_TEST_COVERALLS != 'true' ]]; then phpenv config-rm xdebug.ini || return 0 ; fi
+  - if [[ $TEST_COVERAGE != 'true' ]]; then phpenv config-rm xdebug.ini || return 0 ; fi
   - composer self-update
 
 install:
@@ -41,16 +41,16 @@ install:
   - composer info -i
 
 script:
-  - if [[ $EXECUTE_TEST_COVERALLS == 'true' ]]; then composer test-coverage ; fi
-  - if [[ $EXECUTE_TEST_COVERALLS != 'true' ]]; then composer test ; fi
-  - if [[ $EXECUTE_CS_CHECK == 'true' ]]; then composer cs ; fi
+  - if [[ $TEST_COVERAGE == 'true' ]]; then composer test-coverage ; fi
+  - if [[ $TEST_COVERAGE != 'true' ]]; then composer test ; fi
+  - if [[ $CS_CHECK == 'true' ]]; then composer cs ; fi
   - if [[ $DEPLOY_DOCS == "true" && "$TRAVIS_TEST_RESULT" == "0" ]]; then wget -O theme-installer.sh "https://raw.githubusercontent.com/zendframework/zf-mkdoc-theme/master/theme-installer.sh" ; chmod 755 theme-installer.sh ; ./theme-installer.sh ; fi
 
 after_success:
   - if [[ $DEPLOY_DOCS == "true" ]]; then echo "Preparing to build and deploy documentation" ; ./zf-mkdoc-theme/deploy.sh ; echo "Completed deploying documentation" ; fi
 
 after_script:
-- if [[ $EXECUTE_TEST_COVERALLS == 'true' ]]; then composer coveralls ; fi
+- if [[ $TEST_COVERAGE == 'true' ]]; then composer coveralls ; fi
 
 notifications:
   email: true
