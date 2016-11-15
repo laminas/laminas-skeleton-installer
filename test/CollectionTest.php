@@ -83,7 +83,7 @@ class CollectionTest extends TestCase
         ];
 
         return [
-            'array' =>    [$array, $array],
+            'array' => [$array, $array],
             'iterator' => [new ArrayIterator($array), $array],
         ];
     }
