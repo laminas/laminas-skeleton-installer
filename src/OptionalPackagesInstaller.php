@@ -16,9 +16,8 @@ use Composer\EventDispatcher\EventDispatcher;
 use Composer\Installer as ComposerInstaller;
 use Composer\Installer\PackageEvent;
 use Composer\IO\IOInterface;
-use Composer\Package\AliasPackage;
 use Composer\Package\Link;
-use Composer\Package\PackageInterface;
+use Composer\Package\RootPackageInterface;
 use Composer\Package\Version\VersionParser;
 use Composer\Repository\CompositeRepository;
 use Zend\ComponentInstaller\ComponentInstaller;
@@ -257,11 +256,11 @@ class OptionalPackagesInstaller
     /**
      * Update the root package definition
      *
-     * @param \Composer\Package\RootPackage $package
+     * @param RootPackageInterface $package
      * @param Collection $packagesToInstall
-     * @return \Composer\Package\RootPackage
+     * @return RootPackageInterface
      */
-    private function updateRootPackage($package, Collection $packagesToInstall)
+    private function updateRootPackage(RootPackageInterface $package, Collection $packagesToInstall)
     {
         $this->io->write('<info>Updating root package</info>');
         $package->setRequires($packagesToInstall->reduce(function ($requires, $package) {
@@ -307,12 +306,11 @@ class OptionalPackagesInstaller
      * - It specifies an update whitelist of only the new packages to install
      * - It disables plugins
      *
-     * @param Composer $composer
-     * @param PackageInterface $package
+     * @param RootPackageInterface $package
      * @param Collection $packagesToInstall
      * @return int
      */
-    private function runInstaller(PackageInterface $package, Collection $packagesToInstall)
+    private function runInstaller(RootPackageInterface $package, Collection $packagesToInstall)
     {
         $this->io->write('<info>    Running an update to install optional packages</info>');
 
@@ -340,8 +338,13 @@ class OptionalPackagesInstaller
      *
      * Private static factory, to allow slip-streaming in a mock as needed for
      * testing.
+     *
+     * @param Composer $composer
+     * @param IOInterface $io
+     * @param RootPackageInterface $package
+     * @return ComposerInstaller
      */
-    private static function createInstaller(Composer $composer, IOInterface $io, PackageInterface $package)
+    private static function createInstaller(Composer $composer, IOInterface $io, RootPackageInterface $package)
     {
         $eventDispatcher = new EventDispatcher($composer, $io);
 
