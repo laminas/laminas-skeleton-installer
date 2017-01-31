@@ -14,13 +14,13 @@ use Composer\DependencyResolver\Pool;
 use Composer\DependencyResolver\Request;
 use Composer\EventDispatcher\EventDispatcher;
 use Composer\Installer as ComposerInstaller;
+use Composer\Installer\PackageEvent;
 use Composer\IO\IOInterface;
 use Composer\Package\AliasPackage;
 use Composer\Package\Link;
 use Composer\Package\PackageInterface;
 use Composer\Package\Version\VersionParser;
 use Composer\Repository\CompositeRepository;
-use Composer\Script\PackageEvent;
 use Zend\ComponentInstaller\ComponentInstaller;
 
 /**
