@@ -6,13 +6,14 @@
     "require": {
         "php" : "^5.6 || ^7.0",
         "composer-plugin-api": "^1.0",
-        "zendframework/zend-component-installer": "^1.0 || ^0.3 || ^1.0.0-dev@dev"
+        "zendframework/zend-component-installer": "^1.0 || ^0.6 || ^1.0.0-dev@dev"
     },
     "require-dev": {
         "composer/composer": "^1.0",
-        "phpunit/phpunit": "^4.8",
+        "phpunit/phpunit": "^5.7",
         "mikey179/vfsStream": "^1.6",
-        "zendframework/zend-coding-standard": "~1.0.0"
+        "zendframework/zend-coding-standard": "~1.0.0",
+        "malukenho/docheader": "^0.1.5"
     },
     "extra": {
         "class": "Zend\\SkeletonInstaller\\Plugin",
@@ -32,12 +33,14 @@
     },
     "scripts": {
         "check": [
+            "@license-check",
             "@cs-check",
             "@test"
         ],
         "upload-coverage": "coveralls -v",
         "cs-check": "phpcs --colors",
         "cs-fix": "phpcbf --colors",
+        "license-check": "docheader check src/ test/",
         "test": "phpunit --colors=always",
         "test-coverage": "phpunit --coverage-clover clover.xml"
     }
