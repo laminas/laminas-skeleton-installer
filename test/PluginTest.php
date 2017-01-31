@@ -9,7 +9,7 @@ namespace ZendTest\SkeletonInstaller;
 
 use Composer\Composer;
 use Composer\IO\IOInterface;
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Zend\SkeletonInstaller\Plugin;
 
 class PluginTest extends TestCase

@@ -8,29 +8,33 @@
 namespace Zend\SkeletonInstaller;
 
 use Composer\Composer;
-use Composer\DependencyResolver\DefaultPolicy;
 use Composer\DependencyResolver\Operation\InstallOperation;
-use Composer\DependencyResolver\Pool;
-use Composer\DependencyResolver\Request;
 use Composer\Installer;
+use Composer\Installer\PackageEvent;
 use Composer\IO\IOInterface;
 use Composer\Package\Link;
 use Composer\Package\PackageInterface;
 use Composer\Package\RootPackageInterface;
-use Composer\Repository\CompositeRepository;
 use Composer\Repository\RepositoryInterface;
 use Composer\Repository\RepositoryManager;
-use Composer\Script\PackageEvent;
 use org\bovigo\vfs\vfsStream;
-use org\bovigo\vfs\vfsStreamDirectory;
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ProphecyInterface;
 use ReflectionProperty;
-use Zend\SkeletonInstaller\OptionalPackagesInstaller;
 use Zend\ComponentInstaller\ComponentInstaller;
 
 class OptionalPackagesInstallerTest extends TestCase
 {
+    /** @var Composer|ProphecyInterface */
+    private $composer;
+
+    /** @var IOInterface|ProphecyInterface */
+    private $io;
+
+    /** @var OptionalPackagesInstaller|ProphecyInterface */
+    private $installer;
+
     public function setUp()
     {
         $this->composer = $this->prophesize(Composer::class);

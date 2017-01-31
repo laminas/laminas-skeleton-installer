@@ -9,7 +9,6 @@ namespace ZendTest\SkeletonInstaller;
 
 use Composer\Composer;
 use Composer\DependencyResolver\Operation\UninstallOperation;
-use Composer\Factory;
 use Composer\Installer\InstallationManager;
 use Composer\IO\IOInterface;
 use Composer\Package\Locker;
@@ -18,14 +17,20 @@ use Composer\Package\PackageInterface;
 use Composer\Repository\RepositoryInterface;
 use Composer\Repository\RepositoryManager;
 use org\bovigo\vfs\vfsStream;
-use org\bovigo\vfs\vfsStreamDirectory;
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ProphecyInterface;
 use ReflectionProperty;
 use Zend\SkeletonInstaller\Uninstaller;
 
 class UninstallerTest extends TestCase
 {
+    /** @var IOInterface|ProphecyInterface */
+    private $io;
+
+    /** @var Composer|ProphecyInterface */
+    private $composer;
+
     public function setUp()
     {
         $this->io = $this->setUpIo();
@@ -95,10 +100,9 @@ class UninstallerTest extends TestCase
         $composer = $this->prophesize(Composer::class);
 
         $package = $this->prophesize(PackageInterface::class);
-        $this->repository = $repository = $this->prophesize(RepositoryInterface::class);
+        $repository = $this->prophesize(RepositoryInterface::class);
         $repository->findPackage(Uninstaller::PLUGIN_NAME, '*')->willReturn($package->reveal());
-        $repository->getPackages()->willReturn([
-        ]);
+        $repository->getPackages()->willReturn([]);
 
         $locker = $this->prophesize(Locker::class);
         $this->createLockPackages($repository, $locker);

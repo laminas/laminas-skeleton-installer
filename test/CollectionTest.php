@@ -11,7 +11,8 @@ use ArrayIterator;
 use ArrayObject;
 use InvalidArgumentException;
 use OutOfRangeException;
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
+use Traversable;
 use Zend\SkeletonInstaller\Collection;
 
 class CollectionTest extends TestCase
@@ -53,25 +54,27 @@ class CollectionTest extends TestCase
 
     /**
      * @dataProvider invalidCollections
+     *
+     * @param mixed $items
      */
     public function testConstructorRaisesExceptionForInvalidItems($items)
     {
-        $this->setExpectedException(
-            InvalidArgumentException::class,
-            'Collections require arrays or Traversable objects'
-        );
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Collections require arrays or Traversable objects');
+
         new Collection($items);
     }
 
     /**
      * @dataProvider invalidCollections
+     *
+     * @param mixed $items
      */
     public function testFactoryRaisesExceptionForInvalidItems($items)
     {
-        $this->setExpectedException(
-            InvalidArgumentException::class,
-            'Collections require arrays or Traversable objects'
-        );
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Collections require arrays or Traversable objects');
+
         Collection::create($items);
     }
 
@@ -90,8 +93,11 @@ class CollectionTest extends TestCase
 
     /**
      * @dataProvider collectionsForArrays
+     *
+     * @param array|Traversable $items
+     * @param array $expected
      */
-    public function testToArrayCastsToArray($items, $expected)
+    public function testToArrayCastsToArray($items, array $expected)
     {
         $collection = Collection::create($items);
         $this->assertEquals($expected, $collection->toArray());
@@ -236,7 +242,9 @@ class CollectionTest extends TestCase
     {
         $collection = Collection::create([]);
 
-        $this->setExpectedException(OutOfRangeException::class, 'Offset foo does not exist');
+        $this->expectException(OutOfRangeException::class);
+        $this->expectExceptionMessage('Offset foo does not exist');
+
         $collection['foo'];
     }
 
