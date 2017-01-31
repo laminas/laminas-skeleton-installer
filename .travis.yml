@@ -5,52 +5,88 @@ language: php
 cache:
   directories:
     - $HOME/.composer/cache
-    - vendor
     - $HOME/.local
+    - vendor
     - zf-mkdoc-theme
 
 env:
   global:
+    - COMPOSER_ARGS="--no-interaction"
+    - COVERAGE_DEPS="satooshi/php-coveralls"
     - SITE_URL=https://zendframework.github.io/zend-skeleton-installer
     - GH_USER_NAME="Matthew Weier O'Phinney"
     - GH_USER_EMAIL=matthew@weierophinney.net
     - GH_REF=github.com/zendframework/zend-skeleton-installer.git
     - secure: "bnjv8L2XfZ7PgJc3y75tpe9Kiz3mtdg1Z9MBRPblHRLXezhn/7qMMS4GLnt0mBP4JPCSeXVGplp34ogvecFl/Y7v+w1b857tnhzz+AFuWdnV8gOOrNNE2KhbsX6bgh/W0djd9HiyN/B0E/Z2vf3fQuOZEvzQ+WEKmJS2rku6TOHAt2Ec7TKMCsmV+Y1fH+/P20w08CHEUreeWuqw+5uPWZFUyryfB3Aw/Dh+FyZjydnCuWzJBJm5VhDLf6mP1N/RO/5DoklrGZqByo6ZXKJmSfAUS9m3USa+qzKyEYvPzOZgznrKO6wmVaS1ohDdtx6/W5Jkwx6GsrrMwJdoq3Oij0Q2/05q7iQQOQrDKYrNg+dZ9AlwjUP/pCQmsv17aiYqmwnptfY938g1N6ly2t7G0cUdREa7ycGeTtZVsZR/F1rL8deAJAsTr9sll5iOThCraEE2x4liKh/foHH4OH1W/ae7g2GgdIp+IxW66/FOYX1XYIhZhUIq2fc9lUz//uAOZ8aOF/FUozLhA41XICEe2T0/X2ej59Rb62w9rn8PNk62/YaWA9QbFaGX8i2hSwDrELO27r1gYiePA6aLGWngfXQALIf4y/lwH+mv5Ce/nKFtb4umOTAWtxrKfa3l4gA9aKftdusqgxX6iFVxj1sXwnIvbaCH7AIHccl7xUyc9q0="
 
-
 matrix:
-  fast_finish: true
   include:
     - php: 5.6
       env:
+        - DEPS=lowest
+    - php: 5.6
+      env:
+        - DEPS=locked
+        - TEST_COVERAGE=true
         - DEPLOY_DOCS="$(if [[ $TRAVIS_BRANCH == 'master' && $TRAVIS_PULL_REQUEST == 'false' ]]; then echo -n 'true' ; else echo -n 'false' ; fi)"
         - PATH="$HOME/.local/bin:$PATH"
+    - php: 5.6
+      env:
+        - DEPS=latest
     - php: 7
       env:
+        - DEPS=lowest
+    - php: 7
+      env:
+        - DEPS=locked
         - CS_CHECK=true
+    - php: 7
+      env:
+        - DEPS=latest
+    - php: 7.1
+      env:
+        - DEPS=lowest
+    - php: 7.1
+      env:
+        - DEPS=locked
+    - php: 7.1
+      env:
+        - DEPS=latest
     - php: hhvm
+      env:
+        - DEPS=lowest
+    - php: hhvm
+      env:
+        - DEPS=locked
+    - php: hhvm
+      env:
+        - DEPS=latest
   allow_failures:
     - php: hhvm
 
 before_install:
   - if [[ $TEST_COVERAGE != 'true' ]]; then phpenv config-rm xdebug.ini || return 0 ; fi
-  - composer self-update
+  - travis_retry composer self-update
 
 install:
-  - travis_retry composer install --no-interaction
-  - composer info -i
+  - if [[ $TEST_COVERAGE == 'true' ]]; then travis_retry composer require --dev $COMPOSER_ARGS $COVERAGE_DEPS ; fi
+  - if [[ $DEPS == 'latest' ]]; then travis_retry composer update $COMPOSER_ARGS ; fi
+  - if [[ $DEPS == 'lowest' ]]; then travis_retry composer update --prefer-lowest --prefer-stable $COMPOSER_ARGS ; fi
+  - travis_retry composer install $COMPOSER_ARGS
+  - composer show
 
 script:
-  - if [[ $TEST_COVERAGE == 'true' ]]; then composer test-coverage ; fi
-  - if [[ $TEST_COVERAGE != 'true' ]]; then composer test ; fi
-  - if [[ $CS_CHECK == 'true' ]]; then composer cs ; fi
+  - if [[ $TEST_COVERAGE == 'true' ]]; then composer test-coverage ; else composer test ; fi
+  - if [[ $CS_CHECK == 'true' ]]; then composer cs-check ; fi
+  - if [[ $CS_CHECK == 'true' ]]; then composer license-check ; fi
   - if [[ $DEPLOY_DOCS == "true" && "$TRAVIS_TEST_RESULT" == "0" ]]; then wget -O theme-installer.sh "https://raw.githubusercontent.com/zendframework/zf-mkdoc-theme/master/theme-installer.sh" ; chmod 755 theme-installer.sh ; ./theme-installer.sh ; fi
+
+after_script:
+  - if [[ $TEST_COVERAGE == 'true' ]]; then composer upload-coverage ; fi
 
 after_success:
   - if [[ $DEPLOY_DOCS == "true" ]]; then echo "Preparing to build and deploy documentation" ; ./zf-mkdoc-theme/deploy.sh ; echo "Completed deploying documentation" ; fi
 
-after_script:
-- if [[ $TEST_COVERAGE == 'true' ]]; then composer coveralls ; fi
-
 notifications:
-  email: true
+  irc: "irc.freenode.org#zftalk.dev"
+  email: false
