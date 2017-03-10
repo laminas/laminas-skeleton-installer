@@ -1,13 +1,13 @@
 <?php
 /**
- * @link      http://github.com/zendframework/zend-skeleton-installer for the canonical source repository
- * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/zendframework/zend-skeleton-installer for the canonical source repository
+ * @copyright Copyright (c) 2005-2017 Zend Technologies USA Inc. (http://www.zend.com)
+ * @license   https://github.com/zendframework/zend-skeleton-installer/blob/master/LICENSE.md New BSD License
  */
 
 namespace ZendTest\SkeletonInstaller;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 use Zend\SkeletonInstaller\OptionalPackage;
 
 class OptionalPackageTest extends TestCase
@@ -42,6 +42,9 @@ class OptionalPackageTest extends TestCase
 
     /**
      * @dataProvider booleanOptions
+     *
+     * @param mixed $option
+     * @param bool $expected
      */
     public function testCastsDevOptionsToBooleans($option, $expected)
     {
@@ -68,6 +71,9 @@ class OptionalPackageTest extends TestCase
 
     /**
      * @dataProvider booleanOptions
+     *
+     * @param mixed $option
+     * @param bool $expected
      */
     public function testCastsModuleOptionsToBooleans($option, $expected)
     {
@@ -100,8 +106,11 @@ class OptionalPackageTest extends TestCase
 
     /**
      * @dataProvider specifications
+     *
+     * @param array $specification
+     * @param bool $expected
      */
-    public function testCanValidateSpecifications($specification, $expected)
+    public function testCanValidateSpecifications(array $specification, $expected)
     {
         $this->assertSame($expected, OptionalPackage::isValidSpec($specification));
     }

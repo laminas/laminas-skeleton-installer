@@ -4,3 +4,4 @@ zf-mkdoc-theme/
 clover.xml
 coveralls-upload.json
 zf-mkdoc-theme.tgz
+phpunit.xml
