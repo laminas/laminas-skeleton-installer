@@ -12,7 +12,7 @@
         "composer/composer": "^1.4.1",
         "malukenho/docheader": "^0.1.5",
         "mikey179/vfsStream": "^1.6.4",
-        "phpunit/phpunit": "^6.0.8 || ^5.7.15",
+        "phpunit/phpunit": "^5.7.27 || ^6.5.8 || ^7.1.4",
         "zendframework/zend-coding-standard": "~1.0.0"
     },
     "extra": {
