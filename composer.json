@@ -3,23 +3,30 @@
     "description": "Installer plugin for Zend Framework skeleton application",
     "type": "composer-plugin",
     "license": "BSD-3-Clause",
+    "keywords": [
+        "zf",
+        "zendframework",
+        "skeleton-installer"
+    ],
+    "support": {
+        "docs": "https://docs.zendframework.com/zend-skeleton-installer/",
+        "issues": "https://github.com/zendframework/zend-skeleton-installer/issues",
+        "source": "https://github.com/zendframework/zend-skeleton-installer",
+        "rss": "https://github.com/zendframework/zend-skeleton-installer/releases.atom",
+        "chat": "https://zendframework-slack.herokuapp.com",
+        "forum": "https://discourse.zendframework.com/c/questions/components"
+    },
     "require": {
-        "php" : "^5.6 || ^7.0",
+        "php": "^5.6 || ^7.0",
         "composer-plugin-api": "^1.0",
-        "zendframework/zend-component-installer": "^1.0 || ^0.7 || ^1.0.0-dev@dev"
+        "zendframework/zend-component-installer": "^1.0"
     },
     "require-dev": {
         "composer/composer": "^1.4.1",
-        "malukenho/docheader": "^0.1.5",
-        "mikey179/vfsStream": "^1.6.4",
+        "malukenho/docheader": "^0.1.7",
+        "mikey179/vfsStream": "^1.6.5",
         "phpunit/phpunit": "^5.7.27 || ^6.5.8 || ^7.1.4",
         "zendframework/zend-coding-standard": "~1.0.0"
-    },
-    "extra": {
-        "class": "Zend\\SkeletonInstaller\\Plugin",
-        "branch-alias": {
-            "dev-master": "1.0-dev"
-        }
     },
     "autoload": {
         "psr-4": {
@@ -31,17 +38,25 @@
             "ZendTest\\SkeletonInstaller\\": "test/"
         }
     },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "class": "Zend\\SkeletonInstaller\\Plugin",
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    },
     "scripts": {
         "check": [
             "@license-check",
             "@cs-check",
             "@test"
         ],
-        "upload-coverage": "coveralls -v",
-        "cs-check": "phpcs --colors",
-        "cs-fix": "phpcbf --colors",
-        "license-check": "docheader check src/ test/",
+        "cs-check": "phpcs",
+        "cs-fix": "phpcbf",
         "test": "phpunit --colors=always",
-        "test-coverage": "phpunit --coverage-clover clover.xml"
+        "test-coverage": "phpunit --colors=always --coverage-clover clover.xml",
+        "license-check": "docheader check src/ test/"
     }
 }
