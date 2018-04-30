@@ -2,9 +2,13 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 0.1.5 - TBD
+## 0.1.5 - 2018-04-30
 
 ### Added
+
+- [#12](https://github.com/zendframework/zend-skeleton-installer/pull/12) adds support for PHP 7.2.
+
+### Changed
 
 - Nothing.
 
@@ -14,7 +18,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Removed
 
-- Nothing.
+- [#12](https://github.com/zendframework/zend-skeleton-installer/pull/12) removes support for HHVM.
 
 ### Fixed
 
