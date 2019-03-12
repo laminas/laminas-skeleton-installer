@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 0.1.6 - TBD
+
+### Added
+
+- [#13](https://github.com/zendframework/zend-skeleton-installer/pull/13) adds support for PHP 7.3.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
 ## 0.1.5 - 2018-04-30
 
 ### Added
