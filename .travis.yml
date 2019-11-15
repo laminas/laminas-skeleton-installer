@@ -17,7 +17,7 @@ matrix:
     - php: 5.6
       env:
         - DEPS=locked
-        - LEGACY_DEPS="phpunit/phpunit symfony/console symfony/filesystem symfony/finder symfony/process"
+        - LEGACY_DEPS="phpunit/phpunit symfony/console symfony/filesystem symfony/finder symfony/process zendframework/zend-component-installer"
     - php: 5.6
       env:
         - DEPS=latest
@@ -27,7 +27,7 @@ matrix:
     - php: 7
       env:
         - DEPS=locked
-        - LEGACY_DEPS="phpunit/phpunit symfony/console symfony/filesystem symfony/finder symfony/process"
+        - LEGACY_DEPS="phpunit/phpunit symfony/console symfony/filesystem symfony/finder symfony/process zendframework/zend-component-installer"
     - php: 7
       env:
         - DEPS=latest
