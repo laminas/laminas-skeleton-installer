@@ -1,28 +1,22 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-skeleton-installer for the canonical source repository
- * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (https://www.zend.com)
+ * @copyright Copyright (c) 2005-2019 Zend Technologies USA Inc. (https://www.zend.com)
  * @license   https://github.com/zendframework/zend-skeleton-installer/blob/master/LICENSE.md New BSD License
  */
 
 namespace Zend\SkeletonInstaller;
 
 use Composer\Composer;
-use Composer\DependencyResolver\Operation\InstallOperation;
 use Composer\Installer;
-use Composer\Installer\PackageEvent;
 use Composer\IO\IOInterface;
 use Composer\Package\Link;
-use Composer\Package\PackageInterface;
 use Composer\Package\RootPackageInterface;
-use Composer\Repository\RepositoryInterface;
-use Composer\Repository\RepositoryManager;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ProphecyInterface;
 use ReflectionProperty;
-use Zend\ComponentInstaller\ComponentInstaller;
 
 class OptionalPackagesInstallerTest extends TestCase
 {
@@ -81,7 +75,7 @@ class OptionalPackagesInstallerTest extends TestCase
     protected function setUpComposerInstaller(array $expectedPackages, $expectedReturn = 0)
     {
         $installer = $this->prophesize(Installer::class);
-        $installer->disablePlugins()->shouldBeCalled();
+        $installer->setDevMode(true)->shouldBeCalled();
         $installer->setUpdate()->shouldBeCalled();
         $installer->setUpdateWhitelist($expectedPackages)->shouldBeCalled();
         $installer->run()->willReturn($expectedReturn);
@@ -90,40 +84,6 @@ class OptionalPackagesInstallerTest extends TestCase
         $r->setAccessible(true);
         $r->setValue($this->installer, function () use ($installer) {
             return $installer->reveal();
-        });
-    }
-
-    protected function setUpApplicationConfig(array $packages)
-    {
-        $componentInstaller = $this->prophesize(ComponentInstaller::class);
-        $componentInstaller->activate($this->composer->reveal(), $this->io->reveal())->shouldBeCalled();
-        $localRepository = $this->prophesize(RepositoryInterface::class);
-
-        foreach ($packages as $name => $constraint) {
-            $package = $this->prophesize(PackageInterface::class)->reveal();
-            $localRepository->findPackage($name, $constraint)->willReturn($package);
-            $componentInstaller->onPostPackageInstall(Argument::that(function ($arg) use ($package) {
-                if (! $arg instanceof PackageEvent) {
-                    return false;
-                }
-
-                $operation = $arg->getOperation();
-                if (! $operation instanceof InstallOperation) {
-                    return false;
-                }
-
-                return $package === $operation->getPackage();
-            }))->shouldBeCalled();
-        }
-
-        $repoManager = $this->prophesize(RepositoryManager::class);
-        $repoManager->getLocalRepository()->willReturn($localRepository->reveal());
-        $this->composer->getRepositoryManager()->willReturn($repoManager->reveal());
-
-        $r = new ReflectionProperty($this->installer, 'componentInstallerFactory');
-        $r->setAccessible(true);
-        $r->setValue($this->installer, function () use ($componentInstaller) {
-            return $componentInstaller->reveal();
         });
     }
 
@@ -352,9 +312,6 @@ class OptionalPackagesInstallerTest extends TestCase
 
         $this->setUpComposerJson();
         $this->io->write(Argument::containingString('Updating composer.json'))->shouldBeCalled();
-
-        $this->setUpApplicationConfig(['zendframework/zend-db' => '^2.5']);
-        $this->io->write(Argument::containingString('Updating application configuration'))->shouldBeCalled();
 
         $installer = $this->installer;
         $this->assertNull($installer());

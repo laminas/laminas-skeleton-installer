@@ -1,26 +1,18 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-skeleton-installer for the canonical source repository
- * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (https://www.zend.com)
+ * @copyright Copyright (c) 2005-2019 Zend Technologies USA Inc. (https://www.zend.com)
  * @license   https://github.com/zendframework/zend-skeleton-installer/blob/master/LICENSE.md New BSD License
  */
 
 namespace Zend\SkeletonInstaller;
 
 use Composer\Composer;
-use Composer\DependencyResolver\DefaultPolicy;
-use Composer\DependencyResolver\Operation\InstallOperation;
-use Composer\DependencyResolver\Pool;
-use Composer\DependencyResolver\Request;
-use Composer\EventDispatcher\EventDispatcher;
 use Composer\Installer as ComposerInstaller;
-use Composer\Installer\PackageEvent;
 use Composer\IO\IOInterface;
 use Composer\Package\Link;
 use Composer\Package\RootPackageInterface;
 use Composer\Package\Version\VersionParser;
-use Composer\Repository\CompositeRepository;
-use Zend\ComponentInstaller\ComponentInstaller;
 
 /**
  * Prompt for and install optional packages.
@@ -28,11 +20,6 @@ use Zend\ComponentInstaller\ComponentInstaller;
 class OptionalPackagesInstaller
 {
     use ComposerJsonRetrievalTrait;
-
-    /**
-     * @var callable Factory for creating a ComponentInstaller instance.
-     */
-    private $componentInstallerFactory = [OptionalPackagesInstaller::class, 'createComponentInstaller'];
 
     /**
      * @var Composer
@@ -121,9 +108,6 @@ class OptionalPackagesInstaller
 
         // Update the composer.json
         $this->updateComposerJson($packagesToInstall);
-
-        // Update application configuration
-        $this->updateApplicationConfiguration($packagesToInstall);
     }
 
     /**
@@ -236,6 +220,9 @@ class OptionalPackagesInstaller
             return $this->updateComposerRequirement($composer, $package);
         }, $composerJson->read());
         unset($json['extra']['zend-skeleton-installer']);
+        if (empty($json['extra'])) {
+            unset($json['extra']);
+        }
         $composerJson->write($json);
     }
 
@@ -314,6 +301,7 @@ class OptionalPackagesInstaller
     {
         $this->io->write('<info>    Running an update to install optional packages</info>');
 
+        /** @var ComposerInstaller $installer */
         $installer = call_user_func(
             $this->installerFactory,
             $this->composer,
@@ -321,7 +309,7 @@ class OptionalPackagesInstaller
             $package
         );
 
-        $installer->disablePlugins();
+        $installer->setDevMode(true);
         $installer->setUpdate();
         $installer->setUpdateWhitelist(
             $packagesToInstall->map(function ($package) {
@@ -346,7 +334,13 @@ class OptionalPackagesInstaller
      */
     private static function createInstaller(Composer $composer, IOInterface $io, RootPackageInterface $package)
     {
-        $eventDispatcher = new EventDispatcher($composer, $io);
+        $eventDispatcher = new BroadcastEventDispatcher(
+            $composer,
+            $io,
+            null,
+            $composer->getEventDispatcher(),
+            ['post-package-install']
+        );
 
         return new ComposerInstaller(
             $io,
@@ -359,75 +353,5 @@ class OptionalPackagesInstaller
             $eventDispatcher,
             $composer->getAutoloadGenerator()
         );
-    }
-
-    /**
-     * Update application configuration.
-     *
-     * For each package to install, creates a new PackageEvent with relevant
-     * details and passes it to the ComponentInstaller::onPostPackageInstall
-     * event handler in order to update the application configuration.
-     *
-     * @param Collection $packagesToInstall
-     * @return void
-     */
-    private function updateApplicationConfiguration(Collection $packagesToInstall)
-    {
-        $this->io->write('<info>Updating application configuration...</info>');
-
-        // Initialize the ComponentInstaller
-        $componentInstaller = call_user_func($this->componentInstallerFactory);
-        $componentInstaller->activate($this->composer, $this->io);
-
-        // Grab the local repository so we can do package lookups
-        $localRepository = $this->composer->getRepositoryManager()->getLocalRepository();
-
-        // Empty stubs for the PackageEvent
-        $policy = new DefaultPolicy();
-        $pool = new Pool();
-        $compositeRepository = new CompositeRepository([]);
-        $request = new Request();
-
-        $packagesToInstall->each(function ($optionalPackage) use (
-            $componentInstaller,
-            $localRepository,
-            $policy,
-            $pool,
-            $compositeRepository,
-            $request
-        ) {
-            // Lookup the package
-            $package = $localRepository->findPackage($optionalPackage->getName(), $optionalPackage->getConstraint());
-
-            if (! $package) {
-                return;
-            }
-
-            // Install application configuration
-            $componentInstaller->onPostPackageInstall(new PackageEvent(
-                'post-package-install',
-                $this->composer,
-                $this->io,
-                true,
-                $policy,
-                $pool,
-                $compositeRepository,
-                $request,
-                [],
-                new InstallOperation($package)
-            ));
-        });
-    }
-
-    /**
-     * Create and return a ComponentInstaller instance.
-     *
-     * Allows slipstreaming a mock into the instance when required.
-     *
-     * @return ComponentInstaller
-     */
-    private static function createComponentInstaller()
-    {
-        return new ComponentInstaller();
     }
 }
