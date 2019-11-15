@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 0.1.7 - 2019-11-15
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#15](https://github.com/zendframework/zend-skeleton-installer/pull/15) fixes an issue whereby nested dependencies of optional packages selected during installation were not having their modules or components injected in the application configuration.
+
 ## 0.1.6 - 2019-06-18
 
 ### Added
