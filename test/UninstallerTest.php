@@ -1,11 +1,12 @@
 <?php
+
 /**
- * @link      http://github.com/zendframework/zend-skeleton-installer for the canonical source repository
- * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/laminas/laminas-skeleton-installer for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-skeleton-installer/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-skeleton-installer/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\SkeletonInstaller;
+namespace LaminasTest\SkeletonInstaller;
 
 use Composer\Composer;
 use Composer\DependencyResolver\Operation\UninstallOperation;
@@ -15,12 +16,12 @@ use Composer\IO\IOInterface;
 use Composer\Package\PackageInterface;
 use Composer\Repository\RepositoryInterface;
 use Composer\Repository\RepositoryManager;
+use Laminas\SkeletonInstaller\Uninstaller;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit_Framework_TestCase as TestCase;
 use Prophecy\Argument;
 use ReflectionProperty;
-use Zend\SkeletonInstaller\Uninstaller;
 
 class UninstallerTest extends TestCase
 {
@@ -33,9 +34,9 @@ class UninstallerTest extends TestCase
     protected function setUpIo()
     {
         $io = $this->prophesize(IOInterface::class);
-        $io->write('<info>Removing zendframework/zend-skeleton-installer...</info>')->shouldBeCalled();
+        $io->write('<info>Removing laminas/laminas-skeleton-installer...</info>')->shouldBeCalled();
         $io->write('<info>    Package not installed; nothing to do.</info>')->shouldNotBeCalled();
-        $io->write('<info>    Removed plugin zendframework/zend-skeleton-installer.</info>')->shouldBeCalled();
+        $io->write('<info>    Removed plugin laminas/laminas-skeleton-installer.</info>')->shouldBeCalled();
         $io->write('<info>    Removing from composer.json</info>')->shouldBeCalled();
         $io->write('<info>    Complete!</info>')->shouldBeCalled();
         return $io;
@@ -89,7 +90,7 @@ class UninstallerTest extends TestCase
             'type' => 'project',
             'description' => 'This is a test project',
             'require' => [
-                'zendframework/zend-skeleton-installer' => '^1.0.0-dev@dev',
+                'laminas/laminas-skeleton-installer' => '^1.0.0-dev@dev',
             ],
         ]);
     }
@@ -102,6 +103,6 @@ class UninstallerTest extends TestCase
         $uninstaller();
 
         $composer = json_decode(file_get_contents(vfsStream::url('project/composer.json')), true);
-        $this->assertFalse(isset($composer['require']['zend-skeleton-installer']));
+        $this->assertFalse(isset($composer['require']['laminas-skeleton-installer']));
     }
 }

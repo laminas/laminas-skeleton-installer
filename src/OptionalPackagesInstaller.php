@@ -1,11 +1,12 @@
 <?php
+
 /**
- * @link      http://github.com/zendframework/zend-skeleton-installer for the canonical source repository
- * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
+ * @see       https://github.com/laminas/laminas-skeleton-installer for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-skeleton-installer/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-skeleton-installer/blob/master/LICENSE.md New BSD License
  */
 
-namespace Zend\SkeletonInstaller;
+namespace Laminas\SkeletonInstaller;
 
 use Composer\Composer;
 use Composer\DependencyResolver\DefaultPolicy;
@@ -21,7 +22,7 @@ use Composer\Package\PackageInterface;
 use Composer\Package\Version\VersionParser;
 use Composer\Repository\CompositeRepository;
 use Composer\Script\PackageEvent;
-use Zend\ComponentInstaller\ComponentInstaller;
+use Laminas\ComponentInstaller\ComponentInstaller;
 
 /**
  * Prompt for and install optional packages.
@@ -130,7 +131,7 @@ class OptionalPackagesInstaller
     /**
      * Retrieve list of optional dependencies.
      *
-     * Looks for a extra.zend-skeleton-installer key with an array value,
+     * Looks for a extra.laminas-skeleton-installer key with an array value,
      * returning it if found, or an empty array otherwise.
      *
      * @return array
@@ -140,6 +141,11 @@ class OptionalPackagesInstaller
         $package = $this->composer->getPackage();
         $extra = $package->getExtra();
 
+        if (isset($extra['laminas-skeleton-installer']) && is_array($extra['laminas-skeleton-installer'])) {
+            return $extra['laminas-skeleton-installer'];
+        }
+
+        // supports legacy "extra.zend-skeleton-installer" configuration
         return isset($extra['zend-skeleton-installer']) && is_array($extra['zend-skeleton-installer'])
             ? $extra['zend-skeleton-installer']
             : [];
@@ -225,7 +231,7 @@ class OptionalPackagesInstaller
      * Update the composer.json definition.
      *
      * Adds all packages to the appropriate require or require-dev sections of
-     * the composer.json, and removes the extra.zend-skeleton-installer node.
+     * the composer.json, and removes the extra.laminas-skeleton-installer node.
      *
      * @param Collection $packagesToInstall
      */
@@ -236,7 +242,7 @@ class OptionalPackagesInstaller
         $json = $packagesToInstall->reduce(function ($composer, $package) {
             return $this->updateComposerRequirement($composer, $package);
         }, $composerJson->read());
-        unset($json['extra']['zend-skeleton-installer']);
+        unset($json['extra']['laminas-skeleton-installer'], $json['extra']['zend-skeleton-installer']);
         $composerJson->write($json);
     }
 
