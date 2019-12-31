@@ -1,50 +1,51 @@
 {
-    "name": "zendframework/zend-skeleton-installer",
-    "description": "Installer plugin for Zend Framework skeleton application",
+    "name": "laminas/laminas-skeleton-installer",
+    "description": "Installer plugin for Laminas skeleton application",
     "type": "composer-plugin",
     "license": "BSD-3-Clause",
     "keywords": [
-        "zf",
-        "zendframework",
+        "laminas",
         "skeleton-installer"
     ],
+    "homepage": "https://laminas.dev",
     "support": {
-        "docs": "https://docs.zendframework.com/zend-skeleton-installer/",
-        "issues": "https://github.com/zendframework/zend-skeleton-installer/issues",
-        "source": "https://github.com/zendframework/zend-skeleton-installer",
-        "rss": "https://github.com/zendframework/zend-skeleton-installer/releases.atom",
-        "chat": "https://zendframework-slack.herokuapp.com",
-        "forum": "https://discourse.zendframework.com/c/questions/components"
-    },
-    "require": {
-        "php": "^5.6 || ^7.0",
-        "composer-plugin-api": "^1.0",
-        "zendframework/zend-component-installer": "^1.0 || ^2.1.2"
-    },
-    "require-dev": {
-        "composer/composer": "^1.4.1",
-        "malukenho/docheader": "^0.1.7",
-        "mikey179/vfsstream": "^1.6.7",
-        "phpunit/phpunit": "^5.7.27 || ^6.5.8 || ^7.1.4",
-        "zendframework/zend-coding-standard": "~1.0.0"
-    },
-    "autoload": {
-        "psr-4": {
-            "Zend\\SkeletonInstaller\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "ZendTest\\SkeletonInstaller\\": "test/"
-        }
+        "docs": "https://docs.laminas.dev/laminas-skeleton-installer/",
+        "issues": "https://github.com/laminas/laminas-skeleton-installer/issues",
+        "source": "https://github.com/laminas/laminas-skeleton-installer",
+        "rss": "https://github.com/laminas/laminas-skeleton-installer/releases.atom",
+        "chat": "https://laminas.dev/chat",
+        "forum": "https://discourse.laminas.dev"
     },
     "config": {
         "sort-packages": true
     },
     "extra": {
-        "class": "Zend\\SkeletonInstaller\\Plugin",
         "branch-alias": {
             "dev-master": "1.0.x-dev"
+        },
+        "class": "Laminas\\SkeletonInstaller\\Plugin"
+    },
+    "require": {
+        "php": "^5.6 || ^7.0",
+        "composer-plugin-api": "^1.0",
+        "laminas/laminas-component-installer": "^1.0 || ^2.1.2",
+        "laminas/laminas-zendframework-bridge": "^1.0"
+    },
+    "require-dev": {
+        "composer/composer": "^1.4.1",
+        "laminas/laminas-coding-standard": "~1.0.0",
+        "malukenho/docheader": "^0.1.7",
+        "mikey179/vfsstream": "^1.6.7",
+        "phpunit/phpunit": "^5.7.27 || ^6.5.8 || ^7.1.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "Laminas\\SkeletonInstaller\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "LaminasTest\\SkeletonInstaller\\": "test/"
         }
     },
     "scripts": {
@@ -58,5 +59,8 @@
         "test": "phpunit --colors=always",
         "test-coverage": "phpunit --colors=always --coverage-clover clover.xml",
         "license-check": "docheader check src/ test/"
+    },
+    "replace": {
+        "zendframework/zend-skeleton-installer": "self.version"
     }
 }
