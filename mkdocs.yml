@@ -5,3 +5,6 @@ nav:
 site_name: laminas-skeleton-installer
 site_description: 'Skeleton Installer: Composer plugin for initial LaminasSkeletonApplication installation'
 repo_url: 'https://github.com/laminas/laminas-skeleton-installer'
+extra:
+    project: Components
+    project_url: 'https://docs.laminas.dev'
