@@ -1,11 +1,12 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-skeleton-installer for the canonical source repository
- * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (https://www.zend.com)
- * @license   https://github.com/zendframework/zend-skeleton-installer/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/laminas/laminas-skeleton-installer for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-skeleton-installer/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-skeleton-installer/blob/master/LICENSE.md New BSD License
  */
 
-namespace Zend\SkeletonInstaller;
+namespace Laminas\SkeletonInstaller;
 
 use Composer\Composer;
 use Composer\DependencyResolver\Operation\UninstallOperation;
@@ -24,7 +25,7 @@ class Uninstaller
 {
     use ComposerJsonRetrievalTrait;
 
-    const PLUGIN_NAME = 'zendframework/zend-skeleton-installer';
+    const PLUGIN_NAME = 'laminas/laminas-skeleton-installer';
 
     /**
      * @var Composer
@@ -131,7 +132,7 @@ class Uninstaller
         );
 
         if (! $result) {
-            $this->io->write('<error>Unable to update lock file after removal of zend-skeleton-installer</error>');
+            $this->io->write('<error>Unable to update lock file after removal of laminas-skeleton-installer</error>');
         }
     }
 }

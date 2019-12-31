@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- [#12](https://github.com/zendframework/zend-skeleton-installer/pull/12) adds support for PHP 7.2.
+- [zendframework/zend-skeleton-installer#12](https://github.com/zendframework/zend-skeleton-installer/pull/12) adds support for PHP 7.2.
 
 ### Changed
 
@@ -18,7 +18,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Removed
 
-- [#12](https://github.com/zendframework/zend-skeleton-installer/pull/12) removes support for HHVM.
+- [zendframework/zend-skeleton-installer#12](https://github.com/zendframework/zend-skeleton-installer/pull/12) removes support for HHVM.
 
 ### Fixed
 
@@ -32,8 +32,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Changed
 
-- [#7](https://github.com/zendframework/zend-skeleton-installer/pull/7) updates
-  the minimum accepted zend-component-installer version to 0.7.
+- [zendframework/zend-skeleton-installer#7](https://github.com/zendframework/zend-skeleton-installer/pull/7) updates
+  the minimum accepted laminas-component-installer version to 0.7.
 
 ### Deprecated
 
@@ -63,8 +63,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- [#4](https://github.com/zendframework/zend-skeleton-installer/pull/4) updates
-  the minimum accepted zend-component-installer version to 0.3.
+- [zendframework/zend-skeleton-installer#4](https://github.com/zendframework/zend-skeleton-installer/pull/4) updates
+  the minimum accepted laminas-component-installer version to 0.3.
 
 ## 0.1.2 - 2016-06-02
 
@@ -82,7 +82,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Allows using zend-component-installer `^0.2` stable versions.
+- Allows using laminas-component-installer `^0.2` stable versions.
 
 ## 0.1.1 - 2016-06-02
 
@@ -100,7 +100,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- [#2](https://github.com/zendframework/zend-skeleton-installer/pull/2) updates
+- [zendframework/zend-skeleton-installer#2](https://github.com/zendframework/zend-skeleton-installer/pull/2) updates
   the `Uninstaller` to ensure it also updates the `composer.lock` when complete.
 
 ## 0.1.0 - 2016-05-23
