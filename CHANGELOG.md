@@ -18,7 +18,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- [#2](https://github.com/zendframework/zend-skeleton-installer/pull/2) updates
+- [zendframework/zend-skeleton-installer#2](https://github.com/zendframework/zend-skeleton-installer/pull/2) updates
   the `Uninstaller` to ensure it also updates the `composer.lock` when complete.
 
 ## 0.1.0 - 2016-05-23
