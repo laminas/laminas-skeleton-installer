@@ -1,11 +1,12 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-skeleton-installer for the canonical source repository
- * @copyright Copyright (c) 2005-2017 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   https://github.com/zendframework/zend-skeleton-installer/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/laminas/laminas-skeleton-installer for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-skeleton-installer/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-skeleton-installer/blob/master/LICENSE.md New BSD License
  */
 
-namespace Zend\SkeletonInstaller;
+namespace Laminas\SkeletonInstaller;
 
 use Composer\Composer;
 use Composer\DependencyResolver\Operation\InstallOperation;
@@ -17,12 +18,12 @@ use Composer\Package\PackageInterface;
 use Composer\Package\RootPackageInterface;
 use Composer\Repository\RepositoryInterface;
 use Composer\Repository\RepositoryManager;
+use Laminas\ComponentInstaller\ComponentInstaller;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
 use Prophecy\Prophecy\ProphecyInterface;
 use ReflectionProperty;
-use Zend\ComponentInstaller\ComponentInstaller;
 
 class OptionalPackagesInstallerTest extends TestCase
 {
@@ -73,7 +74,7 @@ class OptionalPackagesInstallerTest extends TestCase
             'type' => 'project',
             'description' => 'This is a test project',
             'require' => [
-                'zendframework/zend-skeleton-installer' => '^1.0.0-dev@dev',
+                'laminas/laminas-skeleton-installer' => '^1.0.0-dev@dev',
             ],
         ];
     }
@@ -143,9 +144,9 @@ class OptionalPackagesInstallerTest extends TestCase
     {
         $package = $this->prophesize(RootPackageInterface::class);
         $package->getExtra()->willReturn([
-            'zend-skeleton-installer' => [
+            'laminas-skeleton-installer' => [
                 [
-                    'name'       => 'zendframework/zend-db',
+                    'name'       => 'laminas/laminas-db',
                     'constraint' => '^2.5',
                     'prompt'     => 'This is a prompt',
                     'module'     => true,
@@ -171,16 +172,16 @@ class OptionalPackagesInstallerTest extends TestCase
 
         $json = file_get_contents(vfsStream::url('project/composer.json'));
         $composer = json_decode($json, true);
-        $this->assertFalse(isset($composer['extra']['zend-skeleton-installer']));
+        $this->assertFalse(isset($composer['extra']['laminas-skeleton-installer']));
     }
 
     public function testChoosingNoOptionalPackagesDuringPromptsSkipsInstallation()
     {
         $package = $this->prophesize(RootPackageInterface::class);
         $package->getExtra()->willReturn([
-            'zend-skeleton-installer' => [
+            'laminas-skeleton-installer' => [
                 [
-                    'name'       => 'zendframework/zend-db',
+                    'name'       => 'laminas/laminas-db',
                     'constraint' => '^2.5',
                     'prompt'     => 'This is a prompt',
                     'module'     => true,
@@ -217,16 +218,16 @@ class OptionalPackagesInstallerTest extends TestCase
 
         $json = file_get_contents(vfsStream::url('project/composer.json'));
         $composer = json_decode($json, true);
-        $this->assertFalse(isset($composer['extra']['zend-skeleton-installer']));
+        $this->assertFalse(isset($composer['extra']['laminas-skeleton-installer']));
     }
 
     public function testInstallerFailureShouldLeaveOptionalPackagesIntact()
     {
         $package = $this->prophesize(RootPackageInterface::class);
         $package->getExtra()->willReturn([
-            'zend-skeleton-installer' => [
+            'laminas-skeleton-installer' => [
                 [
-                    'name'       => 'zendframework/zend-db',
+                    'name'       => 'laminas/laminas-db',
                     'constraint' => '^2.5',
                     'prompt'     => 'This is a prompt',
                     'module'     => true,
@@ -252,7 +253,7 @@ class OptionalPackagesInstallerTest extends TestCase
                 && (false !== strpos($prompt, 'y/N'));
         }), 'n')->willReturn('y');
 
-        $this->io->write(Argument::containingString('Will install zendframework/zend-db'))->shouldBeCalled();
+        $this->io->write(Argument::containingString('Will install laminas/laminas-db'))->shouldBeCalled();
         $this->io->write(Argument::containingString(
             'When prompted to install as a module, select application.config.php or modules.config.php'
         ))->shouldBeCalled();
@@ -265,18 +266,18 @@ class OptionalPackagesInstallerTest extends TestCase
                 return false;
             }
 
-            if (! array_key_exists('zendframework/zend-db', $arg)) {
+            if (! array_key_exists('laminas/laminas-db', $arg)) {
                 return false;
             }
 
-            if (! $arg['zendframework/zend-db'] instanceof Link) {
+            if (! $arg['laminas/laminas-db'] instanceof Link) {
                 return false;
             }
 
             return true;
         }))->shouldBeCalled();
 
-        $this->setUpComposerInstaller(['zendframework/zend-db'], 1);
+        $this->setUpComposerInstaller(['laminas/laminas-db'], 1);
 
         $this->io
             ->write(Argument::containingString('Running an update to install optional packages'))
@@ -292,9 +293,9 @@ class OptionalPackagesInstallerTest extends TestCase
     {
         $package = $this->prophesize(RootPackageInterface::class);
         $package->getExtra()->willReturn([
-            'zend-skeleton-installer' => [
+            'laminas-skeleton-installer' => [
                 [
-                    'name'       => 'zendframework/zend-db',
+                    'name'       => 'laminas/laminas-db',
                     'constraint' => '^2.5',
                     'prompt'     => 'This is a prompt',
                     'module'     => true,
@@ -320,7 +321,7 @@ class OptionalPackagesInstallerTest extends TestCase
                 && (false !== strpos($prompt, 'y/N'));
         }), 'n')->willReturn('y');
 
-        $this->io->write(Argument::containingString('Will install zendframework/zend-db'))->shouldBeCalled();
+        $this->io->write(Argument::containingString('Will install laminas/laminas-db'))->shouldBeCalled();
         $this->io->write(Argument::containingString(
             'When prompted to install as a module, select application.config.php or modules.config.php'
         ))->shouldBeCalled();
@@ -333,18 +334,18 @@ class OptionalPackagesInstallerTest extends TestCase
                 return false;
             }
 
-            if (! array_key_exists('zendframework/zend-db', $arg)) {
+            if (! array_key_exists('laminas/laminas-db', $arg)) {
                 return false;
             }
 
-            if (! $arg['zendframework/zend-db'] instanceof Link) {
+            if (! $arg['laminas/laminas-db'] instanceof Link) {
                 return false;
             }
 
             return true;
         }))->shouldBeCalled();
 
-        $this->setUpComposerInstaller(['zendframework/zend-db']);
+        $this->setUpComposerInstaller(['laminas/laminas-db']);
 
         $this->io
             ->write(Argument::containingString('Running an update to install optional packages'))
@@ -353,7 +354,7 @@ class OptionalPackagesInstallerTest extends TestCase
         $this->setUpComposerJson();
         $this->io->write(Argument::containingString('Updating composer.json'))->shouldBeCalled();
 
-        $this->setUpApplicationConfig(['zendframework/zend-db' => '^2.5']);
+        $this->setUpApplicationConfig(['laminas/laminas-db' => '^2.5']);
         $this->io->write(Argument::containingString('Updating application configuration'))->shouldBeCalled();
 
         $installer = $this->installer;
