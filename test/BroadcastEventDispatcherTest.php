@@ -1,17 +1,18 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-skeleton-installer for the canonical source repository
- * @copyright Copyright (c) 2019 Zend Technologies USA Inc. (https://www.zend.com)
- * @license   https://github.com/zendframework/zend-skeleton-installer/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/laminas/laminas-skeleton-installer for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-skeleton-installer/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-skeleton-installer/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\SkeletonInstaller;
+namespace LaminasTest\SkeletonInstaller;
 
 use Composer\Composer;
 use Composer\IO\IOInterface;
+use Laminas\SkeletonInstaller\BroadcastEventDispatcher;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Prophecy\ObjectProphecy;
-use Zend\SkeletonInstaller\BroadcastEventDispatcher;
 
 class BroadcastEventDispatcherTest extends TestCase
 {

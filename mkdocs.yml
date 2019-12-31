@@ -1,8 +1,7 @@
 docs_dir: docs/book
 site_dir: docs/html
-pages:
+nav:
     - index.md
-site_name: zend-skeleton-installer
-site_description: 'Skeleton Installer: Composer plugin for initial ZendSkeletonApplication installation'
-repo_url: 'https://github.com/zendframework/zend-skeleton-installer'
-copyright: 'Copyright (c) 2017-2018 <a href="https://www.zend.com/">Zend Technologies USA Inc.</a>'
+site_name: laminas-skeleton-installer
+site_description: 'Skeleton Installer: Composer plugin for initial LaminasSkeletonApplication installation'
+repo_url: 'https://github.com/laminas/laminas-skeleton-installer'

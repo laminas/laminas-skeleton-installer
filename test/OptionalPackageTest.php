@@ -1,14 +1,15 @@
 <?php
+
 /**
- * @see       https://github.com/zendframework/zend-skeleton-installer for the canonical source repository
- * @copyright Copyright (c) 2005-2018 Zend Technologies USA Inc. (https://www.zend.com)
- * @license   https://github.com/zendframework/zend-skeleton-installer/blob/master/LICENSE.md New BSD License
+ * @see       https://github.com/laminas/laminas-skeleton-installer for the canonical source repository
+ * @copyright https://github.com/laminas/laminas-skeleton-installer/blob/master/COPYRIGHT.md
+ * @license   https://github.com/laminas/laminas-skeleton-installer/blob/master/LICENSE.md New BSD License
  */
 
-namespace ZendTest\SkeletonInstaller;
+namespace LaminasTest\SkeletonInstaller;
 
+use Laminas\SkeletonInstaller\OptionalPackage;
 use PHPUnit\Framework\TestCase;
-use Zend\SkeletonInstaller\OptionalPackage;
 
 class OptionalPackageTest extends TestCase
 {
