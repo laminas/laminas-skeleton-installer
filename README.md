@@ -1,6 +1,6 @@
 # laminas-skeleton-installer
 
-[![Build Status](https://travis-ci.org/laminas/laminas-skeleton-installer.svg?branch=master)](https://travis-ci.org/laminas/laminas-skeleton-installer)
+[![Build Status](https://travis-ci.com/laminas/laminas-skeleton-installer.svg?branch=master)](https://travis-ci.com/laminas/laminas-skeleton-installer)
 [![Coverage Status](https://coveralls.io/repos/github/laminas/laminas-skeleton-installer/badge.svg?branch=master)](https://coveralls.io/github/laminas/laminas-skeleton-installer?branch=master)
 
 laminas-skeleton-installer is a composer plugin for use in the initial install of
