@@ -4,9 +4,9 @@
 [![Coverage Status](https://coveralls.io/repos/github/laminas/laminas-skeleton-installer/badge.svg?branch=master)](https://coveralls.io/github/laminas/laminas-skeleton-installer?branch=master)
 
 laminas-skeleton-installer is a composer plugin for use in the initial install of
-the LaminasSkeletonApplication. It prompts for common requirements, adding packages
-to the composer requirements for each selection, and then uninstalls itself on
-completion.
+the [laminas-mvc-skeleton](https://github.com/laminas/laminas-mvc-skeleton).
+It prompts for common requirements, adding packages to the composer requirements
+for each selection, and then uninstalls itself on completion.
 
 The installer requires [laminas-component-installer](https://docs.laminas.dev/laminas-component-installer/),
 and we recommend requiring that component in your project skeleton as well.
