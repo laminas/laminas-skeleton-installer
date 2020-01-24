@@ -3,7 +3,8 @@ site_dir: docs/html
 nav:
     - Home: index.md
 site_name: laminas-skeleton-installer
-site_description: 'Skeleton Installer: Composer plugin for initial laminas-mvc-skeleton application installation'
+site_description: 'Composer plugin for providing and prompting for optional components in skeleton projects.'
 repo_url: 'https://github.com/laminas/laminas-skeleton-installer'
 extra:
     project: Components
+    show_special_homepage: true
