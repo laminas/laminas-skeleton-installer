@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Skeleton Installer: Composer plugin for initial laminas-mvc-skeleton application installation">  
+    <meta name="description" content="Composer plugin for providing and prompting for optional components in skeleton projects.">  
     <link rel="canonical" href="https://docs.laminas.dev/laminas-skeleton-installer/">
     <link rel="shortcut icon" href="https://docs.laminas.dev/img/trademark-laminas-foundation-rgb.svg">
 
@@ -114,6 +114,28 @@
             <div class="col-md-2 col-sm-12">
                 
                 
+                    
+    
+
+    
+    
+        <div class="toc">
+            <h6 class="toc__headline">On this page</h6>
+            <ul class="toc__list">
+                
+                    <li class="toc__entry">
+                        <a href="#optional-packages" class="toc__link">Optional Packages</a>
+                    </li>
+                
+                    <li class="toc__entry">
+                        <a href="#example" class="toc__link">Example</a>
+                    </li>
+                
+            </ul>
+        </div>
+    
+
+                
             </div>
             <div class="col-md-7 col-sm-12 content" role="main" data-spy="scroll" data-target=".toc">
                 
@@ -135,12 +157,76 @@
 
 
     <h1>laminas-skeleton-installer</h1>
-<p>Skeleton Installer: Composer plugin for initial laminas-mvc-skeleton application installation</p>
+<p>Composer plugin for providing and prompting for optional components in skeleton projects.</p>
 
 
-    <h2>Installation</h2>
-    <h3>Using Composer</h3>
-    <pre><code class="language-bash">$ composer require laminas/laminas-skeleton-installer</code></pre>
+    <h1 id="installation">Installation</h1>
+<pre class=codehilite><code class=language-bash>$ composer require laminas/laminas-skeleton-installer</code></pre>
+<h2 id="optional-packages">Optional Packages</h2>
+<p>To define an optional package, you will add an object under a
+<code>extra.laminas-skeleton-installer</code> array in your <code>composer.json</code>. The
+object <strong>must</strong> contain the following properties:</p>
+<ul>
+<li><strong>name</strong>: the name of the package to install</li>
+<li><strong>constraint</strong>: the package constraint to use</li>
+<li><strong>prompt</strong>: a textual prompt (e.g., "Do you want to install console tooling?"</li>
+</ul>
+<p>You may also define two boolean flags:</p>
+<ul>
+<li><strong>module</strong>: when true, indicates that the component represents a Laminas
+  module. This flag will not dictate whether or not the component installer
+  prompts to install the package as a module, but will affect hints provided by
+  Composer during installation.</li>
+<li><strong>dev</strong>: when true, indicates the package should be installed as a development
+  requirement (<code>require-dev</code>). Additionally, the installer will prompt you to
+  choose a development configuration file in which to install the component if
+  it is a module.</li>
+</ul>
+<h2 id="example">Example</h2>
+<pre class=codehilite><code class=language-json>{
+  &quot;name&quot;: &quot;laminas/laminas-skeleton-application&quot;,
+  &quot;type&quot;: &quot;project&quot;,
+  &quot;require&quot;: {
+    &quot;php&quot;: &quot;^5.6 || ^7.0&quot;,
+    &quot;laminas/laminas-component-installer&quot;: &quot;^1.0 || ^0.7 || ^1.0.0-dev@dev&quot;,
+    &quot;laminas/laminas-skeleton-installer&quot;: &quot;^1.0 || ^0.1.3 || ^1.0.0-dev@dev&quot;,
+    &quot;laminas/laminas-mvc&quot;: &quot;^3.0.4&quot;
+  },
+  &quot;extra&quot;: {
+    &quot;laminas-skeleton-installer&quot;: [
+      {
+        &quot;name&quot;: &quot;laminas/laminas-mvc-console&quot;,
+        &quot;constraint&quot;: &quot;^1.1.11&quot;,
+        &quot;prompt&quot;: &quot;Would you like to install MVC console tooling?&quot;,
+        &quot;module&quot;: true
+      },
+      {
+        &quot;name&quot;: &quot;laminas/laminas-mvc-i18n&quot;,
+        &quot;constraint&quot;: &quot;^1.0&quot;,
+        &quot;prompt&quot;: &quot;Would you like to install i18n support?&quot;,
+        &quot;module&quot;: true
+      },
+      {
+        &quot;name&quot;: &quot;laminas/laminas-test&quot;,
+        &quot;constraint&quot;: &quot;^3.0.2&quot;,
+        &quot;prompt&quot;: &quot;Would you like to install MVC testing support?&quot;,
+        &quot;dev&quot;: true
+      }
+    ]
+  }
+}</code></pre>
+<p>The above will:</p>
+<ul>
+<li>Prompt if you want to do a minimal install; if so, the plugin will remove
+  the <code>extra.laminas-skeleton-installer</code> section on completion, and then delete
+  itself from the installation.</li>
+<li>Prompt for each of the listed components, as noted, awaiting a y/n
+  answer (with "n" as the default).</li>
+<li>Install the selections, updating the <code>composer.json</code>.</li>
+<li>Remove itself from the installation on completion.</li>
+</ul>
+
+    
 
 
 <h2>Support</h2>
@@ -156,6 +242,15 @@
 
 
 
+
+    <div class="help-wanted">
+        <p>
+            Found a mistake or want to contribute to the documentation?
+            <a href="https://github.com/laminas/laminas-skeleton-installer/edit/master/docs/book/index.md" target="_blank" class="help-wanted__link">
+                Edit this page on GitHub!
+            </a>
+        </p>
+    </div>
 
                 
             </div>
@@ -288,5 +383,5 @@
 
 <!--
 MkDocs version : 1.0.4
-Build Date UTC : 2020-01-18 13:46:23
+Build Date UTC : 2020-01-24 12:37:40
 -->
