@@ -61,6 +61,6 @@
         "license-check": "docheader check src/ test/"
     },
     "replace": {
-        "zendframework/zend-skeleton-installer": "self.version"
+        "zendframework/zend-skeleton-installer": "^0.1.7"
     }
 }
