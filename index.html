@@ -216,7 +216,8 @@
 
 
     <h1 id="installation">Installation</h1>
-<pre class=codehilite><code class=language-bash>$ composer require laminas/laminas-skeleton-installer</code></pre>
+<pre class="highlight"><code class="language-bash">$ composer require laminas/laminas-skeleton-installer</code></pre>
+
 <h2 id="optional-packages">Optional Packages</h2>
 <p>To define an optional package, you will add an object under a
 <code>extra.laminas-skeleton-installer</code> array in your <code>composer.json</code>. The
@@ -238,38 +239,39 @@ object <strong>must</strong> contain the following properties:</p>
   it is a module.</li>
 </ul>
 <h2 id="example">Example</h2>
-<pre class=codehilite><code class=language-json>{
-  &quot;name&quot;: &quot;laminas/laminas-skeleton-application&quot;,
-  &quot;type&quot;: &quot;project&quot;,
-  &quot;require&quot;: {
-    &quot;php&quot;: &quot;^5.6 || ^7.0&quot;,
-    &quot;laminas/laminas-component-installer&quot;: &quot;^1.0 || ^0.7 || ^1.0.0-dev@dev&quot;,
-    &quot;laminas/laminas-skeleton-installer&quot;: &quot;^1.0 || ^0.1.3 || ^1.0.0-dev@dev&quot;,
-    &quot;laminas/laminas-mvc&quot;: &quot;^3.0.4&quot;
+<pre class="highlight"><code class="language-json">{
+  "name": "laminas/laminas-skeleton-application",
+  "type": "project",
+  "require": {
+    "php": "^5.6 || ^7.0",
+    "laminas/laminas-component-installer": "^1.0 || ^0.7 || ^1.0.0-dev@dev",
+    "laminas/laminas-skeleton-installer": "^1.0 || ^0.1.3 || ^1.0.0-dev@dev",
+    "laminas/laminas-mvc": "^3.0.4"
   },
-  &quot;extra&quot;: {
-    &quot;laminas-skeleton-installer&quot;: [
+  "extra": {
+    "laminas-skeleton-installer": [
       {
-        &quot;name&quot;: &quot;laminas/laminas-mvc-console&quot;,
-        &quot;constraint&quot;: &quot;^1.1.11&quot;,
-        &quot;prompt&quot;: &quot;Would you like to install MVC console tooling?&quot;,
-        &quot;module&quot;: true
+        "name": "laminas/laminas-mvc-console",
+        "constraint": "^1.1.11",
+        "prompt": "Would you like to install MVC console tooling?",
+        "module": true
       },
       {
-        &quot;name&quot;: &quot;laminas/laminas-mvc-i18n&quot;,
-        &quot;constraint&quot;: &quot;^1.0&quot;,
-        &quot;prompt&quot;: &quot;Would you like to install i18n support?&quot;,
-        &quot;module&quot;: true
+        "name": "laminas/laminas-mvc-i18n",
+        "constraint": "^1.0",
+        "prompt": "Would you like to install i18n support?",
+        "module": true
       },
       {
-        &quot;name&quot;: &quot;laminas/laminas-test&quot;,
-        &quot;constraint&quot;: &quot;^3.0.2&quot;,
-        &quot;prompt&quot;: &quot;Would you like to install MVC testing support?&quot;,
-        &quot;dev&quot;: true
+        "name": "laminas/laminas-test",
+        "constraint": "^3.0.2",
+        "prompt": "Would you like to install MVC testing support?",
+        "dev": true
       }
     ]
   }
 }</code></pre>
+
 <p>The above will:</p>
 <ul>
 <li>Prompt if you want to do a minimal install; if so, the plugin will remove
@@ -440,5 +442,5 @@ object <strong>must</strong> contain the following properties:</p>
 
 <!--
 MkDocs version : 1.1
-Build Date UTC : 2020-03-29 11:32:26
+Build Date UTC : 2020-04-03 18:19:16
 -->
