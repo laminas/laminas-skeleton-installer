@@ -13,7 +13,6 @@ use Composer\IO\IOInterface;
 use Composer\Plugin\PluginInterface;
 use Laminas\SkeletonInstaller\Plugin;
 use PHPUnit\Framework\TestCase;
-use function var_dump;
 use function version_compare;
 
 class PluginTest extends TestCase
