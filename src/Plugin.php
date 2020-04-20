@@ -13,6 +13,7 @@ use Composer\EventDispatcher\EventSubscriberInterface;
 use Composer\IO\IOInterface;
 use Composer\Plugin\PluginInterface;
 use Composer\Script\Event as ScriptEvent;
+use function version_compare;
 
 /**
  * Plugin that uninstalls itself following a create-project operation.
@@ -48,8 +49,11 @@ class Plugin implements PluginInterface, EventSubscriberInterface
     {
         $subscribers = [
             ['installOptionalDependencies', 1000],
-            ['uninstallPlugin'],
         ];
+
+        if (version_compare(PluginInterface::PLUGIN_API_VERSION, '2.0', 'lt')) {
+            $subscribers[] = ['uninstallPlugin'];
+        }
 
         return [
             'post-install-cmd' => $subscribers,
@@ -87,7 +91,16 @@ class Plugin implements PluginInterface, EventSubscriberInterface
      */
     public function uninstallPlugin(ScriptEvent $event)
     {
-        $uninstall = new Uninstaller($this->composer, $this->io);
+        $this->uninstall($event->getComposer(), $event->getIO());
+    }
+
+    public function deactivate(Composer $composer, IOInterface $io)
+    {
+    }
+
+    public function uninstall(Composer $composer, IOInterface $io)
+    {
+        $uninstall = new Uninstaller($composer, $io);
         $uninstall();
     }
 }

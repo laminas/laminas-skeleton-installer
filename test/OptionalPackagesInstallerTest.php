@@ -13,11 +13,14 @@ use Composer\Installer;
 use Composer\IO\IOInterface;
 use Composer\Package\Link;
 use Composer\Package\RootPackageInterface;
+use Composer\Plugin\PluginInterface;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\Prophecy\ObjectProphecy;
 use Prophecy\Prophecy\ProphecyInterface;
 use ReflectionProperty;
+use function version_compare;
 
 class OptionalPackagesInstallerTest extends TestCase
 {
@@ -78,7 +81,8 @@ class OptionalPackagesInstallerTest extends TestCase
         $installer = $this->prophesize(Installer::class);
         $installer->setDevMode(true)->shouldBeCalled();
         $installer->setUpdate()->shouldBeCalled();
-        $installer->setUpdateWhitelist($expectedPackages)->shouldBeCalled();
+
+        $this->addExpectedPackagesAssertionBasedOnComposerVersion($installer, $expectedPackages);
         $installer->run()->willReturn($expectedReturn);
 
         $r = new ReflectionProperty($this->installer, 'installerFactory');
@@ -316,5 +320,22 @@ class OptionalPackagesInstallerTest extends TestCase
 
         $installer = $this->installer;
         $this->assertNull($installer());
+    }
+
+    /**
+     * @param ObjectProphecy<Installer> $installer
+     */
+    private function addExpectedPackagesAssertionBasedOnComposerVersion(
+        ObjectProphecy $installer,
+        array $expectedPackages
+    ) {
+        # Composer v1.0 support
+        if (version_compare(PluginInterface::PLUGIN_API_VERSION, '2.0', 'lt')) {
+            $installer->setUpdateWhitelist($expectedPackages)->shouldBeCalled();
+
+            return;
+        }
+
+        $installer->setUpdateAllowList($expectedPackages)->shouldBeCalled();
     }
 }
