@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Added
 
-- Nothing.
+- [#9](https://github.com/laminas/laminas-skeleton-installer/pull/9) Added support for composer 2.0
 
 ### Changed
 
