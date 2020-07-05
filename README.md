@@ -13,7 +13,7 @@ and we recommend requiring that component in your project skeleton as well.
 
 **Please note:** this repository is a helper to the 
 [laminas-mvc-skeleton](https://github.com/laminas/laminas-mvc-skeleton) 
-repository and is not inteneded to be used on its own.
+repository and is not intended to be used on its own.
 
 - File issues at https://github.com/laminas/laminas-skeleton-installer/issues
 - Documentation is at https://docs.laminas.dev/laminas-skeleton-installer/
