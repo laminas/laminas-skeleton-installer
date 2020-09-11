@@ -2,27 +2,24 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 0.2.1 - TBD
+## 0.2.1 - 2020-09-11
 
-### Added
 
-- Nothing.
+-----
 
-### Changed
+### Release Notes for [0.2.1](https://github.com/laminas/laminas-skeleton-installer/milestone/2)
 
-- Nothing.
 
-### Deprecated
 
-- Nothing.
+### 0.2.1
 
-### Removed
+- Total issues resolved: **0**
+- Total pull requests resolved: **1**
+- Total contributors: **1**
 
-- Nothing.
+#### Documentation
 
-### Fixed
-
-- Nothing.
+ - [10: Added note about how this is not to be used stand-alone](https://github.com/laminas/laminas-skeleton-installer/pull/10) thanks to @TomHAnderson
 
 ## 0.2.0 - 2020-07-01
 
