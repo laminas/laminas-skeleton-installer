@@ -318,7 +318,7 @@ class OptionalPackagesInstaller
         );
 
         $installer->setDevMode(true);
-        $installer->setUpdate();
+        $installer->setUpdate(true);
 
         $this->attachPackageWhitelistBasedOnComposerVersion($installer, $packagesToInstall);
 
