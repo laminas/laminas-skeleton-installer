@@ -15,15 +15,19 @@ matrix:
     - php: 5.6
       env:
         - DEPS=lowest
+        - COMPOSER_VERSION=1
     - php: 5.6
       env:
         - DEPS=latest
+        - COMPOSER_VERSION=1
     - php: 7
       env:
         - DEPS=lowest
+        - COMPOSER_VERSION=1
     - php: 7
       env:
         - DEPS=latest
+        - COMPOSER_VERSION=1
     - php: 7.1
       env:
         - DEPS=lowest
@@ -53,6 +57,7 @@ matrix:
 
 before_install:
   - if [[ $TEST_COVERAGE != 'true' ]]; then phpenv config-rm xdebug.ini || return 0 ; fi
+  - if [[ $COMPOSER_VERSION == '1' ]]; then wget https://getcomposer.org/composer-1.phar && chmod 755 composer-1.phar && mv composer-1.phar /home/travis/.phpenv/shims/composer ; composer --version ; fi
 
 install:
   - travis_retry composer install $COMPOSER_ARGS --ignore-platform-reqs
