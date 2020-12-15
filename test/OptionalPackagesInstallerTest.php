@@ -119,13 +119,12 @@ class OptionalPackagesInstallerTest extends TestCase
         ]);
         $this->composer->getPackage()->willReturn($package->reveal());
 
-        $this->io->ask(Argument::that(function ($arg) {
-            if (! is_array($arg)) {
-                return false;
-            }
-            $prompt = array_shift($arg);
-            return (false !== strpos($prompt, 'Do you want a minimal install'));
-        }), 'y')->willReturn('y');
+        $this->io
+            ->ask(
+                Argument::containingString('Do you want a minimal install'),
+                'y'
+            )
+            ->willReturn('y');
         $this->io->write(Argument::containingString('Removing optional packages from composer.json'))->shouldBeCalled();
         $this->io->write(Argument::containingString('Updating composer.json'))->shouldBeCalled();
 
@@ -154,19 +153,14 @@ class OptionalPackagesInstallerTest extends TestCase
         ]);
         $this->composer->getPackage()->willReturn($package->reveal());
 
-        $this->io->ask(Argument::that(function ($arg) {
-            if (! is_array($arg)) {
-                return false;
-            }
-            $prompt = array_shift($arg);
-            return (false !== strpos($prompt, 'Do you want a minimal install'));
-        }), 'y')->willReturn('n');
+        $this->io
+            ->ask(
+                Argument::containingString('Do you want a minimal install'),
+                'y'
+            )
+            ->willReturn('n');
 
-        $this->io->ask(Argument::that(function ($arg) {
-            if (! is_array($arg)) {
-                return false;
-            }
-            $prompt = array_shift($arg);
+        $this->io->ask(Argument::that(function ($prompt) {
             return (false !== strpos($prompt, 'This is a prompt'))
                 && (false !== strpos($prompt, 'y/N'));
         }), 'n')->willReturn('n');
@@ -200,19 +194,14 @@ class OptionalPackagesInstallerTest extends TestCase
         ]);
         $this->composer->getPackage()->willReturn($package->reveal());
 
-        $this->io->ask(Argument::that(function ($arg) {
-            if (! is_array($arg)) {
-                return false;
-            }
-            $prompt = array_shift($arg);
-            return (false !== strpos($prompt, 'Do you want a minimal install'));
-        }), 'y')->willReturn('n');
+        $this->io
+            ->ask(
+                Argument::containingString('Do you want a minimal install'),
+                'y'
+            )
+            ->willReturn('n');
 
-        $this->io->ask(Argument::that(function ($arg) {
-            if (! is_array($arg)) {
-                return false;
-            }
-            $prompt = array_shift($arg);
+        $this->io->ask(Argument::that(function ($prompt) {
             return (false !== strpos($prompt, 'This is a prompt'))
                 && (false !== strpos($prompt, 'y/N'));
         }), 'n')->willReturn('y');
@@ -268,19 +257,14 @@ class OptionalPackagesInstallerTest extends TestCase
         ]);
         $this->composer->getPackage()->willReturn($package->reveal());
 
-        $this->io->ask(Argument::that(function ($arg) {
-            if (! is_array($arg)) {
-                return false;
-            }
-            $prompt = array_shift($arg);
-            return (false !== strpos($prompt, 'Do you want a minimal install'));
-        }), 'y')->willReturn('n');
+        $this->io
+            ->ask(
+                Argument::containingString('Do you want a minimal install'),
+                'y'
+            )
+            ->willReturn('n');
 
-        $this->io->ask(Argument::that(function ($arg) {
-            if (! is_array($arg)) {
-                return false;
-            }
-            $prompt = array_shift($arg);
+        $this->io->ask(Argument::that(function ($prompt) {
             return (false !== strpos($prompt, 'This is a prompt'))
                 && (false !== strpos($prompt, 'y/N'));
         }), 'n')->willReturn('y');
