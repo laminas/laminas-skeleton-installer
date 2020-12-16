@@ -2,29 +2,32 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 0.2.2 - TBD
-
-### Added
-
-- Nothing.
-
-### Changed
-
-- Nothing.
-
-### Deprecated
-
-- Nothing.
-
-### Removed
-
-- Nothing.
+## 0.2.2 - 2020-12-16
 
 ### Fixed
 
 - [#16](https://github.com/laminas/laminas-skeleton-installer/pull/16) fixes an issue with prompting present when using Composer v2 releases.
 
 - [#15](https://github.com/laminas/laminas-skeleton-installer/pull/15) fixes an issue under Composer v2 whereby a fatal error would occur due to a previously optional method argument now being required.
+
+
+-----
+
+### Release Notes for [0.2.2](https://github.com/laminas/laminas-skeleton-installer/milestone/3)
+
+0.2.x bugfix release (patch)
+
+### 0.2.2
+
+- Total issues resolved: **2**
+- Total pull requests resolved: **2**
+- Total contributors: **3**
+
+#### Bug
+
+ - [16: Fix errors prompting users when using Composer v2](https://github.com/laminas/laminas-skeleton-installer/pull/16) thanks to @weierophinney and @rbroen
+ - [15: Update OptionalPackagesInstaller.php](https://github.com/laminas/laminas-skeleton-installer/pull/15) thanks to @rbroen
+ - [13: Fatal error on non-minimal install (selecting optional packages)](https://github.com/laminas/laminas-skeleton-installer/issues/13) thanks to @PAStheLoD
 
 ## 0.2.1 - 2020-09-11
 
