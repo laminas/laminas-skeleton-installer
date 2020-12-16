@@ -22,6 +22,8 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
+- [#16](https://github.com/laminas/laminas-skeleton-installer/pull/16) fixes an issue with prompting present when using Composer v2 releases.
+
 - [#15](https://github.com/laminas/laminas-skeleton-installer/pull/15) fixes an issue under Composer v2 whereby a fatal error would occur due to a previously optional method argument now being required.
 
 ## 0.2.1 - 2020-09-11
