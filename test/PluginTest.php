@@ -13,10 +13,14 @@ use Composer\IO\IOInterface;
 use Composer\Plugin\PluginInterface;
 use Laminas\SkeletonInstaller\Plugin;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
+use ReflectionProperty;
 use function version_compare;
 
 class PluginTest extends TestCase
 {
+    use ProphecyTrait;
+
     public function testActivateSetsComposerAndIoProperties()
     {
         $composer = $this->prophesize(Composer::class)->reveal();
@@ -25,8 +29,16 @@ class PluginTest extends TestCase
         $plugin = new Plugin();
         $plugin->activate($composer, $io);
 
-        $this->assertAttributeSame($composer, 'composer', $plugin);
-        $this->assertAttributeSame($io, 'io', $plugin);
+        $rComposer = new ReflectionProperty($plugin, 'composer');
+        $rComposer->setAccessible(true);
+
+        $this->assertSame($composer, $rComposer->getValue($plugin));
+
+        
+        $rIo = new ReflectionProperty($plugin, 'io');
+        $rIo->setAccessible(true);
+
+        $this->assertSame($io, $rIo->getValue($plugin));
     }
 
     public function testSubscribesToExpectedEventsForComposer1()

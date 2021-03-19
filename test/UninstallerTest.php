@@ -15,24 +15,27 @@ use Composer\IO\IOInterface;
 use Composer\Package\AliasPackage;
 use Composer\Package\Locker;
 use Composer\Package\PackageInterface;
-use Composer\Repository\RepositoryInterface;
+use Composer\Repository\InstalledRepositoryInterface;
 use Composer\Repository\RepositoryManager;
 use Laminas\SkeletonInstaller\Uninstaller;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ProphecyInterface;
 use ReflectionProperty;
 
 class UninstallerTest extends TestCase
 {
+    use ProphecyTrait;
+
     /** @var IOInterface|ProphecyInterface */
     private $io;
 
     /** @var Composer|ProphecyInterface */
     private $composer;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->io = $this->setUpIo();
         $this->composer = $this->setUpComposerAndDependencies();
@@ -101,7 +104,7 @@ class UninstallerTest extends TestCase
         $composer = $this->prophesize(Composer::class);
 
         $package = $this->prophesize(PackageInterface::class);
-        $repository = $this->prophesize(RepositoryInterface::class);
+        $repository = $this->prophesize(InstalledRepositoryInterface::class);
         $repository->findPackage(Uninstaller::PLUGIN_NAME, '*')->willReturn($package->reveal());
         $repository->getPackages()->willReturn([]);
 
