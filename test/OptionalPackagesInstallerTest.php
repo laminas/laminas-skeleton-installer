@@ -17,6 +17,7 @@ use Composer\Plugin\PluginInterface;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Prophecy\Prophecy\ProphecyInterface;
 use ReflectionProperty;
@@ -24,6 +25,8 @@ use function version_compare;
 
 class OptionalPackagesInstallerTest extends TestCase
 {
+    use ProphecyTrait;
+
     /** @var Composer|ProphecyInterface */
     private $composer;
 
@@ -33,7 +36,7 @@ class OptionalPackagesInstallerTest extends TestCase
     /** @var OptionalPackagesInstaller|ProphecyInterface */
     private $installer;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->composer = $this->prophesize(Composer::class);
         $this->io = $this->prophesize(IOInterface::class);
@@ -80,7 +83,7 @@ class OptionalPackagesInstallerTest extends TestCase
     {
         $installer = $this->prophesize(Installer::class);
         $installer->setDevMode(true)->shouldBeCalled();
-        $installer->setUpdate()->shouldBeCalled();
+        $installer->setUpdate(true)->shouldBeCalled();
 
         $this->addExpectedPackagesAssertionBasedOnComposerVersion($installer, $expectedPackages);
         $installer->run()->willReturn($expectedReturn);
