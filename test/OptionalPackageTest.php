@@ -13,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 
 class OptionalPackageTest extends TestCase
 {
-    public function testMarksAsProductionPackageByDefault()
+    public function testMarksAsProductionPackageByDefault(): void
     {
         $package = new OptionalPackage([
             'constraint' => '^1.0',
@@ -24,7 +24,7 @@ class OptionalPackageTest extends TestCase
         $this->assertFalse($package->isDev());
     }
 
-    public function booleanOptions()
+    public function booleanOptions(): array
     {
         return [
             'null'            => [null, false],
@@ -46,7 +46,7 @@ class OptionalPackageTest extends TestCase
      * @param mixed $option
      * @param bool $expected
      */
-    public function testCastsDevOptionsToBooleans($option, $expected)
+    public function testCastsDevOptionsToBooleans($option, $expected): void
     {
         $package = new OptionalPackage([
             'constraint' => '^1.0',
@@ -86,7 +86,7 @@ class OptionalPackageTest extends TestCase
         $this->assertSame($expected, $package->isModule());
     }
 
-    public function specifications()
+    public function specifications(): array
     {
         // @codingStandardsIgnoreStart
         //                          specification                                                 expectation

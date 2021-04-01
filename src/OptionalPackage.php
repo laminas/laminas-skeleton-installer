@@ -12,14 +12,19 @@ use function array_key_exists;
 
 class OptionalPackage
 {
+    /** @var string */
     private $constraint;
 
+    /** @var bool */
     private $dev = false;
 
+    /** @var bool */
     private $module = false;
 
+    /** @var string*/
     private $name;
 
+    /** @var string */
     private $prompt;
 
     public function __construct(array $spec)
@@ -37,34 +42,34 @@ class OptionalPackage
         }
     }
 
-    public static function isValidSpec(array $spec)
+    public static function isValidSpec(array $spec): bool
     {
         return array_key_exists('name', $spec)
             && array_key_exists('constraint', $spec)
             && array_key_exists('prompt', $spec);
     }
 
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
-    public function getPrompt()
+    public function getPrompt(): string
     {
         return $this->prompt;
     }
 
-    public function getConstraint()
+    public function getConstraint(): string
     {
         return $this->constraint;
     }
 
-    public function isDev()
+    public function isDev(): bool
     {
         return $this->dev;
     }
 
-    public function isModule()
+    public function isModule(): bool
     {
         return $this->module;
     }

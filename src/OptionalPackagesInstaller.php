@@ -319,6 +319,7 @@ class OptionalPackagesInstaller
      *
      * @return ComposerInstaller
      */
+    // phpcs:ignore SlevomatCodingStandard.Classes.UnusedPrivateElements
     private static function createInstaller(Composer $composer, IOInterface $io, RootPackageInterface $package)
     {
         $eventDispatcher = new BroadcastEventDispatcher(

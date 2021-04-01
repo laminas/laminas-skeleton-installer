@@ -41,6 +41,9 @@ class BroadcastEventDispatcher extends EventDispatcher
         $this->broadcastEvents = $broadcastEvents;
     }
 
+    /**
+     * @inheritDoc
+     */
     protected function doDispatch(Event $event)
     {
         if ($this->eventDispatcher && in_array($event->getName(), $this->broadcastEvents, true)) {

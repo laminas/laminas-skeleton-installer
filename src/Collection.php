@@ -27,7 +27,7 @@ class Collection implements
     Countable,
     IteratorAggregate
 {
-    /** @param array */
+    /** @var array */
     protected $items;
 
     /**
@@ -50,7 +50,7 @@ class Collection implements
     /**
      * Factory method
      *
-     * @param array|Traversable
+     * @param array|Traversable $items
      * @return static
      */
     public static function create($items)

@@ -45,7 +45,7 @@ class UninstallerTest extends TestCase
         $this->composer = $this->setUpComposerAndDependencies();
     }
 
-    protected function setUpIo()
+    protected function setUpIo(): ProphecyInterface
     {
         $io = $this->prophesize(IOInterface::class);
         $io->write('<info>Removing laminas/laminas-skeleton-installer...</info>')->shouldBeCalled();
@@ -56,7 +56,7 @@ class UninstallerTest extends TestCase
         return $io;
     }
 
-    protected function createLockPackages($repository, $locker)
+    protected function createLockPackages(ProphecyInterface $repository, ProphecyInterface $locker): void
     {
         $required = $this->prophesize(PackageInterface::class);
         $required->getName()->willReturn('some/required');
@@ -103,7 +103,7 @@ class UninstallerTest extends TestCase
         )->willReturn(true);
     }
 
-    protected function setUpComposerAndDependencies()
+    protected function setUpComposerAndDependencies(): ProphecyInterface
     {
         $composer = $this->prophesize(Composer::class);
 
@@ -149,7 +149,7 @@ class UninstallerTest extends TestCase
         });
     }
 
-    protected function createComposerJson()
+    protected function createComposerJson(): string
     {
         return json_encode([
             'name'        => 'test/project',
