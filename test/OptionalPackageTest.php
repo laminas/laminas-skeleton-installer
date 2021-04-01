@@ -43,7 +43,6 @@ class OptionalPackageTest extends TestCase
 
     /**
      * @dataProvider booleanOptions
-     *
      * @param mixed $option
      * @param bool $expected
      */
@@ -72,7 +71,6 @@ class OptionalPackageTest extends TestCase
 
     /**
      * @dataProvider booleanOptions
-     *
      * @param mixed $option
      * @param bool $expected
      */
@@ -107,7 +105,6 @@ class OptionalPackageTest extends TestCase
 
     /**
      * @dataProvider specifications
-     *
      * @param array $specification
      * @param bool $expected
      */

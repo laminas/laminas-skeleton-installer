@@ -30,12 +30,12 @@ class BroadcastEventDispatcherTest extends TestCase
         parent::setUp();
 
         $this->composer = $this->prophesize(Composer::class);
-        $this->io = $this->prophesize(IOInterface::class);
+        $this->io       = $this->prophesize(IOInterface::class);
     }
 
     public function testBroadcastEvent()
     {
-        $originEventDispatcher = new TestAsset\OriginEventDispatcher(
+        $originEventDispatcher    = new TestAsset\OriginEventDispatcher(
             $this->composer->reveal(),
             $this->io->reveal()
         );

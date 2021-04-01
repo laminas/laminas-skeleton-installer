@@ -8,6 +8,8 @@
 
 namespace Laminas\SkeletonInstaller;
 
+use function array_key_exists;
+
 class OptionalPackage
 {
     private $constraint;
@@ -23,8 +25,8 @@ class OptionalPackage
     public function __construct(array $spec)
     {
         $this->constraint = $spec['constraint'];
-        $this->name = $spec['name'];
-        $this->prompt = $spec['prompt'];
+        $this->name       = $spec['name'];
+        $this->prompt     = $spec['prompt'];
 
         if (array_key_exists('dev', $spec)) {
             $this->dev = (bool) $spec['dev'];
@@ -37,11 +39,9 @@ class OptionalPackage
 
     public static function isValidSpec(array $spec)
     {
-        return (
-            array_key_exists('name', $spec)
+        return array_key_exists('name', $spec)
             && array_key_exists('constraint', $spec)
-            && array_key_exists('prompt', $spec)
-        );
+            && array_key_exists('prompt', $spec);
     }
 
     public function getName()

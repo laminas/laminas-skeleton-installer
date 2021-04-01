@@ -25,6 +25,10 @@ use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ProphecyInterface;
 use ReflectionProperty;
 
+use function file_get_contents;
+use function json_decode;
+use function json_encode;
+
 class UninstallerTest extends TestCase
 {
     use ProphecyTrait;
@@ -37,7 +41,7 @@ class UninstallerTest extends TestCase
 
     public function setUp(): void
     {
-        $this->io = $this->setUpIo();
+        $this->io       = $this->setUpIo();
         $this->composer = $this->setUpComposerAndDependencies();
     }
 
@@ -103,7 +107,7 @@ class UninstallerTest extends TestCase
     {
         $composer = $this->prophesize(Composer::class);
 
-        $package = $this->prophesize(PackageInterface::class);
+        $package    = $this->prophesize(PackageInterface::class);
         $repository = $this->prophesize(InstalledRepositoryInterface::class);
         $repository->findPackage(Uninstaller::PLUGIN_NAME, '*')->willReturn($package->reveal());
         $repository->getPackages()->willReturn([]);
@@ -148,10 +152,10 @@ class UninstallerTest extends TestCase
     protected function createComposerJson()
     {
         return json_encode([
-            'name' => 'test/project',
-            'type' => 'project',
+            'name'        => 'test/project',
+            'type'        => 'project',
             'description' => 'This is a test project',
-            'require' => [
+            'require'     => [
                 'laminas/laminas-skeleton-installer' => '^1.0.0-dev@dev',
             ],
         ]);

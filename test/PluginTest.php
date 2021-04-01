@@ -15,6 +15,7 @@ use Laminas\SkeletonInstaller\Plugin;
 use PHPUnit\Framework\TestCase;
 use Prophecy\PhpUnit\ProphecyTrait;
 use ReflectionProperty;
+
 use function version_compare;
 
 class PluginTest extends TestCase
@@ -24,7 +25,7 @@ class PluginTest extends TestCase
     public function testActivateSetsComposerAndIoProperties()
     {
         $composer = $this->prophesize(Composer::class)->reveal();
-        $io = $this->prophesize(IOInterface::class)->reveal();
+        $io       = $this->prophesize(IOInterface::class)->reveal();
 
         $plugin = new Plugin();
         $plugin->activate($composer, $io);
@@ -34,7 +35,6 @@ class PluginTest extends TestCase
 
         $this->assertSame($composer, $rComposer->getValue($plugin));
 
-        
         $rIo = new ReflectionProperty($plugin, 'io');
         $rIo->setAccessible(true);
 

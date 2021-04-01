@@ -14,6 +14,8 @@ use Composer\EventDispatcher\EventDispatcher;
 use Composer\IO\IOInterface;
 use Composer\Util\ProcessExecutor;
 
+use function in_array;
+
 class BroadcastEventDispatcher extends EventDispatcher
 {
     /** @var null|EventDispatcher */
@@ -29,8 +31,8 @@ class BroadcastEventDispatcher extends EventDispatcher
     public function __construct(
         Composer $composer,
         IOInterface $io,
-        ProcessExecutor $process = null,
-        EventDispatcher $eventDispatcher = null,
+        ?ProcessExecutor $process = null,
+        ?EventDispatcher $eventDispatcher = null,
         array $broadcastEvents = []
     ) {
         parent::__construct($composer, $io, $process);

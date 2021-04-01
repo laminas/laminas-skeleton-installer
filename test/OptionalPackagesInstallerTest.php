@@ -21,6 +21,14 @@ use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 use Prophecy\Prophecy\ProphecyInterface;
 use ReflectionProperty;
+
+use function array_key_exists;
+use function array_shift;
+use function file_get_contents;
+use function is_array;
+use function json_decode;
+use function json_encode;
+use function strpos;
 use function version_compare;
 
 class OptionalPackagesInstallerTest extends TestCase
@@ -39,7 +47,7 @@ class OptionalPackagesInstallerTest extends TestCase
     public function setUp(): void
     {
         $this->composer = $this->prophesize(Composer::class);
-        $this->io = $this->prophesize(IOInterface::class);
+        $this->io       = $this->prophesize(IOInterface::class);
 
         $this->installer = new OptionalPackagesInstaller(
             $this->composer->reveal(),
@@ -47,7 +55,10 @@ class OptionalPackagesInstallerTest extends TestCase
         );
     }
 
-    protected function setUpComposerJson($data = null)
+    /**
+     * @param any $data
+     */
+    protected function setUpComposerJson($data = null): void
     {
         $project = vfsStream::setup('project');
         vfsStream::newFile('composer.json')
@@ -61,25 +72,32 @@ class OptionalPackagesInstallerTest extends TestCase
         });
     }
 
-    protected function createComposerJson($data)
+    /**
+     * @param any $data
+     */
+    protected function createComposerJson($data): string
     {
         $data = $data ?: $this->getDefaultComposerData();
         return json_encode($data);
     }
 
-    protected function getDefaultComposerData()
+    protected function getDefaultComposerData(): array
     {
         return [
-            'name' => 'test/project',
-            'type' => 'project',
+            'name'        => 'test/project',
+            'type'        => 'project',
             'description' => 'This is a test project',
-            'require' => [
+            'require'     => [
                 'laminas/laminas-skeleton-installer' => '^1.0.0-dev@dev',
             ],
         ];
     }
 
-    protected function setUpComposerInstaller(array $expectedPackages, $expectedReturn = 0)
+    /**
+     * @param array $expectedPackages
+     * @param int $expectedReturn
+     */
+    protected function setUpComposerInstaller(array $expectedPackages, $expectedReturn = 0): void
     {
         $installer = $this->prophesize(Installer::class);
         $installer->setDevMode(true)->shouldBeCalled();
@@ -95,7 +113,7 @@ class OptionalPackagesInstallerTest extends TestCase
         });
     }
 
-    public function testDoesNothingIfRootPackageHasNoOptionalDependenciesDefined()
+    public function testDoesNothingIfRootPackageHasNoOptionalDependenciesDefined(): void
     {
         $package = $this->prophesize(RootPackageInterface::class);
         $package->getExtra()->willReturn([]);
@@ -107,7 +125,7 @@ class OptionalPackagesInstallerTest extends TestCase
         $this->assertNull($installer());
     }
 
-    public function testChoosingMinimalInstallSkipsInstallation()
+    public function testChoosingMinimalInstallSkipsInstallation(): void
     {
         $package = $this->prophesize(RootPackageInterface::class);
         $package->getExtra()->willReturn([
@@ -127,7 +145,7 @@ class OptionalPackagesInstallerTest extends TestCase
                 return false;
             }
             $prompt = array_shift($arg);
-            return (false !== strpos($prompt, 'Do you want a minimal install'));
+            return false !== strpos($prompt, 'Do you want a minimal install');
         }), 'y')->willReturn('y');
         $this->io->write(Argument::containingString('Removing optional packages from composer.json'))->shouldBeCalled();
         $this->io->write(Argument::containingString('Updating composer.json'))->shouldBeCalled();
@@ -137,12 +155,12 @@ class OptionalPackagesInstallerTest extends TestCase
         $installer = $this->installer;
         $this->assertNull($installer());
 
-        $json = file_get_contents(vfsStream::url('project/composer.json'));
+        $json     = file_get_contents(vfsStream::url('project/composer.json'));
         $composer = json_decode($json, true);
         $this->assertFalse(isset($composer['extra']['laminas-skeleton-installer']));
     }
 
-    public function testChoosingNoOptionalPackagesDuringPromptsSkipsInstallation()
+    public function testChoosingNoOptionalPackagesDuringPromptsSkipsInstallation(): void
     {
         $package = $this->prophesize(RootPackageInterface::class);
         $package->getExtra()->willReturn([
@@ -162,7 +180,7 @@ class OptionalPackagesInstallerTest extends TestCase
                 return false;
             }
             $prompt = array_shift($arg);
-            return (false !== strpos($prompt, 'Do you want a minimal install'));
+            return false !== strpos($prompt, 'Do you want a minimal install');
         }), 'y')->willReturn('n');
 
         $this->io->ask(Argument::that(function ($arg) {
@@ -183,7 +201,7 @@ class OptionalPackagesInstallerTest extends TestCase
         $installer = $this->installer;
         $this->assertNull($installer());
 
-        $json = file_get_contents(vfsStream::url('project/composer.json'));
+        $json     = file_get_contents(vfsStream::url('project/composer.json'));
         $composer = json_decode($json, true);
         $this->assertFalse(isset($composer['extra']['laminas-skeleton-installer']));
     }
@@ -208,7 +226,7 @@ class OptionalPackagesInstallerTest extends TestCase
                 return false;
             }
             $prompt = array_shift($arg);
-            return (false !== strpos($prompt, 'Do you want a minimal install'));
+            return false !== strpos($prompt, 'Do you want a minimal install');
         }), 'y')->willReturn('n');
 
         $this->io->ask(Argument::that(function ($arg) {
@@ -276,7 +294,7 @@ class OptionalPackagesInstallerTest extends TestCase
                 return false;
             }
             $prompt = array_shift($arg);
-            return (false !== strpos($prompt, 'Do you want a minimal install'));
+            return false !== strpos($prompt, 'Do you want a minimal install');
         }), 'y')->willReturn('n');
 
         $this->io->ask(Argument::that(function ($arg) {
@@ -332,7 +350,7 @@ class OptionalPackagesInstallerTest extends TestCase
         ObjectProphecy $installer,
         array $expectedPackages
     ) {
-        # Composer v1.0 support
+        // Composer v1.0 support
         if (version_compare(PluginInterface::PLUGIN_API_VERSION, '2.0', 'lt')) {
             $installer->setUpdateWhitelist($expectedPackages)->shouldBeCalled();
 

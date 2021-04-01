@@ -13,6 +13,7 @@ use Composer\EventDispatcher\EventSubscriberInterface;
 use Composer\IO\IOInterface;
 use Composer\Plugin\PluginInterface;
 use Composer\Script\Event as ScriptEvent;
+
 use function version_compare;
 
 /**
@@ -20,14 +21,10 @@ use function version_compare;
  */
 class Plugin implements PluginInterface, EventSubscriberInterface
 {
-    /**
-     * @var Composer
-     */
+    /** @var Composer */
     private $composer;
 
-    /**
-     * @var IOInterface
-     */
+    /** @var IOInterface */
     private $io;
 
     /**
@@ -57,26 +54,21 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 
         return [
             'post-install-cmd' => $subscribers,
-            'post-update-cmd' => $subscribers,
+            'post-update-cmd'  => $subscribers,
         ];
     }
 
     /**
      * Activate the plugin
-     *
-     * @param Composer $composer
-     * @param IOInterface $io
      */
     public function activate(Composer $composer, IOInterface $io)
     {
         $this->composer = $composer;
-        $this->io = $io;
+        $this->io       = $io;
     }
 
     /**
      * Install optional dependencies, if any.
-     *
-     * @param ScriptEvent $event
      */
     public function installOptionalDependencies(ScriptEvent $event)
     {
@@ -86,8 +78,6 @@ class Plugin implements PluginInterface, EventSubscriberInterface
 
     /**
      * Remove the installer after project installation.
-     *
-     * @param ScriptEvent $event
      */
     public function uninstallPlugin(ScriptEvent $event)
     {
