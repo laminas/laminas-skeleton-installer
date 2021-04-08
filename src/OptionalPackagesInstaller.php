@@ -16,7 +16,6 @@ use Composer\Package\RootPackageInterface;
 use Composer\Package\Version\VersionParser;
 use Composer\Plugin\PluginInterface;
 
-use function call_user_func;
 use function is_array;
 use function sprintf;
 use function strtolower;
@@ -296,12 +295,7 @@ class OptionalPackagesInstaller
         $this->io->write('<info>    Running an update to install optional packages</info>');
 
         /** @var ComposerInstaller $installer */
-        $installer = call_user_func(
-            $this->installerFactory,
-            $this->composer,
-            $this->io,
-            $package
-        );
+        $installer = ($this->installerFactory)($this->composer, $this->io, $package);
 
         $installer->setDevMode(true);
         $installer->setUpdate(true);

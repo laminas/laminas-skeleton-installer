@@ -11,8 +11,6 @@ namespace Laminas\SkeletonInstaller;
 use Composer\Factory;
 use Composer\Json\JsonFile;
 
-use function call_user_func;
-
 trait ComposerJsonRetrievalTrait
 {
     /** @var callable Factory to use for returning the composer.json path */
@@ -25,7 +23,7 @@ trait ComposerJsonRetrievalTrait
      */
     private function getComposerJson()
     {
-        $composerFile = call_user_func($this->composerFileFactory);
+        $composerFile = ($this->composerFileFactory)();
         return new JsonFile($composerFile);
     }
 }
