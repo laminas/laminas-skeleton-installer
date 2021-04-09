@@ -80,7 +80,7 @@ class OptionalPackagesInstallerTest extends TestCase
     {
         $installer = $this->prophesize(Installer::class);
         $installer->setDevMode(true)->shouldBeCalled();
-        $installer->setUpdate()->shouldBeCalled();
+        $installer->setUpdate(true)->shouldBeCalled();
 
         $this->addExpectedPackagesAssertionBasedOnComposerVersion($installer, $expectedPackages);
         $installer->run()->willReturn($expectedReturn);
