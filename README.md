@@ -1,7 +1,6 @@
 # laminas-skeleton-installer
 
-[![Build Status](https://travis-ci.com/laminas/laminas-skeleton-installer.svg)](https://travis-ci.com/laminas/laminas-skeleton-installer)
-[![Coverage Status](https://coveralls.io/repos/github/laminas/laminas-skeleton-installer/badge.svg)](https://coveralls.io/github/laminas/laminas-skeleton-installer)
+[![Build Status](https://github.com/laminas/laminas-skeleton-installer/workflows/Continuous%20Integration/badge.svg)](https://github.com/laminas/laminas-skeleton-installer/actions?query=workflow%3A"Continuous+Integration")
 
 laminas-skeleton-installer is a composer plugin for use in the initial install 
 of the [laminas-mvc-skeleton](https://github.com/laminas/laminas-mvc-skeleton).
