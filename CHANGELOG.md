@@ -2,27 +2,24 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 0.3.0 - TBD
+## 0.3.0 - 2021-04-15
 
-### Added
 
-- Nothing.
+-----
 
-### Changed
+### Release Notes for [0.3.0](https://github.com/laminas/laminas-skeleton-installer/milestone/4)
 
-- Nothing.
+Feature release (minor)
 
-### Deprecated
+### 0.3.0
 
-- Nothing.
+- Total issues resolved: **0**
+- Total pull requests resolved: **1**
+- Total contributors: **1**
 
-### Removed
+#### Enhancement
 
-- Nothing.
-
-### Fixed
-
-- Nothing.
+ - [19: Added PHP 8.0 support](https://github.com/laminas/laminas-skeleton-installer/pull/19) thanks to @gennadiylitvinyuk
 
 ## 0.2.1 - 2020-09-11
 
