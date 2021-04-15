@@ -15,30 +15,37 @@ use Composer\IO\IOInterface;
 use Composer\Package\AliasPackage;
 use Composer\Package\Locker;
 use Composer\Package\PackageInterface;
-use Composer\Repository\RepositoryInterface;
+use Composer\Repository\InstalledRepositoryInterface;
 use Composer\Repository\RepositoryManager;
 use Laminas\SkeletonInstaller\Uninstaller;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ProphecyInterface;
 use ReflectionProperty;
 
+use function file_get_contents;
+use function json_decode;
+use function json_encode;
+
 class UninstallerTest extends TestCase
 {
+    use ProphecyTrait;
+
     /** @var IOInterface|ProphecyInterface */
     private $io;
 
     /** @var Composer|ProphecyInterface */
     private $composer;
 
-    public function setUp()
+    public function setUp(): void
     {
-        $this->io = $this->setUpIo();
+        $this->io       = $this->setUpIo();
         $this->composer = $this->setUpComposerAndDependencies();
     }
 
-    protected function setUpIo()
+    protected function setUpIo(): ProphecyInterface
     {
         $io = $this->prophesize(IOInterface::class);
         $io->write('<info>Removing laminas/laminas-skeleton-installer...</info>')->shouldBeCalled();
@@ -49,7 +56,7 @@ class UninstallerTest extends TestCase
         return $io;
     }
 
-    protected function createLockPackages($repository, $locker)
+    protected function createLockPackages(ProphecyInterface $repository, ProphecyInterface $locker): void
     {
         $required = $this->prophesize(PackageInterface::class);
         $required->getName()->willReturn('some/required');
@@ -96,12 +103,12 @@ class UninstallerTest extends TestCase
         )->willReturn(true);
     }
 
-    protected function setUpComposerAndDependencies()
+    protected function setUpComposerAndDependencies(): ProphecyInterface
     {
         $composer = $this->prophesize(Composer::class);
 
-        $package = $this->prophesize(PackageInterface::class);
-        $repository = $this->prophesize(RepositoryInterface::class);
+        $package    = $this->prophesize(PackageInterface::class);
+        $repository = $this->prophesize(InstalledRepositoryInterface::class);
         $repository->findPackage(Uninstaller::PLUGIN_NAME, '*')->willReturn($package->reveal());
         $repository->getPackages()->willReturn([]);
 
@@ -142,13 +149,13 @@ class UninstallerTest extends TestCase
         });
     }
 
-    protected function createComposerJson()
+    protected function createComposerJson(): string
     {
         return json_encode([
-            'name' => 'test/project',
-            'type' => 'project',
+            'name'        => 'test/project',
+            'type'        => 'project',
             'description' => 'This is a test project',
-            'require' => [
+            'require'     => [
                 'laminas/laminas-skeleton-installer' => '^1.0.0-dev@dev',
             ],
         ]);

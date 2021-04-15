@@ -15,6 +15,10 @@ use Composer\Package\Link;
 use Composer\Package\RootPackageInterface;
 use Composer\Package\Version\VersionParser;
 use Composer\Plugin\PluginInterface;
+
+use function is_array;
+use function sprintf;
+use function strtolower;
 use function version_compare;
 
 /**
@@ -24,19 +28,13 @@ class OptionalPackagesInstaller
 {
     use ComposerJsonRetrievalTrait;
 
-    /**
-     * @var Composer
-     */
+    /** @var Composer */
     private $composer;
 
-    /**
-     * @var callable Factory for creating a ComposerInstaller instance.
-     */
-    private $installerFactory = [OptionalPackagesInstaller::class, 'createInstaller'];
+    /** @var callable Factory for creating a ComposerInstaller instance. */
+    private $installerFactory = [self::class, 'createInstaller'];
 
-    /**
-     * @var IOInterface
-     */
+    /** @var IOInterface */
     private $io;
 
     // @codingStandardsIgnoreStart
@@ -49,19 +47,13 @@ class OptionalPackagesInstaller
     ];
     // @codingStandardsIgnoreEnd
 
-    /**
-     * @var VersionParser
-     */
+    /** @var VersionParser */
     private $versionParser;
 
-    /**
-     * @param Composer $composer
-     * @param IOInterface $io
-     */
     public function __construct(Composer $composer, IOInterface $io)
     {
-        $this->composer = $composer;
-        $this->io = $io;
+        $this->composer      = $composer;
+        $this->io            = $io;
         $this->versionParser = new VersionParser();
     }
 
@@ -124,7 +116,7 @@ class OptionalPackagesInstaller
     private function getOptionalDependencies()
     {
         $package = $this->composer->getPackage();
-        $extra = $package->getExtra();
+        $extra   = $package->getExtra();
 
         if (isset($extra['laminas-skeleton-installer']) && is_array($extra['laminas-skeleton-installer'])) {
             return $extra['laminas-skeleton-installer'];
@@ -166,15 +158,16 @@ class OptionalPackagesInstaller
     /**
      * Create the callback for emitting and handling a package prompt.
      *
-     * @param OptionalPackage $package
      * @return bool
      */
     private function promptForPackage(OptionalPackage $package)
     {
-        $question = [sprintf(
-            "\n    <question>%s</question> <comment>y/N</comment>\n",
-            $package->getPrompt()
-        )];
+        $question = [
+            sprintf(
+                "\n    <question>%s</question> <comment>y/N</comment>\n",
+                $package->getPrompt()
+            ),
+        ];
 
         while (true) {
             $answer = $this->io->ask($question, 'n');
@@ -217,14 +210,12 @@ class OptionalPackagesInstaller
      *
      * Adds all packages to the appropriate require or require-dev sections of
      * the composer.json, and removes the extra.laminas-skeleton-installer node.
-     *
-     * @param Collection $packagesToInstall
      */
     private function updateComposerJson(Collection $packagesToInstall)
     {
         $this->io->write('<info>    Updating composer.json</info>');
         $composerJson = $this->getComposerJson();
-        $json = $packagesToInstall->reduce(function ($composer, $package) {
+        $json         = $packagesToInstall->reduce(function ($composer, $package) {
             return $this->updateComposerRequirement($composer, $package);
         }, $composerJson->read());
         unset($json['extra']['laminas-skeleton-installer'], $json['extra']['zend-skeleton-installer']);
@@ -238,12 +229,11 @@ class OptionalPackagesInstaller
      * Add a package to the composer definition.
      *
      * @param array $composer
-     * @param OptionalPackage $package
      * @return array
      */
     private function updateComposerRequirement(array $composer, OptionalPackage $package)
     {
-        $key = $package->isDev() ? 'require-dev' : 'require';
+        $key                                 = $package->isDev() ? 'require-dev' : 'require';
         $composer[$key][$package->getName()] = $package->getConstraint();
         return $composer;
     }
@@ -251,8 +241,6 @@ class OptionalPackagesInstaller
     /**
      * Update the root package definition
      *
-     * @param RootPackageInterface $package
-     * @param Collection $packagesToInstall
      * @return RootPackageInterface
      */
     private function updateRootPackage(RootPackageInterface $package, Collection $packagesToInstall)
@@ -268,13 +256,12 @@ class OptionalPackagesInstaller
      * Add a requirement to the root package.
      *
      * @param array $requires
-     * @param OptionalPackage $package
      * @return array
      */
     private function addRootPackageRequirement(array $requires, OptionalPackage $package)
     {
-        $name = $package->getName();
-        $constraint = $package->getConstraint();
+        $name        = $package->getName();
+        $constraint  = $package->getConstraint();
         $description = $package->isDev()
             ? 'requires for development'
             : 'requires';
@@ -301,8 +288,6 @@ class OptionalPackagesInstaller
      * - It specifies an update whitelist of only the new packages to install
      * - It disables plugins
      *
-     * @param RootPackageInterface $package
-     * @param Collection $packagesToInstall
      * @return int
      */
     private function runInstaller(RootPackageInterface $package, Collection $packagesToInstall)
@@ -310,15 +295,10 @@ class OptionalPackagesInstaller
         $this->io->write('<info>    Running an update to install optional packages</info>');
 
         /** @var ComposerInstaller $installer */
-        $installer = call_user_func(
-            $this->installerFactory,
-            $this->composer,
-            $this->io,
-            $package
-        );
+        $installer = ($this->installerFactory)($this->composer, $this->io, $package);
 
         $installer->setDevMode(true);
-        $installer->setUpdate();
+        $installer->setUpdate(true);
 
         $this->attachPackageWhitelistBasedOnComposerVersion($installer, $packagesToInstall);
 
@@ -331,11 +311,9 @@ class OptionalPackagesInstaller
      * Private static factory, to allow slip-streaming in a mock as needed for
      * testing.
      *
-     * @param Composer $composer
-     * @param IOInterface $io
-     * @param RootPackageInterface $package
      * @return ComposerInstaller
      */
+    // phpcs:ignore SlevomatCodingStandard.Classes.UnusedPrivateElements
     private static function createInstaller(Composer $composer, IOInterface $io, RootPackageInterface $package)
     {
         $eventDispatcher = new BroadcastEventDispatcher(
@@ -363,7 +341,7 @@ class OptionalPackagesInstaller
         ComposerInstaller $installer,
         Collection $packagesToInstall
     ) {
-        # Composer v1.0 support
+        // Composer v1.0 support
         if (version_compare(PluginInterface::PLUGIN_API_VERSION, '2.0', 'lt')) {
             $installer->setUpdateWhitelist(
                 $packagesToInstall->map(function ($package) {

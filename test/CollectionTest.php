@@ -16,6 +16,10 @@ use OutOfRangeException;
 use PHPUnit\Framework\TestCase;
 use Traversable;
 
+use function array_values;
+use function strstr;
+use function strtoupper;
+
 class CollectionTest extends TestCase
 {
     public function testConstructorAcceptsArray()
@@ -38,7 +42,7 @@ class CollectionTest extends TestCase
         $this->assertInstanceOf(Collection::class, Collection::create(new ArrayObject([])));
     }
 
-    public function invalidCollections()
+    public function invalidCollections(): array
     {
         return [
             'null'       => [null],
@@ -55,7 +59,6 @@ class CollectionTest extends TestCase
 
     /**
      * @dataProvider invalidCollections
-     *
      * @param mixed $items
      */
     public function testConstructorRaisesExceptionForInvalidItems($items)
@@ -68,7 +71,6 @@ class CollectionTest extends TestCase
 
     /**
      * @dataProvider invalidCollections
-     *
      * @param mixed $items
      */
     public function testFactoryRaisesExceptionForInvalidItems($items)
@@ -79,7 +81,7 @@ class CollectionTest extends TestCase
         Collection::create($items);
     }
 
-    public function collectionsForArrays()
+    public function collectionsForArrays(): array
     {
         $array = [
             'foo' => 'bar',
@@ -87,14 +89,13 @@ class CollectionTest extends TestCase
         ];
 
         return [
-            'array' => [$array, $array],
+            'array'    => [$array, $array],
             'iterator' => [new ArrayIterator($array), $array],
         ];
     }
 
     /**
      * @dataProvider collectionsForArrays
-     *
      * @param array|Traversable $items
      * @param array $expected
      */
@@ -111,7 +112,7 @@ class CollectionTest extends TestCase
             'item2',
         ]);
 
-        $results = [];
+        $results  = [];
         $received = $collection->each(function ($item) use (&$results) {
             $results[] = strtoupper($item);
         });

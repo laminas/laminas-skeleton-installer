@@ -16,7 +16,7 @@ class OriginEventDispatcher extends EventDispatcher
     /** @var Event[] */
     public $dispatchedEvents = [];
 
-    protected function doDispatch(Event $event)
+    protected function doDispatch(Event $event): int
     {
         $this->dispatchedEvents[] = $event;
 

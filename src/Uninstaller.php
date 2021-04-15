@@ -14,6 +14,9 @@ use Composer\IO\IOInterface;
 use Composer\Package\AliasPackage;
 use Composer\Repository\RepositoryInterface;
 
+use function array_diff;
+use function sprintf;
+
 /**
  * Uninstall the plugin from the project.
  *
@@ -25,26 +28,18 @@ class Uninstaller
 {
     use ComposerJsonRetrievalTrait;
 
-    const PLUGIN_NAME = 'laminas/laminas-skeleton-installer';
+    public const PLUGIN_NAME = 'laminas/laminas-skeleton-installer';
 
-    /**
-     * @var Composer
-     */
+    /** @var Composer */
     private $composer;
 
-    /**
-     * @var IOInterface
-     */
+    /** @var IOInterface */
     private $io;
 
-    /**
-     * @param Composer $composer
-     * @param IOInterface $io
-     */
     public function __construct(Composer $composer, IOInterface $io)
     {
         $this->composer = $composer;
-        $this->io = $io;
+        $this->io       = $io;
     }
 
     /**
@@ -63,9 +58,9 @@ class Uninstaller
      */
     private function removePluginInstall()
     {
-        $installer = $this->composer->getInstallationManager();
+        $installer  = $this->composer->getInstallationManager();
         $repository = $this->composer->getRepositoryManager()->getLocalRepository();
-        $package = $repository->findPackage(self::PLUGIN_NAME, '*');
+        $package    = $repository->findPackage(self::PLUGIN_NAME, '*');
 
         if (! $package) {
             $this->io->write('<info>    Package not installed; nothing to do.</info>');
@@ -85,19 +80,17 @@ class Uninstaller
         $this->io->write('<info>    Removing from composer.json</info>');
 
         $composerJson = $this->getComposerJson();
-        $json = $composerJson->read();
+        $json         = $composerJson->read();
         unset($json['require'][self::PLUGIN_NAME]);
         $composerJson->write($json);
     }
 
     /**
      * Update the lock file
-     *
-     * @param RepositoryInterface $repository
      */
     private function updateLockFile(RepositoryInterface $repository)
     {
-        $locker = $this->composer->getLocker();
+        $locker      = $this->composer->getLocker();
         $allPackages = Collection::create($repository->getPackages())
             ->reject(function ($package) {
                 return self::PLUGIN_NAME === $package->getName();
@@ -112,10 +105,10 @@ class Uninstaller
         });
 
         $packages = $allPackages->filter(function ($package) {
-            return (! $package instanceof AliasPackage && ! $package->isDev());
+            return ! $package instanceof AliasPackage && ! $package->isDev();
         });
 
-        $platformReqs = $locker->getPlatformRequirements(false);
+        $platformReqs    = $locker->getPlatformRequirements(false);
         $platformDevReqs = array_diff($locker->getPlatformRequirements(true), $platformReqs);
 
         $result = $locker->setLockData(

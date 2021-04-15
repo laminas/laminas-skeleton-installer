@@ -13,9 +13,7 @@ use Composer\Json\JsonFile;
 
 trait ComposerJsonRetrievalTrait
 {
-    /**
-     * @var callable Factory to use for returning the composer.json path
-     */
+    /** @var callable Factory to use for returning the composer.json path */
     private $composerFileFactory = [Factory::class, 'getComposerFile'];
 
     /**
@@ -25,7 +23,7 @@ trait ComposerJsonRetrievalTrait
      */
     private function getComposerJson()
     {
-        $composerFile = call_user_func($this->composerFileFactory);
+        $composerFile = ($this->composerFileFactory)();
         return new JsonFile($composerFile);
     }
 }

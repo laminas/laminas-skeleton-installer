@@ -12,27 +12,30 @@ use Composer\Composer;
 use Composer\IO\IOInterface;
 use Laminas\SkeletonInstaller\BroadcastEventDispatcher;
 use PHPUnit\Framework\TestCase;
+use Prophecy\PhpUnit\ProphecyTrait;
 use Prophecy\Prophecy\ObjectProphecy;
 
 class BroadcastEventDispatcherTest extends TestCase
 {
+    use ProphecyTrait;
+
     /** @var Composer|ObjectProphecy */
     private $composer;
 
     /** @var IOInterface|ObjectProphecy */
     private $io;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
 
         $this->composer = $this->prophesize(Composer::class);
-        $this->io = $this->prophesize(IOInterface::class);
+        $this->io       = $this->prophesize(IOInterface::class);
     }
 
     public function testBroadcastEvent()
     {
-        $originEventDispatcher = new TestAsset\OriginEventDispatcher(
+        $originEventDispatcher    = new TestAsset\OriginEventDispatcher(
             $this->composer->reveal(),
             $this->io->reveal()
         );
