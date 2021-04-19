@@ -24,8 +24,23 @@ All notable changes to this project will be documented in this file, in reverse 
 
 - Nothing.
 
-## 0.3.0 - 2021-04-15
+## 0.3.1 - 2021-04-19
 
+-----
+
+### Release Notes for [0.3.1](https://github.com/laminas/laminas-skeleton-installer/milestone/7)
+
+0.3.x bugfix release (patch)
+
+### 0.3.1
+
+- Total issues resolved: **0**
+- Total pull requests resolved: **1**
+- Total contributors: **1**
+
+- [17: Merge release 0.2.2 into 0.3.x](https://github.com/laminas/laminas-skeleton-installer/pull/17) thanks to @github-actions[bot]
+
+## 0.3.0 - 2021-04-15
 
 -----
 
@@ -41,7 +56,31 @@ Feature release (minor)
 
 #### Enhancement
 
- - [19: Added PHP 8.0 support](https://github.com/laminas/laminas-skeleton-installer/pull/19) thanks to @gennadiylitvinyuk
+- [19: Added PHP 8.0 support](https://github.com/laminas/laminas-skeleton-installer/pull/19) thanks to @gennadiylitvinyuk
+
+## 0.2.2 - 2020-12-16
+
+#### Fixed
+
+- [#16](https://github.com/laminas/laminas-skeleton-installer/pull/16) fixes an issue with prompting present when using Composer v2 releases.
+
+- [#15](https://github.com/laminas/laminas-skeleton-installer/pull/15) fixes an issue under Composer v2 whereby a fatal error would occur due to a previously optional method argument now being required.
+
+### Release Notes for [0.2.2](https://github.com/laminas/laminas-skeleton-installer/milestone/3)
+
+0.2.x bugfix release (patch)
+
+### 0.2.2
+
+- Total issues resolved: **2**
+- Total pull requests resolved: **2**
+- Total contributors: **3**
+
+#### Bug
+
+- [16: Fix errors prompting users when using Composer v2](https://github.com/laminas/laminas-skeleton-installer/pull/16) thanks to @weierophinney and @rbroen
+- [15: Update OptionalPackagesInstaller.php](https://github.com/laminas/laminas-skeleton-installer/pull/15) thanks to @rbroen
+- [13: Fatal error on non-minimal install (selecting optional packages)](https://github.com/laminas/laminas-skeleton-installer/issues/13) thanks to @PAStheLoD
 
 ## 0.2.1 - 2020-09-11
 
