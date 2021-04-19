@@ -136,7 +136,11 @@ class OptionalPackagesInstaller
     private function requestMinimalInstall()
     {
         $question = [
-            "\n    <question>Do you want a minimal install (no optional packages)?</question> <comment>Y/n</comment>\n",
+            <<<'END'
+
+                <question>Do you want a minimal install (no optional packages)?</question> <comment>Y/n</comment>
+
+            END,
         ];
 
         while (true) {
