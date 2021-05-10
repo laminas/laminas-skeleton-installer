@@ -1,11 +1,5 @@
 <?php
 
-/**
- * @see       https://github.com/laminas/laminas-skeleton-installer for the canonical source repository
- * @copyright https://github.com/laminas/laminas-skeleton-installer/blob/master/COPYRIGHT.md
- * @license   https://github.com/laminas/laminas-skeleton-installer/blob/master/LICENSE.md New BSD License
- */
-
 namespace LaminasTest\SkeletonInstaller\TestAsset;
 
 use Composer\EventDispatcher\Event;
