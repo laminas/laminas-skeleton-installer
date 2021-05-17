@@ -1,32 +1,21 @@
 {
     "name": "laminas/laminas-skeleton-installer",
-    "description": "Installer plugin for Laminas skeleton application",
     "type": "composer-plugin",
-    "license": "BSD-3-Clause",
+    "description": "Installer plugin for Laminas skeleton application",
     "keywords": [
         "laminas",
         "skeleton-installer"
     ],
     "homepage": "https://laminas.dev",
-    "support": {
-        "docs": "https://docs.laminas.dev/laminas-skeleton-installer/",
-        "issues": "https://github.com/laminas/laminas-skeleton-installer/issues",
-        "source": "https://github.com/laminas/laminas-skeleton-installer",
-        "rss": "https://github.com/laminas/laminas-skeleton-installer/releases.atom",
-        "chat": "https://laminas.dev/chat",
-        "forum": "https://discourse.laminas.dev"
-    },
-    "config": {
-        "sort-packages": true
-    },
-    "extra": {
-        "class": "Laminas\\SkeletonInstaller\\Plugin"
-    },
+    "license": "BSD-3-Clause",
     "require": {
         "php": "^7.3 || ~8.0.0",
         "composer-plugin-api": "^1.0 || ^2.0",
         "laminas/laminas-component-installer": "^1.0 || ^2.1.2",
         "laminas/laminas-zendframework-bridge": "^1.0"
+    },
+    "replace": {
+        "zendframework/zend-skeleton-installer": "^0.1.7"
     },
     "require-dev": {
         "composer/composer": "^1.5.2 || ^2.0",
@@ -35,6 +24,12 @@
         "mikey179/vfsstream": "^1.6.7",
         "phpspec/prophecy-phpunit": "^2.0",
         "phpunit/phpunit": "^9.3"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "class": "Laminas\\SkeletonInstaller\\Plugin"
     },
     "autoload": {
         "psr-4": {
@@ -54,11 +49,16 @@
         ],
         "cs-check": "phpcs",
         "cs-fix": "phpcbf",
+        "license-check": "docheader check src/ test/",
         "test": "phpunit --colors=always",
-        "test-coverage": "phpunit --colors=always --coverage-clover clover.xml",
-        "license-check": "docheader check src/ test/"
+        "test-coverage": "phpunit --colors=always --coverage-clover clover.xml"
     },
-    "replace": {
-        "zendframework/zend-skeleton-installer": "^0.1.7"
+    "support": {
+        "issues": "https://github.com/laminas/laminas-skeleton-installer/issues",
+        "forum": "https://discourse.laminas.dev",
+        "chat": "https://laminas.dev/chat",
+        "source": "https://github.com/laminas/laminas-skeleton-installer",
+        "docs": "https://docs.laminas.dev/laminas-skeleton-installer/",
+        "rss": "https://github.com/laminas/laminas-skeleton-installer/releases.atom"
     }
 }
