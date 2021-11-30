@@ -25,7 +25,8 @@
     "require": {
         "php": "^7.3 || ~8.0.0 || ~8.1.0",
         "composer-plugin-api": "^1.0 || ^2.0",
-        "laminas/laminas-component-installer": "^1.0 || ^2.1.2"
+        "laminas/laminas-component-installer": "^1.0 || ^2.1.2",
+        "vimeo/psalm": "^4.13"
     },
     "require-dev": {
         "composer/composer": "^1.5.2 || ^2.0",
@@ -33,7 +34,8 @@
         "malukenho/docheader": "^0.1.7",
         "mikey179/vfsstream": "^1.6.10",
         "phpspec/prophecy-phpunit": "^2.0",
-        "phpunit/phpunit": "^9.3"
+        "phpunit/phpunit": "^9.3",
+        "psalm/plugin-phpunit": "^0.16.1"
     },
     "autoload": {
         "psr-4": {
@@ -53,6 +55,7 @@
         ],
         "cs-check": "phpcs",
         "cs-fix": "phpcbf",
+        "static-analysis": "psalm --shepherd --stats",
         "test": "phpunit --colors=always",
         "test-coverage": "phpunit --colors=always --coverage-clover clover.xml",
         "license-check": "docheader check src/ test/"
