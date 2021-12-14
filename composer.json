@@ -33,7 +33,9 @@
         "malukenho/docheader": "^0.1.7",
         "mikey179/vfsstream": "^1.6.10",
         "phpspec/prophecy-phpunit": "^2.0",
-        "phpunit/phpunit": "^9.3"
+        "phpunit/phpunit": "^9.3",
+        "psalm/plugin-phpunit": "^0.16.1",
+        "vimeo/psalm": "^4.13"
     },
     "autoload": {
         "psr-4": {
@@ -53,6 +55,7 @@
         ],
         "cs-check": "phpcs",
         "cs-fix": "phpcbf",
+        "static-analysis": "psalm --shepherd --stats",
         "test": "phpunit --colors=always",
         "test-coverage": "phpunit --colors=always --coverage-clover clover.xml",
         "license-check": "docheader check src/ test/"

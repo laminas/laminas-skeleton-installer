@@ -1,0 +1,457 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<files psalm-version="4.13.1@5cf660f63b548ccd4a56f62d916ee4d6028e01a3">
+  <file src="src/Collection.php">
+    <DocblockTypeContradiction occurrences="2">
+      <code>is_array($items)</code>
+      <code>null === $offset</code>
+    </DocblockTypeContradiction>
+    <MissingClosureParamType occurrences="6">
+      <code>$filtered</code>
+      <code>$filtered</code>
+      <code>$item</code>
+      <code>$item</code>
+      <code>$item</code>
+      <code>$results</code>
+    </MissingClosureParamType>
+    <MixedArrayAssignment occurrences="3">
+      <code>$filtered[]</code>
+      <code>$filtered[]</code>
+      <code>$results[]</code>
+    </MixedArrayAssignment>
+    <MixedAssignment occurrences="7">
+      <code>$accumulator</code>
+      <code>$accumulator</code>
+      <code>$filtered[]</code>
+      <code>$filtered[]</code>
+      <code>$item</code>
+      <code>$item</code>
+      <code>$results[]</code>
+    </MixedAssignment>
+    <MixedInferredReturnType occurrences="3">
+      <code>static</code>
+      <code>static</code>
+      <code>static</code>
+    </MixedInferredReturnType>
+    <MixedReturnStatement occurrences="3"/>
+    <UnsafeInstantiation occurrences="4">
+      <code>new static($items)</code>
+      <code>new static([])</code>
+      <code>new static([])</code>
+      <code>new static([])</code>
+    </UnsafeInstantiation>
+  </file>
+  <file src="src/ComposerJsonRetrievalTrait.php">
+    <MixedArgument occurrences="1">
+      <code>$composerFile</code>
+    </MixedArgument>
+    <MixedAssignment occurrences="1">
+      <code>$composerFile</code>
+    </MixedAssignment>
+  </file>
+  <file src="src/OptionalPackage.php">
+    <MixedAssignment occurrences="3">
+      <code>$this-&gt;constraint</code>
+      <code>$this-&gt;name</code>
+      <code>$this-&gt;prompt</code>
+    </MixedAssignment>
+  </file>
+  <file src="src/OptionalPackagesInstaller.php">
+    <InvalidArgument occurrences="3">
+      <code>$package</code>
+      <code>$question</code>
+      <code>$question</code>
+    </InvalidArgument>
+    <InvalidCast occurrences="2">
+      <code>$question</code>
+      <code>$question</code>
+    </InvalidCast>
+    <MissingClosureParamType occurrences="8">
+      <code>$composer</code>
+      <code>$package</code>
+      <code>$package</code>
+      <code>$package</code>
+      <code>$package</code>
+      <code>$package</code>
+      <code>$requires</code>
+      <code>$spec</code>
+    </MissingClosureParamType>
+    <MissingClosureReturnType occurrences="2">
+      <code>function ($package) {</code>
+      <code>function ($package) {</code>
+    </MissingClosureReturnType>
+    <MissingReturnType occurrences="3">
+      <code>attachPackageWhitelistBasedOnComposerVersion</code>
+      <code>removeOptionalPackages</code>
+      <code>updateComposerJson</code>
+    </MissingReturnType>
+    <MixedArgument occurrences="8">
+      <code>$composer</code>
+      <code>$json</code>
+      <code>$package</code>
+      <code>$package</code>
+      <code>$package</code>
+      <code>$requires</code>
+      <code>$spec</code>
+    </MixedArgument>
+    <MixedArgumentTypeCoercion occurrences="1"/>
+    <MixedArrayAccess occurrences="3">
+      <code>$json['extra']</code>
+      <code>$json['extra']</code>
+      <code>$json['extra']</code>
+    </MixedArrayAccess>
+    <MixedArrayAssignment occurrences="1">
+      <code>$composer[$key][$package-&gt;getName()]</code>
+    </MixedArrayAssignment>
+    <MixedAssignment occurrences="1">
+      <code>$json</code>
+    </MixedAssignment>
+    <MixedMethodCall occurrences="2">
+      <code>getName</code>
+      <code>getName</code>
+    </MixedMethodCall>
+    <PossiblyInvalidArgument occurrences="1">
+      <code>$description</code>
+    </PossiblyInvalidArgument>
+    <PossiblyNullArgument occurrences="3">
+      <code>$answer</code>
+      <code>$answer</code>
+      <code>$composer-&gt;getLocker()</code>
+    </PossiblyNullArgument>
+    <UndefinedMethod occurrences="1">
+      <code>setUpdateWhitelist</code>
+    </UndefinedMethod>
+  </file>
+  <file src="src/Plugin.php">
+    <LessSpecificImplementedReturnType occurrences="1">
+      <code>array</code>
+    </LessSpecificImplementedReturnType>
+    <MissingConstructor occurrences="2">
+      <code>$composer</code>
+      <code>$io</code>
+    </MissingConstructor>
+    <MissingReturnType occurrences="2">
+      <code>installOptionalDependencies</code>
+      <code>uninstallPlugin</code>
+    </MissingReturnType>
+  </file>
+  <file src="src/Uninstaller.php">
+    <InvalidScalarArgument occurrences="1">
+      <code>$locker-&gt;getStabilityFlags()</code>
+    </InvalidScalarArgument>
+    <MissingClosureParamType occurrences="4">
+      <code>$package</code>
+      <code>$package</code>
+      <code>$package</code>
+      <code>$package</code>
+    </MissingClosureParamType>
+    <MissingClosureReturnType occurrences="1">
+      <code>function ($package) {</code>
+    </MissingClosureReturnType>
+    <MissingReturnType occurrences="3">
+      <code>removePluginFromComposer</code>
+      <code>removePluginInstall</code>
+      <code>updateLockFile</code>
+    </MissingReturnType>
+    <MixedArgument occurrences="1">
+      <code>$json</code>
+    </MixedArgument>
+    <MixedArgumentTypeCoercion occurrences="5">
+      <code>$aliases-&gt;toArray()</code>
+      <code>$devPackages-&gt;toArray()</code>
+      <code>$packages-&gt;toArray()</code>
+      <code>$platformDevReqs</code>
+      <code>$platformReqs</code>
+    </MixedArgumentTypeCoercion>
+    <MixedArrayAccess occurrences="1">
+      <code>$json['require']</code>
+    </MixedArrayAccess>
+    <MixedAssignment occurrences="1">
+      <code>$json</code>
+    </MixedAssignment>
+    <MixedMethodCall occurrences="3">
+      <code>getName</code>
+      <code>isDev</code>
+      <code>isDev</code>
+    </MixedMethodCall>
+    <PossiblyNullArgument occurrences="2">
+      <code>$locker-&gt;getPreferLowest()</code>
+      <code>$locker-&gt;getPreferStable()</code>
+    </PossiblyNullArgument>
+    <PossiblyNullReference occurrences="1">
+      <code>getPlatformRequirements</code>
+    </PossiblyNullReference>
+  </file>
+  <file src="test/BroadcastEventDispatcherTest.php">
+    <MissingReturnType occurrences="1">
+      <code>testBroadcastEvent</code>
+    </MissingReturnType>
+    <MixedArgument occurrences="4">
+      <code>$this-&gt;composer-&gt;reveal()</code>
+      <code>$this-&gt;composer-&gt;reveal()</code>
+      <code>$this-&gt;io-&gt;reveal()</code>
+      <code>$this-&gt;io-&gt;reveal()</code>
+    </MixedArgument>
+    <PossiblyUndefinedMethod occurrences="4">
+      <code>reveal</code>
+      <code>reveal</code>
+      <code>reveal</code>
+      <code>reveal</code>
+    </PossiblyUndefinedMethod>
+  </file>
+  <file src="test/CollectionTest.php">
+    <MissingClosureParamType occurrences="6">
+      <code>$accumulator</code>
+      <code>$item</code>
+      <code>$item</code>
+      <code>$item</code>
+      <code>$item</code>
+      <code>$item</code>
+    </MissingClosureParamType>
+    <MissingReturnType occurrences="17">
+      <code>testCanInteractWithCollectionAsAnArray</code>
+      <code>testCollectionIsIterable</code>
+      <code>testConstructorAcceptsArray</code>
+      <code>testConstructorAcceptsTraversable</code>
+      <code>testConstructorRaisesExceptionForInvalidItems</code>
+      <code>testEachAppliesCallbackToEachItem</code>
+      <code>testFactoryAcceptsArray</code>
+      <code>testFactoryAcceptsTraversable</code>
+      <code>testFactoryRaisesExceptionForInvalidItems</code>
+      <code>testFilterCreatesANewCollectionWithOnlyValuesMatchedByTheCallback</code>
+      <code>testIsEmptyReturnsFalseForNonEmptyCollections</code>
+      <code>testIsEmptyReturnsTrueForEmptyCollections</code>
+      <code>testMapCreatesANewCollectionWithValuesGeneratedByTheCallback</code>
+      <code>testReduceReturnsAValueByApplyingACallbackToEachItem</code>
+      <code>testRejectCreatesANewCollectionWithValuesNotMatchedByTheCallback</code>
+      <code>testRetrievingValueByArrayKeyWhenKeyDoesNotExistRaisesException</code>
+      <code>testToArrayCastsToArray</code>
+    </MissingReturnType>
+    <MixedArgument occurrences="6">
+      <code>$item</code>
+      <code>$item</code>
+      <code>$item</code>
+      <code>$item</code>
+      <code>$items</code>
+      <code>$items</code>
+    </MixedArgument>
+    <MixedArrayAssignment occurrences="1">
+      <code>$results[]</code>
+    </MixedArrayAssignment>
+    <MixedAssignment occurrences="3">
+      <code>$item</code>
+      <code>$received</code>
+      <code>$results[]</code>
+    </MixedAssignment>
+    <MixedInferredReturnType occurrences="2">
+      <code>array</code>
+      <code>array</code>
+    </MixedInferredReturnType>
+    <MixedOperand occurrences="1">
+      <code>$accumulator</code>
+    </MixedOperand>
+    <NullArgument occurrences="1">
+      <code>$collection</code>
+    </NullArgument>
+  </file>
+  <file src="test/OptionalPackageTest.php">
+    <MissingReturnType occurrences="3">
+      <code>testCanValidateSpecifications</code>
+      <code>testCastsModuleOptionsToBooleans</code>
+      <code>testPackagesAreNotModulesByDefault</code>
+    </MissingReturnType>
+    <MixedInferredReturnType occurrences="2">
+      <code>array</code>
+      <code>array</code>
+    </MixedInferredReturnType>
+  </file>
+  <file src="test/OptionalPackagesInstallerTest.php">
+    <ImplicitToStringCast occurrences="25">
+      <code>Argument::any()</code>
+      <code>Argument::containingString('Error installing optional packages')</code>
+      <code>Argument::containingString('No optional packages selected')</code>
+      <code>Argument::containingString('No optional packages selected')</code>
+      <code>Argument::containingString('No optional packages selected')</code>
+      <code>Argument::containingString('Removing optional packages from composer.json')</code>
+      <code>Argument::containingString('Removing optional packages from composer.json')</code>
+      <code>Argument::containingString('Running an update to install optional packages')</code>
+      <code>Argument::containingString('Running an update to install optional packages')</code>
+      <code>Argument::containingString('Updating composer.json')</code>
+      <code>Argument::containingString('Updating composer.json')</code>
+      <code>Argument::containingString('Updating composer.json')</code>
+      <code>Argument::containingString('Updating root package')</code>
+      <code>Argument::containingString('Updating root package')</code>
+      <code>Argument::containingString('Will install laminas/laminas-db')</code>
+      <code>Argument::containingString('Will install laminas/laminas-db')</code>
+    </ImplicitToStringCast>
+    <InvalidFunctionCall occurrences="5">
+      <code>$installer()</code>
+      <code>$installer()</code>
+      <code>$installer()</code>
+      <code>$installer()</code>
+      <code>$installer()</code>
+    </InvalidFunctionCall>
+    <MissingClosureParamType occurrences="9">
+      <code>$arg</code>
+      <code>$arg</code>
+      <code>$arg</code>
+      <code>$arg</code>
+      <code>$arg</code>
+      <code>$arg</code>
+      <code>$arg</code>
+      <code>$arg</code>
+      <code>$arg</code>
+    </MissingClosureParamType>
+    <MissingReturnType occurrences="3">
+      <code>addExpectedPackagesAssertionBasedOnComposerVersion</code>
+      <code>testAddingAnOptionalPackageAddsItToComposerAndUpdatesAppConfig</code>
+      <code>testInstallerFailureShouldLeaveOptionalPackagesIntact</code>
+    </MissingReturnType>
+    <MixedArgument occurrences="10">
+      <code>$prompt</code>
+      <code>$prompt</code>
+      <code>$prompt</code>
+      <code>$prompt</code>
+      <code>$prompt</code>
+      <code>$prompt</code>
+      <code>$prompt</code>
+      <code>$prompt</code>
+      <code>$prompt</code>
+      <code>$prompt</code>
+    </MixedArgument>
+    <MixedAssignment occurrences="9">
+      <code>$composer</code>
+      <code>$composer</code>
+      <code>$prompt</code>
+      <code>$prompt</code>
+      <code>$prompt</code>
+      <code>$prompt</code>
+      <code>$prompt</code>
+      <code>$prompt</code>
+      <code>$prompt</code>
+    </MixedAssignment>
+    <MixedInferredReturnType occurrences="1">
+      <code>string</code>
+    </MixedInferredReturnType>
+    <MixedMethodCall occurrences="30">
+      <code>shouldBeCalled</code>
+      <code>shouldBeCalled</code>
+      <code>shouldBeCalled</code>
+      <code>shouldBeCalled</code>
+      <code>shouldBeCalled</code>
+      <code>shouldBeCalled</code>
+      <code>shouldBeCalled</code>
+      <code>shouldBeCalled</code>
+      <code>shouldBeCalled</code>
+      <code>shouldBeCalled</code>
+      <code>shouldBeCalled</code>
+      <code>shouldBeCalled</code>
+      <code>shouldBeCalled</code>
+      <code>shouldBeCalled</code>
+      <code>shouldBeCalled</code>
+      <code>shouldNotBeCalled</code>
+      <code>shouldNotBeCalled</code>
+      <code>shouldNotBeCalled</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+    </MixedMethodCall>
+    <PossiblyUndefinedMethod occurrences="30">
+      <code>ask</code>
+      <code>ask</code>
+      <code>ask</code>
+      <code>ask</code>
+      <code>ask</code>
+      <code>ask</code>
+      <code>ask</code>
+      <code>getPackage</code>
+      <code>getPackage</code>
+      <code>getPackage</code>
+      <code>getPackage</code>
+      <code>getPackage</code>
+      <code>write</code>
+      <code>write</code>
+      <code>write</code>
+      <code>write</code>
+      <code>write</code>
+      <code>write</code>
+      <code>write</code>
+      <code>write</code>
+      <code>write</code>
+      <code>write</code>
+      <code>write</code>
+      <code>write</code>
+      <code>write</code>
+      <code>write</code>
+      <code>write</code>
+      <code>write</code>
+      <code>write</code>
+      <code>write</code>
+    </PossiblyUndefinedMethod>
+    <UndefinedDocblockClass occurrences="2">
+      <code>any</code>
+      <code>any</code>
+    </UndefinedDocblockClass>
+  </file>
+  <file src="test/PluginTest.php">
+    <MissingReturnType occurrences="3">
+      <code>testActivateSetsComposerAndIoProperties</code>
+      <code>testSubscribesToExpectedEventsForComposer1</code>
+      <code>testSubscribesToExpectedEventsForComposer2</code>
+    </MissingReturnType>
+    <UnevaluatedCode occurrences="2">
+      <code>return;</code>
+      <code>return;</code>
+    </UnevaluatedCode>
+  </file>
+  <file src="test/UninstallerTest.php">
+    <MissingClosureParamType occurrences="1">
+      <code>$arg</code>
+    </MissingClosureParamType>
+    <MissingReturnType occurrences="2">
+      <code>setUpComposerJson</code>
+      <code>testRemovesPluginInstallation</code>
+    </MissingReturnType>
+    <MixedArgument occurrences="2">
+      <code>$this-&gt;composer-&gt;reveal()</code>
+      <code>$this-&gt;io-&gt;reveal()</code>
+    </MixedArgument>
+    <MixedAssignment occurrences="1">
+      <code>$composer</code>
+    </MixedAssignment>
+    <MixedMethodCall occurrences="9">
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+      <code>willReturn</code>
+    </MixedMethodCall>
+    <PossiblyUndefinedMethod occurrences="2">
+      <code>reveal</code>
+      <code>reveal</code>
+    </PossiblyUndefinedMethod>
+    <UndefinedInterfaceMethod occurrences="9">
+      <code>getMinimumStability</code>
+      <code>getPackages</code>
+      <code>getPlatformOverrides</code>
+      <code>getPlatformRequirements</code>
+      <code>getPlatformRequirements</code>
+      <code>getPreferLowest</code>
+      <code>getPreferStable</code>
+      <code>getStabilityFlags</code>
+      <code>setLockData</code>
+    </UndefinedInterfaceMethod>
+  </file>
+</files>
