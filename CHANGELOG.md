@@ -2,27 +2,32 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 0.4.0 - TBD
+## 0.4.0 - 2021-12-14
 
-### Added
 
-- Nothing.
+-----
 
-### Changed
+### Release Notes for [0.4.0](https://github.com/laminas/laminas-skeleton-installer/milestone/8)
 
-- Nothing.
+Feature release (minor)
 
-### Deprecated
+### 0.4.0
 
-- Nothing.
+- Total issues resolved: **1**
+- Total pull requests resolved: **6**
+- Total contributors: **4**
 
-### Removed
+#### Duplicate,Enhancement
 
-- Nothing.
+ - [28: Re-generate composer.lock](https://github.com/laminas/laminas-skeleton-installer/pull/28) thanks to @samsonasik
 
-### Fixed
+#### Enhancement
 
-- Nothing.
+ - [27: Add PHP 8.1 Support](https://github.com/laminas/laminas-skeleton-installer/pull/27) thanks to @samsonasik
+ - [26: Restore CI](https://github.com/laminas/laminas-skeleton-installer/pull/26) thanks to @PowerKiKi
+ - [25: Drop `laminas/laminas-zendframework-bridge` and `zendframework/*` compatibility](https://github.com/laminas/laminas-skeleton-installer/pull/25) thanks to @PowerKiKi
+ - [24: Psalm integration](https://github.com/laminas/laminas-skeleton-installer/pull/24) thanks to @ghostwriter and @boesing
+ - [22: Remove file headers](https://github.com/laminas/laminas-skeleton-installer/pull/22) thanks to @ghostwriter
 
 ## 0.3.1 - 2021-04-19
 
