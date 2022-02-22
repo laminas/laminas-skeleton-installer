@@ -2,27 +2,24 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 0.5.0 - TBD
+## 0.5.0 - 2022-02-22
 
-### Added
 
-- Nothing.
+-----
 
-### Changed
+### Release Notes for [0.5.0](https://github.com/laminas/laminas-skeleton-installer/milestone/11)
 
-- Nothing.
+Feature release (minor)
 
-### Deprecated
+### 0.5.0
 
-- Nothing.
+- Total issues resolved: **0**
+- Total pull requests resolved: **1**
+- Total contributors: **1**
 
-### Removed
+#### Enhancement
 
-- Nothing.
-
-### Fixed
-
-- Nothing.
+ - [30: Forward compat for Composer 2.3+](https://github.com/laminas/laminas-skeleton-installer/pull/30) thanks to @Seldaek
 
 ## 0.4.0 - 2021-12-14
 
