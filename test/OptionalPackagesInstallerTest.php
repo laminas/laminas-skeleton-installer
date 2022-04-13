@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Laminas\SkeletonInstaller;
+namespace LaminasTest\SkeletonInstaller;
 
 use Composer\Composer;
 use Composer\Installer;
@@ -10,6 +10,7 @@ use Composer\IO\IOInterface;
 use Composer\Package\Link;
 use Composer\Package\RootPackageInterface;
 use Composer\Plugin\PluginInterface;
+use Laminas\SkeletonInstaller\OptionalPackagesInstaller;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
