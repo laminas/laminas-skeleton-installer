@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Laminas\SkeletonInstaller;
+namespace LaminasTest\SkeletonInstaller;
 
 use Composer\Composer;
 use Composer\Installer;
@@ -10,6 +10,7 @@ use Composer\IO\IOInterface;
 use Composer\Package\Link;
 use Composer\Package\RootPackageInterface;
 use Composer\Plugin\PluginInterface;
+use Laminas\SkeletonInstaller\OptionalPackagesInstaller;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
 use Prophecy\Argument;
@@ -19,25 +20,29 @@ use Prophecy\Prophecy\ProphecyInterface;
 use ReflectionProperty;
 
 use function array_key_exists;
-use function array_shift;
 use function file_get_contents;
 use function is_array;
 use function json_decode;
 use function json_encode;
-use function strpos;
 use function version_compare;
 
 class OptionalPackagesInstallerTest extends TestCase
 {
     use ProphecyTrait;
 
-    /** @var Composer|ProphecyInterface */
+    /**
+     * @psalm-var ObjectProphecy<Composer>
+     * @var Composer|ProphecyInterface
+     */
     private $composer;
 
-    /** @var IOInterface|ProphecyInterface */
+    /**
+     * @psalm-var ObjectProphecy<IOInterface>
+     * @var IOInterface|ProphecyInterface
+     */
     private $io;
 
-    /** @var OptionalPackagesInstaller|ProphecyInterface */
+    /** @var OptionalPackagesInstaller */
     private $installer;
 
     public function setUp(): void
@@ -136,13 +141,9 @@ class OptionalPackagesInstallerTest extends TestCase
         ]);
         $this->composer->getPackage()->willReturn($package->reveal());
 
-        $this->io->ask(Argument::that(function ($arg) {
-            if (! is_array($arg)) {
-                return false;
-            }
-            $prompt = array_shift($arg);
-            return false !== strpos($prompt, 'Do you want a minimal install');
-        }), 'y')->willReturn('y');
+        $this->io->ask(Argument::containingString('Do you want a minimal install'), 'y')
+            ->shouldBeCalled()
+            ->willReturn('y');
         $this->io->write(Argument::containingString('Removing optional packages from composer.json'))->shouldBeCalled();
         $this->io->write(Argument::containingString('Updating composer.json'))->shouldBeCalled();
 
@@ -171,22 +172,16 @@ class OptionalPackagesInstallerTest extends TestCase
         ]);
         $this->composer->getPackage()->willReturn($package->reveal());
 
-        $this->io->ask(Argument::that(function ($arg) {
-            if (! is_array($arg)) {
-                return false;
-            }
-            $prompt = array_shift($arg);
-            return false !== strpos($prompt, 'Do you want a minimal install');
-        }), 'y')->willReturn('n');
+        $this->io->ask(Argument::containingString('Do you want a minimal install'), 'y')
+            ->shouldBeCalled()
+            ->willReturn('n');
 
-        $this->io->ask(Argument::that(function ($arg) {
-            if (! is_array($arg)) {
-                return false;
-            }
-            $prompt = array_shift($arg);
-            return (false !== strpos($prompt, 'This is a prompt'))
-                && (false !== strpos($prompt, 'y/N'));
-        }), 'n')->willReturn('n');
+        $this->io->ask(
+            Argument::allOf(Argument::containingString('This is a prompt'), Argument::containingString('y/N')),
+            Argument::any()
+        )
+            ->shouldBeCalled()
+            ->willReturn('n');
 
         $this->io->write(Argument::containingString('No optional packages selected'))->shouldBeCalled();
         $this->io->write(Argument::containingString('Removing optional packages from composer.json'))->shouldBeCalled();
@@ -217,22 +212,16 @@ class OptionalPackagesInstallerTest extends TestCase
         ]);
         $this->composer->getPackage()->willReturn($package->reveal());
 
-        $this->io->ask(Argument::that(function ($arg) {
-            if (! is_array($arg)) {
-                return false;
-            }
-            $prompt = array_shift($arg);
-            return false !== strpos($prompt, 'Do you want a minimal install');
-        }), 'y')->willReturn('n');
+        $this->io->ask(Argument::containingString('Do you want a minimal install'), 'y')
+            ->shouldBeCalled()
+            ->willReturn('n');
 
-        $this->io->ask(Argument::that(function ($arg) {
-            if (! is_array($arg)) {
-                return false;
-            }
-            $prompt = array_shift($arg);
-            return (false !== strpos($prompt, 'This is a prompt'))
-                && (false !== strpos($prompt, 'y/N'));
-        }), 'n')->willReturn('y');
+        $this->io->ask(
+            Argument::allOf(Argument::containingString('This is a prompt'), Argument::containingString('y/N')),
+            Argument::any()
+        )
+            ->shouldBeCalled()
+            ->willReturn('y');
 
         $this->io->write(Argument::containingString('Will install laminas/laminas-db'))->shouldBeCalled();
         $this->io->write(Argument::containingString(
@@ -285,22 +274,16 @@ class OptionalPackagesInstallerTest extends TestCase
         ]);
         $this->composer->getPackage()->willReturn($package->reveal());
 
-        $this->io->ask(Argument::that(function ($arg) {
-            if (! is_array($arg)) {
-                return false;
-            }
-            $prompt = array_shift($arg);
-            return false !== strpos($prompt, 'Do you want a minimal install');
-        }), 'y')->willReturn('n');
+        $this->io->ask(Argument::containingString('Do you want a minimal install'), 'y')
+            ->shouldBeCalled()
+            ->willReturn('n');
 
-        $this->io->ask(Argument::that(function ($arg) {
-            if (! is_array($arg)) {
-                return false;
-            }
-            $prompt = array_shift($arg);
-            return (false !== strpos($prompt, 'This is a prompt'))
-                && (false !== strpos($prompt, 'y/N'));
-        }), 'n')->willReturn('y');
+        $this->io->ask(
+            Argument::allOf(Argument::containingString('This is a prompt'), Argument::containingString('y/N')),
+            Argument::any()
+        )
+            ->shouldBeCalled()
+            ->willReturn('y');
 
         $this->io->write(Argument::containingString('Will install laminas/laminas-db'))->shouldBeCalled();
         $this->io->write(Argument::containingString(

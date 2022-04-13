@@ -131,13 +131,11 @@ class OptionalPackagesInstaller
      */
     private function requestMinimalInstall()
     {
-        $question = [
-            <<<'END'
+        $question = <<<'END'
 
                 <question>Do you want a minimal install (no optional packages)?</question> <comment>Y/n</comment>
 
-            END,
-        ];
+        END;
 
         while (true) {
             $answer = $this->io->ask($question, 'y');
@@ -162,12 +160,10 @@ class OptionalPackagesInstaller
      */
     private function promptForPackage(OptionalPackage $package)
     {
-        $question = [
-            sprintf(
-                "\n    <question>%s</question> <comment>y/N</comment>\n",
-                $package->getPrompt()
-            ),
-        ];
+        $question = sprintf(
+            "\n    <question>%s</question> <comment>y/N</comment>\n",
+            $package->getPrompt()
+        );
 
         while (true) {
             $answer = $this->io->ask($question, 'n');
