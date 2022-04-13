@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="4.13.1@5cf660f63b548ccd4a56f62d916ee4d6028e01a3">
+<files psalm-version="v4.15.0@a1b5e489e6fcebe40cb804793d964e99fc347820">
   <file src="src/Collection.php">
     <DocblockTypeContradiction occurrences="2">
       <code>is_array($items)</code>
@@ -56,15 +56,9 @@
     </MixedAssignment>
   </file>
   <file src="src/OptionalPackagesInstaller.php">
-    <InvalidArgument occurrences="3">
+    <InvalidArgument occurrences="1">
       <code>$package</code>
-      <code>$question</code>
-      <code>$question</code>
     </InvalidArgument>
-    <InvalidCast occurrences="2">
-      <code>$question</code>
-      <code>$question</code>
-    </InvalidCast>
     <MissingClosureParamType occurrences="8">
       <code>$composer</code>
       <code>$package</code>
@@ -265,32 +259,7 @@
     </MixedInferredReturnType>
   </file>
   <file src="test/OptionalPackagesInstallerTest.php">
-    <ImplicitToStringCast occurrences="25">
-      <code>Argument::any()</code>
-      <code>Argument::containingString('Error installing optional packages')</code>
-      <code>Argument::containingString('No optional packages selected')</code>
-      <code>Argument::containingString('No optional packages selected')</code>
-      <code>Argument::containingString('No optional packages selected')</code>
-      <code>Argument::containingString('Removing optional packages from composer.json')</code>
-      <code>Argument::containingString('Removing optional packages from composer.json')</code>
-      <code>Argument::containingString('Running an update to install optional packages')</code>
-      <code>Argument::containingString('Running an update to install optional packages')</code>
-      <code>Argument::containingString('Updating composer.json')</code>
-      <code>Argument::containingString('Updating composer.json')</code>
-      <code>Argument::containingString('Updating composer.json')</code>
-      <code>Argument::containingString('Updating root package')</code>
-      <code>Argument::containingString('Updating root package')</code>
-      <code>Argument::containingString('Will install laminas/laminas-db')</code>
-      <code>Argument::containingString('Will install laminas/laminas-db')</code>
-    </ImplicitToStringCast>
-    <InvalidFunctionCall occurrences="5">
-      <code>$installer()</code>
-      <code>$installer()</code>
-      <code>$installer()</code>
-      <code>$installer()</code>
-      <code>$installer()</code>
-    </InvalidFunctionCall>
-    <MissingClosureParamType occurrences="9">
+    <MissingClosureParamType occurrences="2">
       <code>$arg</code>
       <code>$arg</code>
       <code>$arg</code>
@@ -306,96 +275,13 @@
       <code>testAddingAnOptionalPackageAddsItToComposerAndUpdatesAppConfig</code>
       <code>testInstallerFailureShouldLeaveOptionalPackagesIntact</code>
     </MissingReturnType>
-    <MixedArgument occurrences="10">
-      <code>$prompt</code>
-      <code>$prompt</code>
-      <code>$prompt</code>
-      <code>$prompt</code>
-      <code>$prompt</code>
-      <code>$prompt</code>
-      <code>$prompt</code>
-      <code>$prompt</code>
-      <code>$prompt</code>
-      <code>$prompt</code>
-    </MixedArgument>
-    <MixedAssignment occurrences="9">
+    <MixedAssignment occurrences="2">
       <code>$composer</code>
       <code>$composer</code>
-      <code>$prompt</code>
-      <code>$prompt</code>
-      <code>$prompt</code>
-      <code>$prompt</code>
-      <code>$prompt</code>
-      <code>$prompt</code>
-      <code>$prompt</code>
     </MixedAssignment>
     <MixedInferredReturnType occurrences="1">
       <code>string</code>
     </MixedInferredReturnType>
-    <MixedMethodCall occurrences="30">
-      <code>shouldBeCalled</code>
-      <code>shouldBeCalled</code>
-      <code>shouldBeCalled</code>
-      <code>shouldBeCalled</code>
-      <code>shouldBeCalled</code>
-      <code>shouldBeCalled</code>
-      <code>shouldBeCalled</code>
-      <code>shouldBeCalled</code>
-      <code>shouldBeCalled</code>
-      <code>shouldBeCalled</code>
-      <code>shouldBeCalled</code>
-      <code>shouldBeCalled</code>
-      <code>shouldBeCalled</code>
-      <code>shouldBeCalled</code>
-      <code>shouldBeCalled</code>
-      <code>shouldNotBeCalled</code>
-      <code>shouldNotBeCalled</code>
-      <code>shouldNotBeCalled</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-    </MixedMethodCall>
-    <PossiblyUndefinedMethod occurrences="30">
-      <code>ask</code>
-      <code>ask</code>
-      <code>ask</code>
-      <code>ask</code>
-      <code>ask</code>
-      <code>ask</code>
-      <code>ask</code>
-      <code>getPackage</code>
-      <code>getPackage</code>
-      <code>getPackage</code>
-      <code>getPackage</code>
-      <code>getPackage</code>
-      <code>write</code>
-      <code>write</code>
-      <code>write</code>
-      <code>write</code>
-      <code>write</code>
-      <code>write</code>
-      <code>write</code>
-      <code>write</code>
-      <code>write</code>
-      <code>write</code>
-      <code>write</code>
-      <code>write</code>
-      <code>write</code>
-      <code>write</code>
-      <code>write</code>
-      <code>write</code>
-      <code>write</code>
-      <code>write</code>
-    </PossiblyUndefinedMethod>
     <UndefinedDocblockClass occurrences="2">
       <code>any</code>
       <code>any</code>
