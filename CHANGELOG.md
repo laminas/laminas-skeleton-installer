@@ -70,27 +70,28 @@ All notable changes to this project will be documented in this file, in reverse 
 
  - [10: Added note about how this is not to be used stand-alone](https://github.com/laminas/laminas-skeleton-installer/pull/10) thanks to @TomHAnderson
 
-## 0.2.0 - 2020-07-01
+## 0.2.0 - 2022-04-13
 
 ### Added
 
 - [#9](https://github.com/laminas/laminas-skeleton-installer/pull/9) Added support for composer 2.0
 
-### Changed
 
-- Nothing.
+-----
 
-### Deprecated
+### Release Notes for [0.2.0](https://github.com/laminas/laminas-skeleton-installer/milestone/1)
 
-- Nothing.
 
-### Removed
 
-- Nothing.
+### 0.2.0
 
-### Fixed
+- Total issues resolved: **0**
+- Total pull requests resolved: **1**
+- Total contributors: **1**
 
-- Nothing.
+#### Enhancement
+
+ - [9: Add composer v2 support](https://github.com/laminas/laminas-skeleton-installer/pull/9) thanks to @boesing
 
 ## 0.1.7 - 2019-11-15
 
