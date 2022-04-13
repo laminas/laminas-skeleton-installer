@@ -2,27 +2,28 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 0.6.0 - TBD
+## 0.6.0 - 2022-04-13
 
-### Added
 
-- Nothing.
+-----
 
-### Changed
+### Release Notes for [0.6.0](https://github.com/laminas/laminas-skeleton-installer/milestone/13)
 
-- Nothing.
+Feature release (minor)
 
-### Deprecated
+### 0.6.0
 
-- Nothing.
+- Total issues resolved: **1**
+- Total pull requests resolved: **2**
+- Total contributors: **3**
 
-### Removed
+#### Bug
 
-- Nothing.
+ - [32: Fix type incompatiblity with `Composer\IO\IOInterface::ask()`](https://github.com/laminas/laminas-skeleton-installer/pull/32) thanks to @Xerkus and @pgrafe
 
-### Fixed
+#### Enhancement
 
-- Nothing.
+ - [29: Prepare for Renovate with reusable workflows](https://github.com/laminas/laminas-skeleton-installer/pull/29) thanks to @ghostwriter
 
 ## 0.5.0 - 2022-02-22
 
