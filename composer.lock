@@ -4,39 +4,37 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f4d8e2a6c783dcd3bcc5aade6275cfbf",
+    "content-hash": "5633cd68084291d14b3b9c721607afc7",
     "packages": [
         {
             "name": "laminas/laminas-component-installer",
-            "version": "2.5.1",
+            "version": "3.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laminas/laminas-component-installer.git",
-                "reference": "6f1e11473861e4e2208178b1dfa395a992039674"
+                "reference": "b019598964a1bda56c9fa2199287469fe75c0a25"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-component-installer/zipball/6f1e11473861e4e2208178b1dfa395a992039674",
-                "reference": "6f1e11473861e4e2208178b1dfa395a992039674",
+                "url": "https://api.github.com/repos/laminas/laminas-component-installer/zipball/b019598964a1bda56c9fa2199287469fe75c0a25",
+                "reference": "b019598964a1bda56c9fa2199287469fe75c0a25",
                 "shasum": ""
             },
             "require": {
-                "composer-plugin-api": "^1.0 || ^2.0",
-                "laminas/laminas-zendframework-bridge": "^1.0",
-                "php": "^7.3 || ~8.0.0"
+                "composer-plugin-api": "^2.0",
+                "php": "^7.4 || ~8.0.0 || ~8.1.0"
             },
-            "replace": {
-                "zendframework/zend-component-installer": "^2.1.2"
+            "conflict": {
+                "zendframework/zend-component-installer": "*"
             },
             "require-dev": {
-                "composer/composer": "^1.5.2 || ^2.0",
-                "laminas/laminas-coding-standard": "~2.1.4",
-                "malukenho/docheader": "^0.1.6",
-                "mikey179/vfsstream": "^1.6.7",
-                "phpunit/phpunit": "^9.3",
-                "psalm/plugin-phpunit": "^0.13.0",
-                "vimeo/psalm": "^4.2",
-                "webmozart/assert": "^1.6"
+                "composer/composer": "^2.3",
+                "laminas/laminas-coding-standard": "~2.3.0",
+                "mikey179/vfsstream": "^1.6.10",
+                "phpunit/phpunit": "^9.5.19",
+                "psalm/plugin-phpunit": "^0.16.1",
+                "vimeo/psalm": "^4.23",
+                "webmozart/assert": "^1.10.0"
             },
             "type": "composer-plugin",
             "extra": {
@@ -73,69 +71,7 @@
                     "type": "community_bridge"
                 }
             ],
-            "time": "2021-09-30T12:20:49+00:00"
-        },
-        {
-            "name": "laminas/laminas-zendframework-bridge",
-            "version": "1.4.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/laminas/laminas-zendframework-bridge.git",
-                "reference": "bf180a382393e7db5c1e8d0f2ec0c4af9c724baf"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-zendframework-bridge/zipball/bf180a382393e7db5c1e8d0f2ec0c4af9c724baf",
-                "reference": "bf180a382393e7db5c1e8d0f2ec0c4af9c724baf",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^7.3 || ~8.0.0 || ~8.1.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "^9.3",
-                "psalm/plugin-phpunit": "^0.15.1",
-                "squizlabs/php_codesniffer": "^3.5",
-                "vimeo/psalm": "^4.6"
-            },
-            "type": "library",
-            "extra": {
-                "laminas": {
-                    "module": "Laminas\\ZendFrameworkBridge"
-                }
-            },
-            "autoload": {
-                "files": [
-                    "src/autoload.php"
-                ],
-                "psr-4": {
-                    "Laminas\\ZendFrameworkBridge\\": "src//"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "description": "Alias legacy ZF class names to Laminas Project equivalents.",
-            "keywords": [
-                "ZendFramework",
-                "autoloading",
-                "laminas",
-                "zf"
-            ],
-            "support": {
-                "forum": "https://discourse.laminas.dev/",
-                "issues": "https://github.com/laminas/laminas-zendframework-bridge/issues",
-                "rss": "https://github.com/laminas/laminas-zendframework-bridge/releases.atom",
-                "source": "https://github.com/laminas/laminas-zendframework-bridge"
-            },
-            "funding": [
-                {
-                    "url": "https://funding.communitybridge.org/projects/laminas-project",
-                    "type": "community_bridge"
-                }
-            ],
-            "time": "2021-09-03T17:53:30+00:00"
+            "time": "2022-07-13T13:58:21+00:00"
         }
     ],
     "packages-dev": [
