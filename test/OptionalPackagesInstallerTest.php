@@ -9,7 +9,6 @@ use Composer\Installer;
 use Composer\IO\IOInterface;
 use Composer\Package\Link;
 use Composer\Package\RootPackageInterface;
-use Composer\Plugin\PluginInterface;
 use Laminas\SkeletonInstaller\OptionalPackagesInstaller;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
@@ -24,7 +23,6 @@ use function file_get_contents;
 use function is_array;
 use function json_decode;
 use function json_encode;
-use function version_compare;
 
 class OptionalPackagesInstallerTest extends TestCase
 {
@@ -104,7 +102,7 @@ class OptionalPackagesInstallerTest extends TestCase
         $installer->setDevMode(true)->shouldBeCalled();
         $installer->setUpdate(true)->shouldBeCalled();
 
-        $this->addExpectedPackagesAssertionBasedOnComposerVersion($installer, $expectedPackages);
+        $installer->setUpdateAllowList($expectedPackages)->shouldBeCalled();
         $installer->run()->willReturn($expectedReturn);
 
         $r = new ReflectionProperty($this->installer, 'installerFactory');
@@ -320,22 +318,5 @@ class OptionalPackagesInstallerTest extends TestCase
 
         $installer = $this->installer;
         $this->assertNull($installer());
-    }
-
-    /**
-     * @param ObjectProphecy<Installer> $installer
-     */
-    private function addExpectedPackagesAssertionBasedOnComposerVersion(
-        ObjectProphecy $installer,
-        array $expectedPackages
-    ) {
-        // Composer v1.0 support
-        if (version_compare(PluginInterface::PLUGIN_API_VERSION, '2.0', 'lt')) {
-            $installer->setUpdateWhitelist($expectedPackages)->shouldBeCalled();
-
-            return;
-        }
-
-        $installer->setUpdateAllowList($expectedPackages)->shouldBeCalled();
     }
 }
