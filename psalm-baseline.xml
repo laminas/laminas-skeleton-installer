@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="v4.15.0@a1b5e489e6fcebe40cb804793d964e99fc347820">
+<files psalm-version="4.26.0@6998fabb2bf528b65777bf9941920888d23c03ac">
   <file src="src/Collection.php">
     <DocblockTypeContradiction occurrences="2">
       <code>is_array($items)</code>
@@ -78,7 +78,9 @@
       <code>removeOptionalPackages</code>
       <code>updateComposerJson</code>
     </MissingReturnType>
-    <MixedArgument occurrences="8">
+    <MixedArgument occurrences="10">
+      <code>$answer</code>
+      <code>$answer</code>
       <code>$composer</code>
       <code>$json</code>
       <code>$package</code>
@@ -96,7 +98,9 @@
     <MixedArrayAssignment occurrences="1">
       <code>$composer[$key][$package-&gt;getName()]</code>
     </MixedArrayAssignment>
-    <MixedAssignment occurrences="1">
+    <MixedAssignment occurrences="3">
+      <code>$answer</code>
+      <code>$answer</code>
       <code>$json</code>
     </MixedAssignment>
     <MixedMethodCall occurrences="2">
@@ -106,11 +110,6 @@
     <PossiblyInvalidArgument occurrences="1">
       <code>$description</code>
     </PossiblyInvalidArgument>
-    <PossiblyNullArgument occurrences="3">
-      <code>$answer</code>
-      <code>$answer</code>
-      <code>$composer-&gt;getLocker()</code>
-    </PossiblyNullArgument>
     <UndefinedMethod occurrences="1">
       <code>setUpdateWhitelist</code>
     </UndefinedMethod>
@@ -171,9 +170,6 @@
       <code>$locker-&gt;getPreferLowest()</code>
       <code>$locker-&gt;getPreferStable()</code>
     </PossiblyNullArgument>
-    <PossiblyNullReference occurrences="1">
-      <code>getPlatformRequirements</code>
-    </PossiblyNullReference>
   </file>
   <file src="test/BroadcastEventDispatcherTest.php">
     <MissingReturnType occurrences="1">
@@ -259,17 +255,6 @@
     </MixedInferredReturnType>
   </file>
   <file src="test/OptionalPackagesInstallerTest.php">
-    <MissingClosureParamType occurrences="2">
-      <code>$arg</code>
-      <code>$arg</code>
-      <code>$arg</code>
-      <code>$arg</code>
-      <code>$arg</code>
-      <code>$arg</code>
-      <code>$arg</code>
-      <code>$arg</code>
-      <code>$arg</code>
-    </MissingClosureParamType>
     <MissingReturnType occurrences="3">
       <code>addExpectedPackagesAssertionBasedOnComposerVersion</code>
       <code>testAddingAnOptionalPackageAddsItToComposerAndUpdatesAppConfig</code>
@@ -299,9 +284,6 @@
     </UnevaluatedCode>
   </file>
   <file src="test/UninstallerTest.php">
-    <MissingClosureParamType occurrences="1">
-      <code>$arg</code>
-    </MissingClosureParamType>
     <MissingReturnType occurrences="2">
       <code>setUpComposerJson</code>
       <code>testRemovesPluginInstallation</code>
