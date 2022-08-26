@@ -31,11 +31,11 @@
     },
     "require": {
         "php": "^7.4 || ~8.0.0 || ~8.1.0",
-        "composer-plugin-api": "^1.0 || ^2.0",
+        "composer-plugin-api": "^2.2",
         "laminas/laminas-component-installer": "^3.0"
     },
     "require-dev": {
-        "composer/composer": "^1.5.2 || ^2.0",
+        "composer/composer": "^2.4",
         "laminas/laminas-coding-standard": "~2.1",
         "malukenho/docheader": "^0.1.7",
         "mikey179/vfsstream": "^1.6.10",
