@@ -10,12 +10,10 @@ use Composer\IO\IOInterface;
 use Composer\Package\Link;
 use Composer\Package\RootPackageInterface;
 use Composer\Package\Version\VersionParser;
-use Composer\Plugin\PluginInterface;
 
 use function is_array;
 use function sprintf;
 use function strtolower;
-use function version_compare;
 
 /**
  * Prompt for and install optional packages.
@@ -337,18 +335,6 @@ class OptionalPackagesInstaller
         ComposerInstaller $installer,
         Collection $packagesToInstall
     ) {
-        // Composer v1.0 support
-        if (version_compare(PluginInterface::PLUGIN_API_VERSION, '2.0', 'lt')) {
-            $installer->setUpdateWhitelist(
-                $packagesToInstall->map(function ($package) {
-                    return $package->getName();
-                })
-                    ->toArray()
-            );
-
-            return;
-        }
-
         $installer->setUpdateAllowList(
             $packagesToInstall->map(function ($package) {
                 return $package->getName();
