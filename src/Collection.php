@@ -22,7 +22,6 @@ use function sprintf;
 /**
  * @template TKey of array-key
  * @template TValue
- *
  * @template-implements ArrayAccess<TKey, TValue>
  * @template-implements IteratorAggregate<TKey, TValue>
  */
@@ -54,7 +53,6 @@ class Collection implements
     /**
      * @template TInputKey of array-key
      * @template TInputValue
-     *
      * @param iterable<TInputKey, TInputValue> $items
      * @return self<TInputKey, TInputValue>
      */
@@ -75,9 +73,8 @@ class Collection implements
 
     /**
      * Apply a callback to each item in the collection.
-     * 
-     * @param callable(TValue): void $callback
      *
+     * @param callable(TValue): void $callback
      * @return $this
      */
     public function each(callable $callback)
@@ -90,10 +87,9 @@ class Collection implements
 
     /**
      * Reduce the collection to a single value.
-     * 
+     *
      * @template TAccumulator
      * @param callable(TAccumulator, TValue): TAccumulator $callback
-     *
      * @param TAccumulator $initial Initial value.
      * @return TAccumulator
      */
@@ -114,7 +110,6 @@ class Collection implements
      * Filter callback should return true for values to keep.
      *
      * @param callable(TValue): bool $callback
-     *
      * @return self<int, TValue>
      */
     public function filter(callable $callback)
@@ -144,7 +139,6 @@ class Collection implements
      * Filter callback should return true for values to reject.
      *
      * @param callable(TValue): bool $callback
-     *
      * @return self<int, TValue>
      */
     public function reject(callable $callback)
@@ -174,9 +168,7 @@ class Collection implements
      * Callback should return the new value to use.
      *
      * @template TMapResult
-     *
      * @param callable(TValue): TMapResult $callback
-     *
      * @return self<int, TMapResult>
      */
     public function map(callable $callback)

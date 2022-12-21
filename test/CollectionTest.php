@@ -10,7 +10,6 @@ use InvalidArgumentException;
 use Laminas\SkeletonInstaller\Collection;
 use OutOfRangeException;
 use PHPUnit\Framework\TestCase;
-use Traversable;
 
 use function array_values;
 use function strstr;

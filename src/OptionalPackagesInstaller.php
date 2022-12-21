@@ -204,7 +204,7 @@ class OptionalPackagesInstaller
      *
      * Adds all packages to the appropriate require or require-dev sections of
      * the composer.json, and removes the extra.laminas-skeleton-installer node.
-     * 
+     *
      * @param Collection<int, OptionalPackage> $packagesToInstall
      */
     private function updateComposerJson(Collection $packagesToInstall): void
@@ -238,7 +238,6 @@ class OptionalPackagesInstaller
      * Update the root package definition
      *
      * @param Collection<int, OptionalPackage> $packagesToInstall
-     *
      * @return RootPackageInterface
      */
     private function updateRootPackage(RootPackageInterface $package, Collection $packagesToInstall)

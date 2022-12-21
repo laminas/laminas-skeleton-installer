@@ -9,13 +9,14 @@ use function array_key_exists;
 class OptionalPackage
 {
     private string $constraint;
-    private bool $dev = false;
+    private bool $dev    = false;
     private bool $module = false;
     private string $name;
     private string $prompt;
 
     /**
-     * @param array{
+     * @param array $spec
+     * @psalm-param array{
      *     constraint: string,
      *     name: string,
      *     prompt: string,
