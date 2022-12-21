@@ -18,22 +18,22 @@ use function strtoupper;
 
 class CollectionTest extends TestCase
 {
-    public function testConstructorAcceptsArray()
+    public function testConstructorAcceptsArray(): void
     {
         $this->assertInstanceOf(Collection::class, new Collection([]));
     }
 
-    public function testConstructorAcceptsTraversable()
+    public function testConstructorAcceptsTraversable(): void
     {
         $this->assertInstanceOf(Collection::class, new Collection(new ArrayObject([])));
     }
 
-    public function testFactoryAcceptsArray()
+    public function testFactoryAcceptsArray(): void
     {
         $this->assertInstanceOf(Collection::class, Collection::create([]));
     }
 
-    public function testFactoryAcceptsTraversable()
+    public function testFactoryAcceptsTraversable(): void
     {
         $this->assertInstanceOf(Collection::class, Collection::create(new ArrayObject([])));
     }
@@ -57,7 +57,7 @@ class CollectionTest extends TestCase
      * @dataProvider invalidCollections
      * @param mixed $items
      */
-    public function testConstructorRaisesExceptionForInvalidItems($items)
+    public function testConstructorRaisesExceptionForInvalidItems($items): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Collections require arrays or Traversable objects');
@@ -69,7 +69,7 @@ class CollectionTest extends TestCase
      * @dataProvider invalidCollections
      * @param mixed $items
      */
-    public function testFactoryRaisesExceptionForInvalidItems($items)
+    public function testFactoryRaisesExceptionForInvalidItems($items): void
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Collections require arrays or Traversable objects');
@@ -92,17 +92,18 @@ class CollectionTest extends TestCase
 
     /**
      * @dataProvider collectionsForArrays
-     * @param array|Traversable $items
+     * @param iterable<array-key, mixed> $items
      * @param array $expected
      */
-    public function testToArrayCastsToArray($items, array $expected)
+    public function testToArrayCastsToArray($items, array $expected): void
     {
         $collection = Collection::create($items);
         $this->assertEquals($expected, $collection->toArray());
     }
 
-    public function testEachAppliesCallbackToEachItem()
+    public function testEachAppliesCallbackToEachItem(): void
     {
+        /** @var Collection<int, string> $collection */
         $collection = Collection::create([
             'item1',
             'item2',
@@ -120,8 +121,9 @@ class CollectionTest extends TestCase
         ], $results);
     }
 
-    public function testReduceReturnsAValueByApplyingACallbackToEachItem()
+    public function testReduceReturnsAValueByApplyingACallbackToEachItem(): void
     {
+        /** @var Collection<int, string> $collection */
         $collection = Collection::create([
             'item1',
             'item2',
@@ -134,8 +136,9 @@ class CollectionTest extends TestCase
         $this->assertEquals(':item1:item2:', $received);
     }
 
-    public function testFilterCreatesANewCollectionWithOnlyValuesMatchedByTheCallback()
+    public function testFilterCreatesANewCollectionWithOnlyValuesMatchedByTheCallback(): void
     {
+        /** @var Collection<int, string> $collection */
         $collection = Collection::create([
             'item1',
             'item2',
@@ -147,8 +150,8 @@ class CollectionTest extends TestCase
             'item32',
         ]);
 
-        $filtered = $collection->filter(function ($item) {
-            return strstr($item, '2');
+        $filtered = $collection->filter(function ($item): bool {
+            return (bool) strstr($item, '2');
         });
 
         $this->assertInstanceOf(Collection::class, $filtered);
@@ -162,8 +165,9 @@ class CollectionTest extends TestCase
         ], array_values($filtered->toArray()));
     }
 
-    public function testRejectCreatesANewCollectionWithValuesNotMatchedByTheCallback()
+    public function testRejectCreatesANewCollectionWithValuesNotMatchedByTheCallback(): void
     {
+        /** @var Collection<int, string> $collection */
         $collection = Collection::create([
             'item1',
             'item2',
@@ -175,8 +179,8 @@ class CollectionTest extends TestCase
             'item32',
         ]);
 
-        $filtered = $collection->reject(function ($item) {
-            return strstr($item, '2');
+        $filtered = $collection->reject(function ($item): bool {
+            return (bool) strstr($item, '2');
         });
 
         $this->assertInstanceOf(Collection::class, $filtered);
@@ -188,7 +192,7 @@ class CollectionTest extends TestCase
         ], array_values($filtered->toArray()));
     }
 
-    public function testMapCreatesANewCollectionWithValuesGeneratedByTheCallback()
+    public function testMapCreatesANewCollectionWithValuesGeneratedByTheCallback(): void
     {
         $collection = Collection::create([
             'item1',
@@ -219,8 +223,9 @@ class CollectionTest extends TestCase
         ], array_values($mapped->toArray()));
     }
 
-    public function testCanInteractWithCollectionAsAnArray()
+    public function testCanInteractWithCollectionAsAnArray(): void
     {
+        /** @var Collection<string, string> $collection */
         $collection = Collection::create([
             'foo' => 'bar',
         ]);
@@ -236,8 +241,9 @@ class CollectionTest extends TestCase
         $this->assertCount(2, $collection);
     }
 
-    public function testRetrievingValueByArrayKeyWhenKeyDoesNotExistRaisesException()
+    public function testRetrievingValueByArrayKeyWhenKeyDoesNotExistRaisesException(): void
     {
+        /** @var Collection<string, mixed> $collection */
         $collection = Collection::create([]);
 
         $this->expectException(OutOfRangeException::class);
@@ -246,19 +252,19 @@ class CollectionTest extends TestCase
         $collection['foo'];
     }
 
-    public function testIsEmptyReturnsTrueForEmptyCollections()
+    public function testIsEmptyReturnsTrueForEmptyCollections(): void
     {
         $collection = Collection::create([]);
         $this->assertTrue($collection->isEmpty());
     }
 
-    public function testIsEmptyReturnsFalseForNonEmptyCollections()
+    public function testIsEmptyReturnsFalseForNonEmptyCollections(): void
     {
         $collection = Collection::create(['foo']);
         $this->assertFalse($collection->isEmpty());
     }
 
-    public function testCollectionIsIterable()
+    public function testCollectionIsIterable(): void
     {
         $collection = Collection::create([
             'item1',

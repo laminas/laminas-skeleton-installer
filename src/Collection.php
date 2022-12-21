@@ -19,16 +19,23 @@ use function is_array;
 use function iterator_to_array;
 use function sprintf;
 
+/**
+ * @template TKey of array-key
+ * @template TValue
+ *
+ * @template-implements ArrayAccess<TKey, TValue>
+ * @template-implements IteratorAggregate<TKey, TValue>
+ */
 class Collection implements
     ArrayAccess,
     Countable,
     IteratorAggregate
 {
-    /** @var array */
+    /** @var array<TKey, TValue> */
     protected $items;
 
     /**
-     * @param array|Traversable $items
+     * @param iterable<TKey, TValue> $items
      * @throws InvalidArgumentException
      */
     public function __construct($items)
@@ -45,10 +52,11 @@ class Collection implements
     }
 
     /**
-     * Factory method
+     * @template TInputKey of array-key
+     * @template TInputValue
      *
-     * @param array|Traversable $items
-     * @return static
+     * @param iterable<TInputKey, TInputValue> $items
+     * @return self<TInputKey, TInputValue>
      */
     public static function create($items)
     {
@@ -58,7 +66,7 @@ class Collection implements
     /**
      * Cast collection to an array.
      *
-     * @return array
+     * @return array<TKey, TValue>
      */
     public function toArray()
     {
@@ -67,8 +75,10 @@ class Collection implements
 
     /**
      * Apply a callback to each item in the collection.
+     * 
+     * @param callable(TValue): void $callback
      *
-     * @return self
+     * @return $this
      */
     public function each(callable $callback)
     {
@@ -80,9 +90,12 @@ class Collection implements
 
     /**
      * Reduce the collection to a single value.
+     * 
+     * @template TAccumulator
+     * @param callable(TAccumulator, TValue): TAccumulator $callback
      *
-     * @param mixed $initial Initial value.
-     * @return mixed
+     * @param TAccumulator $initial Initial value.
+     * @return TAccumulator
      */
     public function reduce(callable $callback, $initial = null)
     {
@@ -100,16 +113,29 @@ class Collection implements
      *
      * Filter callback should return true for values to keep.
      *
-     * @return static
+     * @param callable(TValue): bool $callback
+     *
+     * @return self<int, TValue>
      */
     public function filter(callable $callback)
     {
-        return $this->reduce(function ($filtered, $item) use ($callback) {
-            if ($callback($item)) {
-                $filtered[] = $item;
-            }
-            return $filtered;
-        }, new static([]));
+        /** @var self<int, TValue> $newMap */
+        $newMap = new static([]);
+
+        return $this->reduce(
+            /**
+             * @param self<int, TValue> $filtered
+             * @param TValue $item
+             * @return self<int, TValue>
+             */
+            function (self $filtered, $item) use ($callback) {
+                if ($callback($item)) {
+                    $filtered[] = $item;
+                }
+                return $filtered;
+            },
+            $newMap
+        );
     }
 
     /**
@@ -117,16 +143,29 @@ class Collection implements
      *
      * Filter callback should return true for values to reject.
      *
-     * @return static
+     * @param callable(TValue): bool $callback
+     *
+     * @return self<int, TValue>
      */
     public function reject(callable $callback)
     {
-        return $this->reduce(function ($filtered, $item) use ($callback) {
-            if (! $callback($item)) {
-                $filtered[] = $item;
-            }
-            return $filtered;
-        }, new static([]));
+        /** @var self<int, TValue> $newMap */
+        $newMap = new static([]);
+
+        return $this->reduce(
+            /**
+             * @param self<int, TValue> $filtered
+             * @param TValue $item
+             * @return self<int, TValue>
+             */
+            function (self $filtered, $item) use ($callback) {
+                if (! $callback($item)) {
+                    $filtered[] = $item;
+                }
+                return $filtered;
+            },
+            $newMap
+        );
     }
 
     /**
@@ -134,34 +173,39 @@ class Collection implements
      *
      * Callback should return the new value to use.
      *
-     * @return static
+     * @template TMapResult
+     *
+     * @param callable(TValue): TMapResult $callback
+     *
+     * @return self<int, TMapResult>
      */
     public function map(callable $callback)
     {
-        return $this->reduce(function ($results, $item) use ($callback) {
-            $results[] = $callback($item);
-            return $results;
-        }, new static([]));
+        /** @var self<int, TMapResult> $newMap */
+        $newMap = new static([]);
+
+        return $this->reduce(
+            /**
+             * @param self<int, TMapResult> $results
+             * @param TValue $item
+             * @return self<int, TMapResult>
+             */
+            function (self $results, $item) use ($callback) {
+                $results[] = $callback($item);
+                return $results;
+            },
+            $newMap
+        );
     }
 
-    /**
-     * ArrayAccess: isset()
-     *
-     * @param string|int $offset
-     * @return bool
-     */
+    /** @inheritDoc */
     #[ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return array_key_exists($offset, $this->items);
     }
 
-    /**
-     * ArrayAccess: retrieve by key
-     *
-     * @param string|int $offset
-     * @return mixed
-     */
+    /** @inheritDoc */
     #[ReturnTypeWillChange]
     public function offsetGet($offset)
     {
@@ -176,13 +220,9 @@ class Collection implements
     }
 
     /**
-     * ArrayAccess: set by key
+     * @inheritDoc
      *
      * If $offset is null, pushes the item onto the stack.
-     *
-     * @param string|int $offset
-     * @param mixed $value
-     * @return void
      */
     #[ReturnTypeWillChange]
     public function offsetSet($offset, $value)
@@ -195,12 +235,7 @@ class Collection implements
         $this->items[$offset] = $value;
     }
 
-    /**
-     * ArrayAccess: unset()
-     *
-     * @param string|int $offset
-     * @return void
-     */
+    /** @inheritDoc */
     #[ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
@@ -230,11 +265,7 @@ class Collection implements
         return 0 === $this->count();
     }
 
-    /**
-     * Traversable: Iterate the collection.
-     *
-     * @return ArrayIterator
-     */
+    /** @inheritDoc */
     #[ReturnTypeWillChange]
     public function getIterator()
     {

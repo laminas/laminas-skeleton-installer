@@ -1,38 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="4.26.0@6998fabb2bf528b65777bf9941920888d23c03ac">
+<files psalm-version="5.4.0@62db5d4f6a7ae0a20f7cc5a4952d730272fc0863">
   <file src="src/Collection.php">
-    <DocblockTypeContradiction occurrences="2">
+    <DocblockTypeContradiction occurrences="1">
       <code>is_array($items)</code>
-      <code>null === $offset</code>
     </DocblockTypeContradiction>
-    <MissingClosureParamType occurrences="6">
-      <code>$filtered</code>
-      <code>$filtered</code>
-      <code>$item</code>
-      <code>$item</code>
-      <code>$item</code>
-      <code>$results</code>
-    </MissingClosureParamType>
-    <MixedArrayAssignment occurrences="3">
-      <code>$filtered[]</code>
-      <code>$filtered[]</code>
-      <code>$results[]</code>
-    </MixedArrayAssignment>
-    <MixedAssignment occurrences="7">
-      <code>$accumulator</code>
-      <code>$accumulator</code>
-      <code>$filtered[]</code>
-      <code>$filtered[]</code>
-      <code>$item</code>
-      <code>$item</code>
-      <code>$results[]</code>
-    </MixedAssignment>
-    <MixedInferredReturnType occurrences="3">
-      <code>static</code>
-      <code>static</code>
-      <code>static</code>
-    </MixedInferredReturnType>
-    <MixedReturnStatement occurrences="3"/>
+    <InvalidArgument occurrences="1">
+      <code>$callback($item)</code>
+    </InvalidArgument>
+    <InvalidPropertyAssignmentValue occurrences="1">
+      <code>$this-&gt;items</code>
+    </InvalidPropertyAssignmentValue>
     <UnsafeInstantiation occurrences="4">
       <code>new static($items)</code>
       <code>new static([])</code>
@@ -48,52 +25,33 @@
       <code>$composerFile</code>
     </MixedAssignment>
   </file>
-  <file src="src/OptionalPackage.php">
-    <MixedAssignment occurrences="3">
-      <code>$this-&gt;constraint</code>
-      <code>$this-&gt;name</code>
-      <code>$this-&gt;prompt</code>
-    </MixedAssignment>
-  </file>
   <file src="src/OptionalPackagesInstaller.php">
+    <ArgumentTypeCoercion occurrences="1">
+      <code>$spec</code>
+    </ArgumentTypeCoercion>
     <InvalidArgument occurrences="1">
       <code>$package</code>
     </InvalidArgument>
-    <MissingClosureParamType occurrences="8">
-      <code>$composer</code>
-      <code>$package</code>
-      <code>$package</code>
-      <code>$package</code>
-      <code>$package</code>
-      <code>$package</code>
-      <code>$requires</code>
-      <code>$spec</code>
-    </MissingClosureParamType>
-    <MissingClosureReturnType occurrences="2">
-      <code>function ($package) {</code>
-      <code>function ($package) {</code>
-    </MissingClosureReturnType>
-    <MissingReturnType occurrences="3">
+    <LessSpecificReturnStatement occurrences="2">
+      <code>$extra['laminas-skeleton-installer']</code>
+    </LessSpecificReturnStatement>
+    <MissingReturnType occurrences="2">
       <code>attachPackageWhitelistBasedOnComposerVersion</code>
       <code>removeOptionalPackages</code>
-      <code>updateComposerJson</code>
     </MissingReturnType>
-    <MixedArgument occurrences="10">
+    <MixedArgument occurrences="5">
       <code>$answer</code>
       <code>$answer</code>
       <code>$composer</code>
       <code>$json</code>
-      <code>$package</code>
-      <code>$package</code>
-      <code>$package</code>
       <code>$requires</code>
-      <code>$spec</code>
     </MixedArgument>
     <MixedArgumentTypeCoercion occurrences="1"/>
-    <MixedArrayAccess occurrences="3">
+    <MixedArrayAccess occurrences="4">
       <code>$json['extra']</code>
       <code>$json['extra']</code>
-      <code>$json['extra']</code>
+      <code>$json['extra']['laminas-skeleton-installer']</code>
+      <code>$json['extra']['zend-skeleton-installer']</code>
     </MixedArrayAccess>
     <MixedArrayAssignment occurrences="1">
       <code>$composer[$key][$package-&gt;getName()]</code>
@@ -103,16 +61,12 @@
       <code>$answer</code>
       <code>$json</code>
     </MixedAssignment>
-    <MixedMethodCall occurrences="2">
-      <code>getName</code>
-      <code>getName</code>
-    </MixedMethodCall>
+    <MoreSpecificReturnType occurrences="1">
+      <code>list&lt;array&gt;</code>
+    </MoreSpecificReturnType>
     <PossiblyInvalidArgument occurrences="1">
       <code>$description</code>
     </PossiblyInvalidArgument>
-    <UndefinedMethod occurrences="1">
-      <code>setUpdateWhitelist</code>
-    </UndefinedMethod>
   </file>
   <file src="src/Plugin.php">
     <LessSpecificImplementedReturnType occurrences="1">
@@ -128,18 +82,12 @@
     </MissingReturnType>
   </file>
   <file src="src/Uninstaller.php">
-    <InvalidScalarArgument occurrences="1">
+    <ArgumentTypeCoercion occurrences="1">
+      <code>$aliases-&gt;toArray()</code>
+    </ArgumentTypeCoercion>
+    <InvalidArgument occurrences="1">
       <code>$locker-&gt;getStabilityFlags()</code>
-    </InvalidScalarArgument>
-    <MissingClosureParamType occurrences="4">
-      <code>$package</code>
-      <code>$package</code>
-      <code>$package</code>
-      <code>$package</code>
-    </MissingClosureParamType>
-    <MissingClosureReturnType occurrences="1">
-      <code>function ($package) {</code>
-    </MissingClosureReturnType>
+    </InvalidArgument>
     <MissingReturnType occurrences="3">
       <code>removePluginFromComposer</code>
       <code>removePluginInstall</code>
@@ -148,24 +96,17 @@
     <MixedArgument occurrences="1">
       <code>$json</code>
     </MixedArgument>
-    <MixedArgumentTypeCoercion occurrences="5">
-      <code>$aliases-&gt;toArray()</code>
-      <code>$devPackages-&gt;toArray()</code>
-      <code>$packages-&gt;toArray()</code>
+    <MixedArgumentTypeCoercion occurrences="2">
       <code>$platformDevReqs</code>
       <code>$platformReqs</code>
     </MixedArgumentTypeCoercion>
-    <MixedArrayAccess occurrences="1">
+    <MixedArrayAccess occurrences="2">
       <code>$json['require']</code>
+      <code>$json['require'][self::PLUGIN_NAME]</code>
     </MixedArrayAccess>
     <MixedAssignment occurrences="1">
       <code>$json</code>
     </MixedAssignment>
-    <MixedMethodCall occurrences="3">
-      <code>getName</code>
-      <code>isDev</code>
-      <code>isDev</code>
-    </MixedMethodCall>
     <PossiblyNullArgument occurrences="2">
       <code>$locker-&gt;getPreferLowest()</code>
       <code>$locker-&gt;getPreferStable()</code>
@@ -189,49 +130,13 @@
     </PossiblyUndefinedMethod>
   </file>
   <file src="test/CollectionTest.php">
-    <MissingClosureParamType occurrences="6">
-      <code>$accumulator</code>
-      <code>$item</code>
-      <code>$item</code>
-      <code>$item</code>
-      <code>$item</code>
-      <code>$item</code>
-    </MissingClosureParamType>
-    <MissingReturnType occurrences="17">
-      <code>testCanInteractWithCollectionAsAnArray</code>
-      <code>testCollectionIsIterable</code>
-      <code>testConstructorAcceptsArray</code>
-      <code>testConstructorAcceptsTraversable</code>
-      <code>testConstructorRaisesExceptionForInvalidItems</code>
-      <code>testEachAppliesCallbackToEachItem</code>
-      <code>testFactoryAcceptsArray</code>
-      <code>testFactoryAcceptsTraversable</code>
-      <code>testFactoryRaisesExceptionForInvalidItems</code>
-      <code>testFilterCreatesANewCollectionWithOnlyValuesMatchedByTheCallback</code>
-      <code>testIsEmptyReturnsFalseForNonEmptyCollections</code>
-      <code>testIsEmptyReturnsTrueForEmptyCollections</code>
-      <code>testMapCreatesANewCollectionWithValuesGeneratedByTheCallback</code>
-      <code>testReduceReturnsAValueByApplyingACallbackToEachItem</code>
-      <code>testRejectCreatesANewCollectionWithValuesNotMatchedByTheCallback</code>
-      <code>testRetrievingValueByArrayKeyWhenKeyDoesNotExistRaisesException</code>
-      <code>testToArrayCastsToArray</code>
-    </MissingReturnType>
-    <MixedArgument occurrences="6">
-      <code>$item</code>
-      <code>$item</code>
-      <code>$item</code>
-      <code>$item</code>
+    <MixedArgument occurrences="2">
       <code>$items</code>
       <code>$items</code>
     </MixedArgument>
     <MixedArrayAssignment occurrences="1">
       <code>$results[]</code>
     </MixedArrayAssignment>
-    <MixedAssignment occurrences="3">
-      <code>$item</code>
-      <code>$received</code>
-      <code>$results[]</code>
-    </MixedAssignment>
     <MixedInferredReturnType occurrences="2">
       <code>array</code>
       <code>array</code>
@@ -239,9 +144,6 @@
     <MixedOperand occurrences="1">
       <code>$accumulator</code>
     </MixedOperand>
-    <NullArgument occurrences="1">
-      <code>$collection</code>
-    </NullArgument>
   </file>
   <file src="test/OptionalPackageTest.php">
     <MissingReturnType occurrences="3">
@@ -255,8 +157,7 @@
     </MixedInferredReturnType>
   </file>
   <file src="test/OptionalPackagesInstallerTest.php">
-    <MissingReturnType occurrences="3">
-      <code>addExpectedPackagesAssertionBasedOnComposerVersion</code>
+    <MissingReturnType occurrences="2">
       <code>testAddingAnOptionalPackageAddsItToComposerAndUpdatesAppConfig</code>
       <code>testInstallerFailureShouldLeaveOptionalPackagesIntact</code>
     </MissingReturnType>
@@ -273,15 +174,10 @@
     </UndefinedDocblockClass>
   </file>
   <file src="test/PluginTest.php">
-    <MissingReturnType occurrences="3">
+    <MissingReturnType occurrences="2">
       <code>testActivateSetsComposerAndIoProperties</code>
-      <code>testSubscribesToExpectedEventsForComposer1</code>
       <code>testSubscribesToExpectedEventsForComposer2</code>
     </MissingReturnType>
-    <UnevaluatedCode occurrences="2">
-      <code>return;</code>
-      <code>return;</code>
-    </UnevaluatedCode>
   </file>
   <file src="test/UninstallerTest.php">
     <MissingReturnType occurrences="2">
