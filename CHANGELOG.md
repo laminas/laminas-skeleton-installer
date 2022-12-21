@@ -2,27 +2,24 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
-## 1.2.0 - TBD
+## 1.2.0 - 2022-12-21
 
-### Added
 
-- Nothing.
+-----
 
-### Changed
+### Release Notes for [1.2.0](https://github.com/laminas/laminas-skeleton-installer/milestone/20)
 
-- Nothing.
+Feature release (minor)
 
-### Deprecated
+### 1.2.0
 
-- Nothing.
+- Total issues resolved: **0**
+- Total pull requests resolved: **1**
+- Total contributors: **1**
 
-### Removed
+#### Enhancement,dependencies,renovate
 
-- Nothing.
-
-### Fixed
-
-- Nothing.
+ - [44: Update dependency vimeo/psalm to v5, Improve type inference](https://github.com/laminas/laminas-skeleton-installer/pull/44) thanks to @renovate[bot]
 
 ## 1.1.0 - 2022-11-15
 
