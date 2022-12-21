@@ -74,10 +74,10 @@ class OptionalPackagesInstaller
 
         // Prompt for each package, and filter accordingly
         $packagesToInstall = $optionalPackages
-            ->map(function ($spec) {
+            ->map(function (array $spec): OptionalPackage {
                 return new OptionalPackage($spec);
             })
-            ->filter(function ($package) {
+            ->filter(function (OptionalPackage $package): bool {
                 return $this->promptForPackage($package);
             });
 
@@ -105,7 +105,7 @@ class OptionalPackagesInstaller
      * Looks for a extra.laminas-skeleton-installer key with an array value,
      * returning it if found, or an empty array otherwise.
      *
-     * @return array
+     * @return list<array>
      */
     private function getOptionalDependencies()
     {
@@ -204,8 +204,10 @@ class OptionalPackagesInstaller
      *
      * Adds all packages to the appropriate require or require-dev sections of
      * the composer.json, and removes the extra.laminas-skeleton-installer node.
+     *
+     * @param Collection<int, OptionalPackage> $packagesToInstall
      */
-    private function updateComposerJson(Collection $packagesToInstall)
+    private function updateComposerJson(Collection $packagesToInstall): void
     {
         $this->io->write('<info>    Updating composer.json</info>');
         $composerJson = $this->getComposerJson();
@@ -235,6 +237,7 @@ class OptionalPackagesInstaller
     /**
      * Update the root package definition
      *
+     * @param Collection<int, OptionalPackage> $packagesToInstall
      * @return RootPackageInterface
      */
     private function updateRootPackage(RootPackageInterface $package, Collection $packagesToInstall)
@@ -282,9 +285,9 @@ class OptionalPackagesInstaller
      * - It specifies an update whitelist of only the new packages to install
      * - It disables plugins
      *
-     * @return int
+     * @param Collection<int, OptionalPackage> $packagesToInstall
      */
-    private function runInstaller(RootPackageInterface $package, Collection $packagesToInstall)
+    private function runInstaller(RootPackageInterface $package, Collection $packagesToInstall): int
     {
         $this->io->write('<info>    Running an update to install optional packages</info>');
 
@@ -331,12 +334,13 @@ class OptionalPackagesInstaller
         );
     }
 
+    /** @param Collection<int, OptionalPackage> $packagesToInstall */
     private function attachPackageWhitelistBasedOnComposerVersion(
         ComposerInstaller $installer,
         Collection $packagesToInstall
     ) {
         $installer->setUpdateAllowList(
-            $packagesToInstall->map(function ($package) {
+            $packagesToInstall->map(function ($package): string {
                 return $package->getName();
             })
                 ->toArray()
