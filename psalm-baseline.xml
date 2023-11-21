@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="5.4.0@62db5d4f6a7ae0a20f7cc5a4952d730272fc0863">
+<files psalm-version="5.15.0@5c774aca4746caf3d239d9c8cadb9f882ca29352">
   <file src="src/Collection.php">
-    <DocblockTypeContradiction occurrences="1">
+    <DocblockTypeContradiction>
       <code>is_array($items)</code>
     </DocblockTypeContradiction>
-    <InvalidArgument occurrences="1">
+    <InvalidArgument>
       <code>$callback($item)</code>
     </InvalidArgument>
-    <InvalidPropertyAssignmentValue occurrences="1">
-      <code>$this-&gt;items</code>
+    <InvalidPropertyAssignmentValue>
+      <code><![CDATA[$this->items]]></code>
     </InvalidPropertyAssignmentValue>
-    <UnsafeInstantiation occurrences="4">
+    <UnsafeInstantiation>
       <code>new static($items)</code>
       <code>new static([])</code>
       <code>new static([])</code>
@@ -18,111 +18,128 @@
     </UnsafeInstantiation>
   </file>
   <file src="src/ComposerJsonRetrievalTrait.php">
-    <MixedArgument occurrences="1">
+    <MixedArgument>
       <code>$composerFile</code>
     </MixedArgument>
-    <MixedAssignment occurrences="1">
+    <MixedAssignment>
       <code>$composerFile</code>
     </MixedAssignment>
   </file>
   <file src="src/OptionalPackagesInstaller.php">
-    <ArgumentTypeCoercion occurrences="1">
+    <ArgumentTypeCoercion>
       <code>$spec</code>
     </ArgumentTypeCoercion>
-    <InvalidArgument occurrences="1">
+    <InvalidArgument>
       <code>$package</code>
     </InvalidArgument>
-    <LessSpecificReturnStatement occurrences="2">
-      <code>$extra['laminas-skeleton-installer']</code>
+    <LessSpecificReturnStatement>
+      <code><![CDATA[$extra['laminas-skeleton-installer']]]></code>
+      <code><![CDATA[isset($extra['zend-skeleton-installer']) && is_array($extra['zend-skeleton-installer'])
+            ? $extra['zend-skeleton-installer']
+            : []]]></code>
     </LessSpecificReturnStatement>
-    <MissingReturnType occurrences="2">
+    <MissingReturnType>
       <code>attachPackageWhitelistBasedOnComposerVersion</code>
       <code>removeOptionalPackages</code>
     </MissingReturnType>
-    <MixedArgument occurrences="5">
+    <MixedArgument>
       <code>$answer</code>
       <code>$answer</code>
       <code>$composer</code>
       <code>$json</code>
       <code>$requires</code>
     </MixedArgument>
-    <MixedArgumentTypeCoercion occurrences="1"/>
-    <MixedArrayAccess occurrences="4">
-      <code>$json['extra']</code>
-      <code>$json['extra']</code>
-      <code>$json['extra']['laminas-skeleton-installer']</code>
-      <code>$json['extra']['zend-skeleton-installer']</code>
+    <MixedArgumentTypeCoercion>
+      <code><![CDATA[$packagesToInstall->reduce(function ($requires, $package) {
+            return $this->addRootPackageRequirement($requires, $package);
+        }, $package->getRequires())]]></code>
+    </MixedArgumentTypeCoercion>
+    <MixedArrayAccess>
+      <code><![CDATA[$json['extra']]]></code>
+      <code><![CDATA[$json['extra']]]></code>
+      <code><![CDATA[$json['extra']['laminas-skeleton-installer']]]></code>
+      <code><![CDATA[$json['extra']['zend-skeleton-installer']]]></code>
     </MixedArrayAccess>
-    <MixedArrayAssignment occurrences="1">
-      <code>$composer[$key][$package-&gt;getName()]</code>
+    <MixedArrayAssignment>
+      <code><![CDATA[$composer[$key][$package->getName()]]]></code>
     </MixedArrayAssignment>
-    <MixedAssignment occurrences="3">
+    <MixedAssignment>
       <code>$answer</code>
       <code>$answer</code>
       <code>$json</code>
     </MixedAssignment>
-    <MoreSpecificReturnType occurrences="1">
-      <code>list&lt;array&gt;</code>
+    <MoreSpecificReturnType>
+      <code><![CDATA[list<array>]]></code>
     </MoreSpecificReturnType>
-    <PossiblyInvalidArgument occurrences="1">
+    <PossiblyInvalidArgument>
       <code>$description</code>
     </PossiblyInvalidArgument>
+    <UnusedMethod>
+      <code>createInstaller</code>
+    </UnusedMethod>
   </file>
   <file src="src/Plugin.php">
-    <LessSpecificImplementedReturnType occurrences="1">
+    <LessSpecificImplementedReturnType>
       <code>array</code>
     </LessSpecificImplementedReturnType>
-    <MissingConstructor occurrences="2">
+    <MissingConstructor>
       <code>$composer</code>
       <code>$io</code>
     </MissingConstructor>
-    <MissingReturnType occurrences="2">
+    <MissingReturnType>
       <code>installOptionalDependencies</code>
       <code>uninstallPlugin</code>
     </MissingReturnType>
+    <PossiblyUnusedMethod>
+      <code>installOptionalDependencies</code>
+      <code>uninstallPlugin</code>
+    </PossiblyUnusedMethod>
+    <PossiblyUnusedParam>
+      <code>$event</code>
+    </PossiblyUnusedParam>
   </file>
   <file src="src/Uninstaller.php">
-    <ArgumentTypeCoercion occurrences="1">
-      <code>$aliases-&gt;toArray()</code>
+    <ArgumentTypeCoercion>
+      <code><![CDATA[$aliases->toArray()]]></code>
     </ArgumentTypeCoercion>
-    <InvalidArgument occurrences="1">
-      <code>$locker-&gt;getStabilityFlags()</code>
+    <InvalidArgument>
+      <code><![CDATA[$locker->getStabilityFlags()]]></code>
     </InvalidArgument>
-    <MissingReturnType occurrences="3">
+    <MissingReturnType>
       <code>removePluginFromComposer</code>
       <code>removePluginInstall</code>
       <code>updateLockFile</code>
     </MissingReturnType>
-    <MixedArgument occurrences="1">
+    <MixedArgument>
       <code>$json</code>
     </MixedArgument>
-    <MixedArgumentTypeCoercion occurrences="2">
+    <MixedArgumentTypeCoercion>
       <code>$platformDevReqs</code>
       <code>$platformReqs</code>
     </MixedArgumentTypeCoercion>
-    <MixedArrayAccess occurrences="2">
-      <code>$json['require']</code>
-      <code>$json['require'][self::PLUGIN_NAME]</code>
+    <MixedArrayAccess>
+      <code><![CDATA[$json['require']]]></code>
+      <code><![CDATA[$json['require'][self::PLUGIN_NAME]]]></code>
     </MixedArrayAccess>
-    <MixedAssignment occurrences="1">
+    <MixedAssignment>
       <code>$json</code>
     </MixedAssignment>
-    <PossiblyNullArgument occurrences="2">
-      <code>$locker-&gt;getPreferLowest()</code>
-      <code>$locker-&gt;getPreferStable()</code>
+    <PossiblyNullArgument>
+      <code><![CDATA[$locker->getPreferLowest()]]></code>
+      <code><![CDATA[$locker->getPreferStable()]]></code>
     </PossiblyNullArgument>
   </file>
   <file src="test/BroadcastEventDispatcherTest.php">
-    <MissingReturnType occurrences="1">
+    <MissingReturnType>
       <code>testBroadcastEvent</code>
     </MissingReturnType>
-    <MixedArgument occurrences="4">
-      <code>$this-&gt;composer-&gt;reveal()</code>
-      <code>$this-&gt;composer-&gt;reveal()</code>
-      <code>$this-&gt;io-&gt;reveal()</code>
-      <code>$this-&gt;io-&gt;reveal()</code>
+    <MixedArgument>
+      <code><![CDATA[$this->composer->reveal()]]></code>
+      <code><![CDATA[$this->composer->reveal()]]></code>
+      <code><![CDATA[$this->io->reveal()]]></code>
+      <code><![CDATA[$this->io->reveal()]]></code>
     </MixedArgument>
-    <PossiblyUndefinedMethod occurrences="4">
+    <PossiblyUndefinedMethod>
       <code>reveal</code>
       <code>reveal</code>
       <code>reveal</code>
@@ -130,68 +147,76 @@
     </PossiblyUndefinedMethod>
   </file>
   <file src="test/CollectionTest.php">
-    <MixedArgument occurrences="2">
+    <MixedArgument>
       <code>$items</code>
       <code>$items</code>
     </MixedArgument>
-    <MixedArrayAssignment occurrences="1">
+    <MixedArrayAssignment>
       <code>$results[]</code>
     </MixedArrayAssignment>
-    <MixedInferredReturnType occurrences="2">
+    <MixedInferredReturnType>
       <code>array</code>
       <code>array</code>
     </MixedInferredReturnType>
-    <MixedOperand occurrences="1">
+    <MixedOperand>
       <code>$accumulator</code>
     </MixedOperand>
   </file>
   <file src="test/OptionalPackageTest.php">
-    <MissingReturnType occurrences="3">
+    <MissingReturnType>
       <code>testCanValidateSpecifications</code>
       <code>testCastsModuleOptionsToBooleans</code>
       <code>testPackagesAreNotModulesByDefault</code>
     </MissingReturnType>
-    <MixedInferredReturnType occurrences="2">
+    <MixedInferredReturnType>
       <code>array</code>
       <code>array</code>
     </MixedInferredReturnType>
   </file>
   <file src="test/OptionalPackagesInstallerTest.php">
-    <MissingReturnType occurrences="2">
+    <MissingReturnType>
       <code>testAddingAnOptionalPackageAddsItToComposerAndUpdatesAppConfig</code>
       <code>testInstallerFailureShouldLeaveOptionalPackagesIntact</code>
     </MissingReturnType>
-    <MixedAssignment occurrences="2">
+    <MixedAssignment>
       <code>$composer</code>
       <code>$composer</code>
     </MixedAssignment>
-    <MixedInferredReturnType occurrences="1">
+    <MixedInferredReturnType>
       <code>string</code>
     </MixedInferredReturnType>
-    <UndefinedDocblockClass occurrences="2">
+    <PossiblyUnusedMethod>
+      <code>createComposerJson</code>
+      <code>getDefaultComposerData</code>
+    </PossiblyUnusedMethod>
+    <PossiblyUnusedParam>
+      <code>$data</code>
+      <code>$data</code>
+    </PossiblyUnusedParam>
+    <UndefinedDocblockClass>
       <code>any</code>
       <code>any</code>
     </UndefinedDocblockClass>
   </file>
   <file src="test/PluginTest.php">
-    <MissingReturnType occurrences="2">
+    <MissingReturnType>
       <code>testActivateSetsComposerAndIoProperties</code>
       <code>testSubscribesToExpectedEventsForComposer2</code>
     </MissingReturnType>
   </file>
   <file src="test/UninstallerTest.php">
-    <MissingReturnType occurrences="2">
+    <MissingReturnType>
       <code>setUpComposerJson</code>
       <code>testRemovesPluginInstallation</code>
     </MissingReturnType>
-    <MixedArgument occurrences="2">
-      <code>$this-&gt;composer-&gt;reveal()</code>
-      <code>$this-&gt;io-&gt;reveal()</code>
+    <MixedArgument>
+      <code><![CDATA[$this->composer->reveal()]]></code>
+      <code><![CDATA[$this->io->reveal()]]></code>
     </MixedArgument>
-    <MixedAssignment occurrences="1">
+    <MixedAssignment>
       <code>$composer</code>
     </MixedAssignment>
-    <MixedMethodCall occurrences="9">
+    <MixedMethodCall>
       <code>willReturn</code>
       <code>willReturn</code>
       <code>willReturn</code>
@@ -202,11 +227,11 @@
       <code>willReturn</code>
       <code>willReturn</code>
     </MixedMethodCall>
-    <PossiblyUndefinedMethod occurrences="2">
+    <PossiblyUndefinedMethod>
       <code>reveal</code>
       <code>reveal</code>
     </PossiblyUndefinedMethod>
-    <UndefinedInterfaceMethod occurrences="9">
+    <UndefinedInterfaceMethod>
       <code>getMinimumStability</code>
       <code>getPackages</code>
       <code>getPlatformOverrides</code>
