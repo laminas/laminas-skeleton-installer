@@ -36,12 +36,12 @@
     },
     "require-dev": {
         "composer/composer": "^2.6.4",
-        "laminas/laminas-coding-standard": "^2.4",
+        "laminas/laminas-coding-standard": "~2.5.0",
         "mikey179/vfsstream": "^1.6.11",
         "phpspec/prophecy-phpunit": "^2.0.1",
-        "phpunit/phpunit": "^9.5.26",
-        "psalm/plugin-phpunit": "^0.18.0",
-        "vimeo/psalm": "^5.0.0"
+        "phpunit/phpunit": "^9.6.13",
+        "psalm/plugin-phpunit": "^0.18.4",
+        "vimeo/psalm": "^5.15"
     },
     "autoload": {
         "psr-4": {
