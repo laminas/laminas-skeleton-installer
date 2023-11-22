@@ -20,7 +20,7 @@ class OptionalPackageTest extends TestCase
         $this->assertFalse($package->isDev());
     }
 
-    public function booleanOptions(): array
+    public static function booleanOptions(): array
     {
         return [
             'null'            => [null, false],
@@ -54,7 +54,7 @@ class OptionalPackageTest extends TestCase
         $this->assertSame($expected, $package->isDev());
     }
 
-    public function testPackagesAreNotModulesByDefault()
+    public function testPackagesAreNotModulesByDefault(): void
     {
         $package = new OptionalPackage([
             'constraint' => '^1.0',
@@ -70,7 +70,7 @@ class OptionalPackageTest extends TestCase
      * @param mixed $option
      * @param bool $expected
      */
-    public function testCastsModuleOptionsToBooleans($option, $expected)
+    public function testCastsModuleOptionsToBooleans($option, $expected): void
     {
         $package = new OptionalPackage([
             'constraint' => '^1.0',
@@ -82,7 +82,7 @@ class OptionalPackageTest extends TestCase
         $this->assertSame($expected, $package->isModule());
     }
 
-    public function specifications(): array
+    public static function specifications(): array
     {
         // @codingStandardsIgnoreStart
         //                          specification                                                 expectation
@@ -104,7 +104,7 @@ class OptionalPackageTest extends TestCase
      * @param array $specification
      * @param bool $expected
      */
-    public function testCanValidateSpecifications(array $specification, $expected)
+    public function testCanValidateSpecifications(array $specification, $expected): void
     {
         $this->assertSame($expected, OptionalPackage::isValidSpec($specification));
     }

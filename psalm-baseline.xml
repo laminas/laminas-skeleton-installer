@@ -129,23 +129,6 @@
       <code><![CDATA[$locker->getPreferStable()]]></code>
     </PossiblyNullArgument>
   </file>
-  <file src="test/BroadcastEventDispatcherTest.php">
-    <MissingReturnType>
-      <code>testBroadcastEvent</code>
-    </MissingReturnType>
-    <MixedArgument>
-      <code><![CDATA[$this->composer->reveal()]]></code>
-      <code><![CDATA[$this->composer->reveal()]]></code>
-      <code><![CDATA[$this->io->reveal()]]></code>
-      <code><![CDATA[$this->io->reveal()]]></code>
-    </MixedArgument>
-    <PossiblyUndefinedMethod>
-      <code>reveal</code>
-      <code>reveal</code>
-      <code>reveal</code>
-      <code>reveal</code>
-    </PossiblyUndefinedMethod>
-  </file>
   <file src="test/CollectionTest.php">
     <MixedArgument>
       <code>$items</code>
@@ -163,84 +146,47 @@
     </MixedOperand>
   </file>
   <file src="test/OptionalPackageTest.php">
-    <MissingReturnType>
-      <code>testCanValidateSpecifications</code>
-      <code>testCastsModuleOptionsToBooleans</code>
-      <code>testPackagesAreNotModulesByDefault</code>
-    </MissingReturnType>
     <MixedInferredReturnType>
       <code>array</code>
       <code>array</code>
     </MixedInferredReturnType>
   </file>
   <file src="test/OptionalPackagesInstallerTest.php">
-    <MissingReturnType>
-      <code>testAddingAnOptionalPackageAddsItToComposerAndUpdatesAppConfig</code>
-      <code>testInstallerFailureShouldLeaveOptionalPackagesIntact</code>
-    </MissingReturnType>
+    <MixedArgument>
+      <code>$constraintFailures</code>
+      <code>$constraintFailures</code>
+      <code>$constraintFailures</code>
+      <code>$constraintFailures</code>
+    </MixedArgument>
+    <MixedArrayAssignment>
+      <code>$constraintFailures[]</code>
+      <code>$constraintFailures[]</code>
+      <code>$constraintFailures[]</code>
+      <code>$constraintFailures[]</code>
+      <code>$constraintFailures[]</code>
+      <code>$constraintFailures[]</code>
+      <code>$constraintFailures[]</code>
+    </MixedArrayAssignment>
     <MixedAssignment>
       <code>$composer</code>
       <code>$composer</code>
+      <code>$escapedFailure</code>
+      <code>$escapedFailure</code>
+      <code>$escapedFailure</code>
+      <code>$escapedFailure</code>
     </MixedAssignment>
-    <MixedInferredReturnType>
-      <code>string</code>
-    </MixedInferredReturnType>
-    <PossiblyUnusedMethod>
-      <code>createComposerJson</code>
-      <code>getDefaultComposerData</code>
-    </PossiblyUnusedMethod>
-    <PossiblyUnusedParam>
-      <code>$data</code>
-      <code>$data</code>
-    </PossiblyUnusedParam>
-    <UndefinedDocblockClass>
-      <code>any</code>
-      <code>any</code>
-    </UndefinedDocblockClass>
   </file>
   <file src="test/PluginTest.php">
     <MissingReturnType>
-      <code>testActivateSetsComposerAndIoProperties</code>
       <code>testSubscribesToExpectedEventsForComposer2</code>
     </MissingReturnType>
   </file>
   <file src="test/UninstallerTest.php">
-    <MissingReturnType>
-      <code>setUpComposerJson</code>
-      <code>testRemovesPluginInstallation</code>
-    </MissingReturnType>
-    <MixedArgument>
-      <code><![CDATA[$this->composer->reveal()]]></code>
-      <code><![CDATA[$this->io->reveal()]]></code>
-    </MixedArgument>
+    <MixedArrayAssignment>
+      <code>$constraintFailures[]</code>
+    </MixedArrayAssignment>
     <MixedAssignment>
       <code>$composer</code>
     </MixedAssignment>
-    <MixedMethodCall>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-      <code>willReturn</code>
-    </MixedMethodCall>
-    <PossiblyUndefinedMethod>
-      <code>reveal</code>
-      <code>reveal</code>
-    </PossiblyUndefinedMethod>
-    <UndefinedInterfaceMethod>
-      <code>getMinimumStability</code>
-      <code>getPackages</code>
-      <code>getPlatformOverrides</code>
-      <code>getPlatformRequirements</code>
-      <code>getPlatformRequirements</code>
-      <code>getPreferLowest</code>
-      <code>getPreferStable</code>
-      <code>getStabilityFlags</code>
-      <code>setLockData</code>
-    </UndefinedInterfaceMethod>
   </file>
 </files>
