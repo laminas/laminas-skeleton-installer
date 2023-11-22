@@ -15,123 +15,154 @@ use Composer\Repository\InstalledRepositoryInterface;
 use Composer\Repository\RepositoryManager;
 use Laminas\SkeletonInstaller\Uninstaller;
 use org\bovigo\vfs\vfsStream;
+use PHPUnit\Framework\ExpectationFailedException;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
-use Prophecy\PhpUnit\ProphecyTrait;
-use Prophecy\Prophecy\ProphecyInterface;
 use ReflectionProperty;
 
+use function array_shift;
 use function file_get_contents;
 use function json_decode;
 use function json_encode;
 
 class UninstallerTest extends TestCase
 {
-    use ProphecyTrait;
-
-    /** @var IOInterface|ProphecyInterface */
-    private $io;
-
-    /** @var Composer|ProphecyInterface */
-    private $composer;
-
-    public function setUp(): void
+    /**
+     * @param ExpectationFailedException[] $constraintFailures Captures constraint failures
+     *      to ensure try-catch does not swallow them.
+     */
+    protected function setUpIo(array &$constraintFailures): IOInterface&MockObject
     {
-        $this->io       = $this->setUpIo();
-        $this->composer = $this->setUpComposerAndDependencies();
-    }
+        $io = $this->createMock(IOInterface::class);
 
-    protected function setUpIo(): ProphecyInterface
-    {
-        $io = $this->prophesize(IOInterface::class);
-        $io->write('<info>Removing laminas/laminas-skeleton-installer...</info>')->shouldBeCalled();
-        $io->write('<info>    Package not installed; nothing to do.</info>')->shouldNotBeCalled();
-        $io->write('<info>    Removed plugin laminas/laminas-skeleton-installer.</info>')->shouldBeCalled();
-        $io->write('<info>    Removing from composer.json</info>')->shouldBeCalled();
-        $io->write('<info>    Complete!</info>')->shouldBeCalled();
+        $matcher = self::exactly(4);
+        $io->expects($matcher)
+            ->method('write')
+            ->willReturnCallback(function (string $message) use ($matcher, &$constraintFailures) {
+                try {
+                    $this->assertStringNotContainsString('Package not installed; nothing to do', $message);
+                    /** @psalm-suppress InternalMethod */
+                    $contains = match ($matcher->numberOfInvocations()) {
+                        1 => 'Removing laminas/laminas-skeleton-installer',
+                        2 => 'Removed plugin laminas/laminas-skeleton-installer',
+                        3 => 'Removing from composer.json',
+                        4 => 'Complete!',
+                    };
+                    $this->assertStringContainsString($contains, $message);
+                } catch (ExpectationFailedException $e) {
+                    $constraintFailures[] = $e;
+                    throw $e;
+                }
+            });
+
         return $io;
     }
 
-    protected function createLockPackages(ProphecyInterface $repository, ProphecyInterface $locker): void
-    {
-        $required = $this->prophesize(PackageInterface::class);
-        $required->getName()->willReturn('some/required');
-        $required->isDev()->willReturn(false);
+    protected function createLockPackages(
+        InstalledRepositoryInterface&MockObject $repository,
+        Locker&MockObject $locker
+    ): void {
+        $required = self::createStub(PackageInterface::class);
+        $required->method('getName')
+            ->willReturn('some/required');
+        $required->method('isDev')
+            ->willReturn(false);
 
-        $dev = $this->prophesize(PackageInterface::class);
-        $dev->getName()->willReturn('some/dev');
-        $dev->isDev()->willReturn(true);
+        $dev = self::createStub(PackageInterface::class);
+        $dev->method('getName')
+            ->willReturn('some/dev');
+        $dev->method('isDev')
+            ->willReturn(true);
 
-        $skeleton = $this->prophesize(PackageInterface::class);
-        $skeleton->getName()->willReturn('laminas/laminas-skeleton-installer');
-        $skeleton->isDev()->shouldNotBeCalled();
+        $skeleton = $this->createMock(PackageInterface::class);
+        $skeleton->method('getName')
+            ->willReturn('laminas/laminas-skeleton-installer');
+        $skeleton->expects(self::never())
+            ->method('isDev');
 
-        $alias = $this->prophesize(AliasPackage::class);
-        $alias->getName()->willReturn('some/alias');
-        $alias->isDev()->willReturn(false);
+        $alias = $this->createStub(AliasPackage::class);
+        $alias->method('getName')
+            ->willReturn('some/alias');
+        $alias->method('isDev')
+            ->willReturn(false);
 
-        $repository->getPackages()->willReturn([
-            $required->reveal(),
-            $dev->reveal(),
-            $skeleton->reveal(),
-            $alias->reveal(),
-        ]);
+        $repository->method('getPackages')
+            ->willReturn([
+                $required,
+                $dev,
+                $skeleton,
+                $alias,
+            ]);
 
-        $locker->getPlatformRequirements(false)->willReturn([]);
-        $locker->getPlatformRequirements(true)->willReturn([]);
-        $locker->getMinimumStability()->willReturn('stable');
-        $locker->getStabilityFlags()->willReturn([]);
-        $locker->getPreferStable()->willReturn(true);
-        $locker->getPreferLowest()->willReturn(false);
-        $locker->getPlatformOverrides()->willReturn([]);
+        $locker->method('getPlatformRequirements')
+            ->willReturn([]);
+        $locker->method('getMinimumStability')
+            ->willReturn('stable');
+        $locker->method('getStabilityFlags')
+            ->willReturn([]);
+        $locker->method('getPreferStable')
+            ->willReturn(true);
+        $locker->method('getPreferLowest')
+            ->willReturn(false);
+        $locker->method('getPlatformOverrides')
+            ->willReturn([]);
 
-        $locker->setLockData(
-            [$required->reveal()],
-            [$dev->reveal()],
-            [],
-            [],
-            [$alias->reveal()],
-            'stable',
-            [],
-            true,
-            false,
-            []
-        )->willReturn(true);
+        $locker->expects(self::once())
+            ->method('setLockData')
+            ->with(
+                [$required],
+                [$dev],
+                [],
+                [],
+                [$alias],
+                'stable',
+                [],
+                true,
+                false,
+                []
+            )->willReturn(true);
     }
 
-    protected function setUpComposerAndDependencies(): ProphecyInterface
+    protected function setUpComposerAndDependencies(): Composer&MockObject
     {
-        $composer = $this->prophesize(Composer::class);
+        $composer = $this->createMock(Composer::class);
 
-        $package    = $this->prophesize(PackageInterface::class);
-        $repository = $this->prophesize(InstalledRepositoryInterface::class);
-        $repository->findPackage(Uninstaller::PLUGIN_NAME, '*')->willReturn($package->reveal());
-        $repository->getPackages()->willReturn([]);
+        $package    = self::createStub(PackageInterface::class);
+        $repository = $this->createMock(InstalledRepositoryInterface::class);
+        $repository->method('findPackage')
+            ->with(Uninstaller::PLUGIN_NAME, '*')
+            ->willReturn($package);
 
-        $locker = $this->prophesize(Locker::class);
+        $locker = $this->createMock(Locker::class);
         $this->createLockPackages($repository, $locker);
-        $composer->getLocker()->willReturn($locker->reveal());
+        $composer->method('getLocker')
+            ->willReturn($locker);
 
-        $repoManager = $this->prophesize(RepositoryManager::class);
-        $repoManager->getLocalRepository()->willReturn($repository->reveal());
+        $repoManager = self::createStub(RepositoryManager::class);
+        $repoManager->method('getLocalRepository')
+            ->willReturn($repository);
 
-        $composer->getRepositoryManager()->willReturn($repoManager->reveal());
+        $composer->method('getRepositoryManager')
+            ->willReturn($repoManager);
 
-        $installationManager = $this->prophesize(InstallationManager::class);
-        $installationManager->uninstall($repository->reveal(), Argument::that(function ($arg) use ($package) {
-            if (! $arg instanceof UninstallOperation) {
-                return false;
-            }
+        $installationManager = $this->createMock(InstallationManager::class);
+        $installationManager->expects(self::once())
+            ->method('uninstall')
+            ->with($repository, $this->callback(function ($arg) use ($package) {
+                if (! $arg instanceof UninstallOperation) {
+                    return false;
+                }
 
-            return $package->reveal() === $arg->getPackage();
-        }))->shouldBeCalled();
+                return $package === $arg->getPackage();
+            }));
 
-        $composer->getInstallationManager()->willReturn($installationManager->reveal());
+        $composer->method('getInstallationManager')
+            ->willReturn($installationManager);
 
         return $composer;
     }
 
-    protected function setUpComposerJson(Uninstaller $uninstaller)
+    protected function setUpComposerJson(Uninstaller $uninstaller): void
     {
         $project = vfsStream::setup('project');
         vfsStream::newFile('composer.json')
@@ -139,7 +170,6 @@ class UninstallerTest extends TestCase
             ->setContent($this->createComposerJson());
 
         $r = new ReflectionProperty($uninstaller, 'composerFileFactory');
-        $r->setAccessible(true);
         $r->setValue($uninstaller, function () {
             return vfsStream::url('project/composer.json');
         });
@@ -157,14 +187,25 @@ class UninstallerTest extends TestCase
         ]);
     }
 
-    public function testRemovesPluginInstallation()
+    public function testRemovesPluginInstallation(): void
     {
-        $uninstaller = new Uninstaller($this->composer->reveal(), $this->io->reveal());
+        /** @var ExpectationFailedException[] $constraintFailures */
+        $constraintFailures = [];
+
+        $io       = $this->setUpIo($constraintFailures);
+        $composer = $this->setUpComposerAndDependencies();
+
+        $uninstaller = new Uninstaller($composer, $io);
         $this->setUpComposerJson($uninstaller);
 
         $uninstaller();
 
         $composer = json_decode(file_get_contents(vfsStream::url('project/composer.json')), true);
         $this->assertFalse(isset($composer['require']['laminas-skeleton-installer']));
+
+        $escapedFailure = array_shift($constraintFailures);
+        if ($escapedFailure) {
+            throw $escapedFailure;
+        }
     }
 }

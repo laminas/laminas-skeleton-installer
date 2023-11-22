@@ -11,33 +11,23 @@ use Composer\Package\Link;
 use Composer\Package\RootPackageInterface;
 use Laminas\SkeletonInstaller\OptionalPackagesInstaller;
 use org\bovigo\vfs\vfsStream;
+use PHPUnit\Framework\ExpectationFailedException;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Prophecy\Argument;
-use Prophecy\PhpUnit\ProphecyTrait;
-use Prophecy\Prophecy\ObjectProphecy;
-use Prophecy\Prophecy\ProphecyInterface;
 use ReflectionProperty;
 
 use function array_key_exists;
+use function array_shift;
 use function file_get_contents;
-use function is_array;
 use function json_decode;
 use function json_encode;
 
 class OptionalPackagesInstallerTest extends TestCase
 {
-    use ProphecyTrait;
-
-    /**
-     * @psalm-var ObjectProphecy<Composer>
-     * @var Composer|ProphecyInterface
-     */
+    /** @var Composer&MockObject */
     private $composer;
 
-    /**
-     * @psalm-var ObjectProphecy<IOInterface>
-     * @var IOInterface|ProphecyInterface
-     */
+    /** @var IOInterface&MockObject */
     private $io;
 
     /** @var OptionalPackagesInstaller */
@@ -45,19 +35,16 @@ class OptionalPackagesInstallerTest extends TestCase
 
     public function setUp(): void
     {
-        $this->composer = $this->prophesize(Composer::class);
-        $this->io       = $this->prophesize(IOInterface::class);
+        $this->composer = $this->createMock(Composer::class);
+        $this->io       = $this->createMock(IOInterface::class);
 
         $this->installer = new OptionalPackagesInstaller(
-            $this->composer->reveal(),
-            $this->io->reveal()
+            $this->composer,
+            $this->io,
         );
     }
 
-    /**
-     * @param any $data
-     */
-    protected function setUpComposerJson($data = null): void
+    protected function setUpComposerJson(?array $data = null): void
     {
         $project = vfsStream::setup('project');
         vfsStream::newFile('composer.json')
@@ -65,16 +52,12 @@ class OptionalPackagesInstallerTest extends TestCase
             ->setContent($this->createComposerJson($data));
 
         $r = new ReflectionProperty($this->installer, 'composerFileFactory');
-        $r->setAccessible(true);
         $r->setValue($this->installer, function () {
             return vfsStream::url('project/composer.json');
         });
     }
 
-    /**
-     * @param any $data
-     */
-    protected function createComposerJson($data): string
+    protected function createComposerJson(?array $data): string
     {
         $data = $data ?: $this->getDefaultComposerData();
         return json_encode($data);
@@ -92,33 +75,40 @@ class OptionalPackagesInstallerTest extends TestCase
         ];
     }
 
-    /**
-     * @param array $expectedPackages
-     * @param int $expectedReturn
-     */
-    protected function setUpComposerInstaller(array $expectedPackages, $expectedReturn = 0): void
+    protected function setUpComposerInstaller(array $expectedPackages, int $expectedReturn = 0): void
     {
-        $installer = $this->prophesize(Installer::class);
-        $installer->setDevMode(true)->shouldBeCalled();
-        $installer->setUpdate(true)->shouldBeCalled();
+        $installer = $this->createMock(Installer::class);
+        $installer->expects(self::once())
+            ->method('setDevMode')
+            ->with(true);
 
-        $installer->setUpdateAllowList($expectedPackages)->shouldBeCalled();
-        $installer->run()->willReturn($expectedReturn);
+        $installer->expects(self::once())
+            ->method('setUpdate')
+            ->with(true);
+
+        $installer->expects(self::once())
+            ->method('setUpdateAllowList')
+            ->with($this->equalToCanonicalizing($expectedPackages));
+        $installer->method('run')
+            ->willReturn($expectedReturn);
 
         $r = new ReflectionProperty($this->installer, 'installerFactory');
-        $r->setAccessible(true);
-        $r->setValue($this->installer, function () use ($installer) {
-            return $installer->reveal();
+        $r->setValue($this->installer, static function () use ($installer) {
+            return $installer;
         });
     }
 
     public function testDoesNothingIfRootPackageHasNoOptionalDependenciesDefined(): void
     {
-        $package = $this->prophesize(RootPackageInterface::class);
-        $package->getExtra()->willReturn([]);
-        $this->composer->getPackage()->willReturn($package->reveal());
+        $package = self::createStub(RootPackageInterface::class);
+        $package->method('getExtra')
+            ->willReturn([]);
 
-        $this->io->write(Argument::any())->shouldNotBeCalled();
+        $this->composer->method('getPackage')
+            ->willReturn($package);
+
+        $this->io->expects(self::never())
+            ->method('write');
 
         $installer = $this->installer;
         $this->assertNull($installer());
@@ -126,24 +116,46 @@ class OptionalPackagesInstallerTest extends TestCase
 
     public function testChoosingMinimalInstallSkipsInstallation(): void
     {
-        $package = $this->prophesize(RootPackageInterface::class);
-        $package->getExtra()->willReturn([
-            'laminas-skeleton-installer' => [
-                [
-                    'name'       => 'laminas/laminas-db',
-                    'constraint' => '^2.5',
-                    'prompt'     => 'This is a prompt',
-                    'module'     => true,
-                ],
-            ],
-        ]);
-        $this->composer->getPackage()->willReturn($package->reveal());
+        /** @var ExpectationFailedException[] $constraintFailures */
+        $constraintFailures = [];
 
-        $this->io->ask(Argument::containingString('Do you want a minimal install'), 'y')
-            ->shouldBeCalled()
+        $package = self::createStub(RootPackageInterface::class);
+        $package->method('getExtra')
+            ->willReturn([
+                'laminas-skeleton-installer' => [
+                    [
+                        'name'       => 'laminas/laminas-db',
+                        'constraint' => '^2.5',
+                        'prompt'     => 'This is a prompt',
+                        'module'     => true,
+                    ],
+                ],
+            ]);
+
+        $this->composer->method('getPackage')
+            ->willReturn($package);
+
+        $this->io->expects(self::once())
+            ->method('ask')
+            ->with($this->stringContains('Do you want a minimal install'), 'y')
             ->willReturn('y');
-        $this->io->write(Argument::containingString('Removing optional packages from composer.json'))->shouldBeCalled();
-        $this->io->write(Argument::containingString('Updating composer.json'))->shouldBeCalled();
+
+        $matcher = self::exactly(2);
+        $this->io->expects($matcher)
+            ->method('write')
+            ->willReturnCallback(function (string $message) use ($matcher, &$constraintFailures) {
+                try {
+                    /** @psalm-suppress InternalMethod */
+                    $contains = match ($matcher->numberOfInvocations()) {
+                        1 => 'Removing optional packages from composer.json',
+                        2 => 'Updating composer.json',
+                    };
+                    $this->assertStringContainsString($contains, $message);
+                } catch (ExpectationFailedException $e) {
+                    $constraintFailures[] = $e;
+                    throw $e;
+                }
+            });
 
         $this->setUpComposerJson();
 
@@ -153,37 +165,82 @@ class OptionalPackagesInstallerTest extends TestCase
         $json     = file_get_contents(vfsStream::url('project/composer.json'));
         $composer = json_decode($json, true);
         $this->assertFalse(isset($composer['extra']['laminas-skeleton-installer']));
+
+        $escapedFailure = array_shift($constraintFailures);
+        if ($escapedFailure) {
+            throw $escapedFailure;
+        }
     }
 
     public function testChoosingNoOptionalPackagesDuringPromptsSkipsInstallation(): void
     {
-        $package = $this->prophesize(RootPackageInterface::class);
-        $package->getExtra()->willReturn([
-            'laminas-skeleton-installer' => [
-                [
-                    'name'       => 'laminas/laminas-db',
-                    'constraint' => '^2.5',
-                    'prompt'     => 'This is a prompt',
-                    'module'     => true,
+        /** @var ExpectationFailedException[] $constraintFailures */
+        $constraintFailures = [];
+
+        $package = self::createStub(RootPackageInterface::class);
+        $package->method('getExtra')
+            ->willReturn([
+                'laminas-skeleton-installer' => [
+                    [
+                        'name'       => 'laminas/laminas-db',
+                        'constraint' => '^2.5',
+                        'prompt'     => 'This is a prompt',
+                        'module'     => true,
+                    ],
                 ],
-            ],
-        ]);
-        $this->composer->getPackage()->willReturn($package->reveal());
+            ]);
+        $this->composer->method('getPackage')
+            ->willReturn($package);
 
-        $this->io->ask(Argument::containingString('Do you want a minimal install'), 'y')
-            ->shouldBeCalled()
-            ->willReturn('n');
+        $matcher = self::exactly(2);
+        $this->io->expects($matcher)
+            ->method('ask')
+            ->willReturnCallback(function (string $question, mixed $default) use ($matcher, &$constraintFailures) {
+                try {
+                    /** @psalm-suppress InternalMethod */
+                    switch ($matcher->numberOfInvocations()) {
+                        case 1:
+                            $this->assertStringContainsString(
+                                'Do you want a minimal install',
+                                $question
+                            );
+                            $this->assertSame('y', $default);
 
-        $this->io->ask(
-            Argument::allOf(Argument::containingString('This is a prompt'), Argument::containingString('y/N')),
-            Argument::any()
-        )
-            ->shouldBeCalled()
-            ->willReturn('n');
+                            return 'n';
+                        case 2:
+                            $this->assertStringContainsString(
+                                'This is a prompt',
+                                $question
+                            );
+                            $this->assertSame('n', $default);
 
-        $this->io->write(Argument::containingString('No optional packages selected'))->shouldBeCalled();
-        $this->io->write(Argument::containingString('Removing optional packages from composer.json'))->shouldBeCalled();
-        $this->io->write(Argument::containingString('Updating composer.json'))->shouldBeCalled();
+                            return 'n';
+                        default:
+                            $this->fail('Exceeded number of invocations');
+                    }
+                } catch (ExpectationFailedException $e) {
+                    $constraintFailures[] = $e;
+                    throw $e;
+                }
+            });
+
+        $matcher = self::exactly(3);
+        $this->io->expects($matcher)
+            ->method('write')
+            ->willReturnCallback(function (string $message) use ($matcher, &$constraintFailures) {
+                try {
+                    /** @psalm-suppress InternalMethod */
+                    $contains = match ($matcher->numberOfInvocations()) {
+                        1 => 'No optional packages selected',
+                        2 => 'Removing optional packages from composer.json',
+                        3 => 'Updating composer.json',
+                    };
+                    $this->assertStringContainsString($contains, $message);
+                } catch (ExpectationFailedException $e) {
+                    $constraintFailures[] = $e;
+                    throw $e;
+                }
+            });
 
         $this->setUpComposerJson();
 
@@ -193,130 +250,217 @@ class OptionalPackagesInstallerTest extends TestCase
         $json     = file_get_contents(vfsStream::url('project/composer.json'));
         $composer = json_decode($json, true);
         $this->assertFalse(isset($composer['extra']['laminas-skeleton-installer']));
+
+        $escapedFailure = array_shift($constraintFailures);
+        if ($escapedFailure) {
+            throw $escapedFailure;
+        }
     }
 
-    public function testInstallerFailureShouldLeaveOptionalPackagesIntact()
+    public function testInstallerFailureShouldLeaveOptionalPackagesIntact(): void
     {
-        $package = $this->prophesize(RootPackageInterface::class);
-        $package->getExtra()->willReturn([
-            'laminas-skeleton-installer' => [
-                [
-                    'name'       => 'laminas/laminas-db',
-                    'constraint' => '^2.5',
-                    'prompt'     => 'This is a prompt',
-                    'module'     => true,
+        /** @var ExpectationFailedException[] $constraintFailures */
+        $constraintFailures = [];
+
+        $package = self::createStub(RootPackageInterface::class);
+        $package->method('getExtra')
+            ->willReturn([
+                'laminas-skeleton-installer' => [
+                    [
+                        'name'       => 'laminas/laminas-db',
+                        'constraint' => '^2.5',
+                        'prompt'     => 'This is a prompt',
+                        'module'     => true,
+                    ],
                 ],
-            ],
-        ]);
-        $this->composer->getPackage()->willReturn($package->reveal());
+            ]);
+        $package->method('getRequires')
+            ->willReturn([]);
+        $package->method('setRequires')
+            ->willReturnCallback(function (array $arg) {
+                if (! array_key_exists('laminas/laminas-db', $arg)) {
+                    return false;
+                }
 
-        $this->io->ask(Argument::containingString('Do you want a minimal install'), 'y')
-            ->shouldBeCalled()
-            ->willReturn('n');
+                if (! $arg['laminas/laminas-db'] instanceof Link) {
+                    return false;
+                }
 
-        $this->io->ask(
-            Argument::allOf(Argument::containingString('This is a prompt'), Argument::containingString('y/N')),
-            Argument::any()
-        )
-            ->shouldBeCalled()
-            ->willReturn('y');
+                return true;
+            });
+        $this->composer->method('getPackage')
+            ->willReturn($package);
 
-        $this->io->write(Argument::containingString('Will install laminas/laminas-db'))->shouldBeCalled();
-        $this->io->write(Argument::containingString(
-            'When prompted to install as a module, select application.config.php or modules.config.php'
-        ))->shouldBeCalled();
-        $this->io->write(Argument::containingString('No optional packages selected'))->shouldNotBeCalled();
+        $matcher = self::exactly(2);
+        $this->io->expects($matcher)
+            ->method('ask')
+            ->willReturnCallback(function (string $question, mixed $default) use ($matcher, &$constraintFailures) {
+                try {
+                    /** @psalm-suppress InternalMethod */
+                    switch ($matcher->numberOfInvocations()) {
+                        case 1:
+                            $this->assertStringContainsString(
+                                'Do you want a minimal install',
+                                $question
+                            );
+                            $this->assertSame('y', $default);
 
-        $this->io->write(Argument::containingString('Updating root package'))->shouldBeCalled();
-        $package->getRequires()->willReturn([]);
-        $package->setRequires(Argument::that(function ($arg) {
-            if (! is_array($arg)) {
-                return false;
-            }
+                            return 'n';
+                        case 2:
+                            $this->assertStringContainsString(
+                                'This is a prompt',
+                                $question
+                            );
+                            $this->assertSame('n', $default);
 
-            if (! array_key_exists('laminas/laminas-db', $arg)) {
-                return false;
-            }
+                            return 'y';
+                        default:
+                            $this->fail('Exceeded number of invocations');
+                    }
+                } catch (ExpectationFailedException $e) {
+                    $constraintFailures[] = $e;
+                    throw $e;
+                }
+            });
 
-            if (! $arg['laminas/laminas-db'] instanceof Link) {
-                return false;
-            }
+        $matcher = self::exactly(5);
+        $this->io->expects($matcher)
+            ->method('write')
+            ->willReturnCallback(function (string $message) use ($matcher, &$constraintFailures) {
+                try {
+                    $this->assertStringNotContainsString(
+                        'No optional packages selected',
+                        $message
+                    );
 
-            return true;
-        }))->shouldBeCalled();
+                    /** @psalm-suppress InternalMethod */
+                    $contains = match ($matcher->numberOfInvocations()) {
+                        1 => 'Will install laminas/laminas-db',
+                        // phpcs:ignore  Generic.Files.LineLength.TooLong
+                        2 => 'When prompted to install as a module, select application.config.php or modules.config.php',
+                        3 => 'Updating root package',
+                        4 => 'Running an update to install optional packages',
+                        5 => 'Error installing optional packages',
+                    };
+                    $this->assertStringContainsString($contains, $message);
+                } catch (ExpectationFailedException $e) {
+                    $constraintFailures[] = $e;
+                    throw $e;
+                }
+            });
 
         $this->setUpComposerInstaller(['laminas/laminas-db'], 1);
 
-        $this->io
-            ->write(Argument::containingString('Running an update to install optional packages'))
-            ->shouldBeCalled();
-
-        $this->io->write(Argument::containingString('Error installing optional packages'))->shouldBeCalled();
-
         $installer = $this->installer;
         $this->assertNull($installer());
+
+        $escapedFailure = array_shift($constraintFailures);
+        if ($escapedFailure) {
+            throw $escapedFailure;
+        }
     }
 
-    public function testAddingAnOptionalPackageAddsItToComposerAndUpdatesAppConfig()
+    public function testAddingAnOptionalPackageAddsItToComposerAndUpdatesAppConfig(): void
     {
-        $package = $this->prophesize(RootPackageInterface::class);
-        $package->getExtra()->willReturn([
-            'laminas-skeleton-installer' => [
-                [
-                    'name'       => 'laminas/laminas-db',
-                    'constraint' => '^2.5',
-                    'prompt'     => 'This is a prompt',
-                    'module'     => true,
+        /** @var ExpectationFailedException[] $constraintFailures */
+        $constraintFailures = [];
+
+        $package = self::createStub(RootPackageInterface::class);
+        $package->method('getExtra')
+            ->willReturn([
+                'laminas-skeleton-installer' => [
+                    [
+                        'name'       => 'laminas/laminas-db',
+                        'constraint' => '^2.5',
+                        'prompt'     => 'This is a prompt',
+                        'module'     => true,
+                    ],
                 ],
-            ],
-        ]);
-        $this->composer->getPackage()->willReturn($package->reveal());
+            ]);
+        $package->method('getRequires')
+            ->willReturn([]);
+        $package->method('setRequires')
+            ->willReturnCallback(function (array $arg) {
+                if (! array_key_exists('laminas/laminas-db', $arg)) {
+                    return false;
+                }
 
-        $this->io->ask(Argument::containingString('Do you want a minimal install'), 'y')
-            ->shouldBeCalled()
-            ->willReturn('n');
+                if (! $arg['laminas/laminas-db'] instanceof Link) {
+                    return false;
+                }
 
-        $this->io->ask(
-            Argument::allOf(Argument::containingString('This is a prompt'), Argument::containingString('y/N')),
-            Argument::any()
-        )
-            ->shouldBeCalled()
-            ->willReturn('y');
+                return true;
+            });
+        $this->composer->method('getPackage')
+            ->willReturn($package);
 
-        $this->io->write(Argument::containingString('Will install laminas/laminas-db'))->shouldBeCalled();
-        $this->io->write(Argument::containingString(
-            'When prompted to install as a module, select application.config.php or modules.config.php'
-        ))->shouldBeCalled();
-        $this->io->write(Argument::containingString('No optional packages selected'))->shouldNotBeCalled();
+        $matcher = self::exactly(2);
+        $this->io->expects($matcher)
+            ->method('ask')
+            ->willReturnCallback(function (string $question, mixed $default) use ($matcher, &$constraintFailures) {
+                try {
+                    /** @psalm-suppress InternalMethod */
+                    switch ($matcher->numberOfInvocations()) {
+                        case 1:
+                            $this->assertStringContainsString(
+                                'Do you want a minimal install',
+                                $question
+                            );
+                            $this->assertSame('y', $default);
 
-        $this->io->write(Argument::containingString('Updating root package'))->shouldBeCalled();
-        $package->getRequires()->willReturn([]);
-        $package->setRequires(Argument::that(function ($arg) {
-            if (! is_array($arg)) {
-                return false;
-            }
+                            return 'n';
+                        case 2:
+                            $this->assertStringContainsString(
+                                'This is a prompt',
+                                $question
+                            );
+                            $this->assertSame('n', $default);
 
-            if (! array_key_exists('laminas/laminas-db', $arg)) {
-                return false;
-            }
+                            return 'y';
+                        default:
+                            $this->fail('Exceeded number of invocations');
+                    }
+                } catch (ExpectationFailedException $e) {
+                    $constraintFailures[] = $e;
+                    throw $e;
+                }
+            });
 
-            if (! $arg['laminas/laminas-db'] instanceof Link) {
-                return false;
-            }
+        $matcher = self::exactly(5);
+        $this->io->expects($matcher)
+            ->method('write')
+            ->willReturnCallback(function (string $message) use ($matcher, &$constraintFailures) {
+                try {
+                    $this->assertStringNotContainsString(
+                        'No optional packages selected',
+                        $message
+                    );
 
-            return true;
-        }))->shouldBeCalled();
+                    /** @psalm-suppress InternalMethod */
+                    $contains = match ($matcher->numberOfInvocations()) {
+                        1 => 'Will install laminas/laminas-db',
+                        // phpcs:ignore  Generic.Files.LineLength.TooLong
+                        2 => 'When prompted to install as a module, select application.config.php or modules.config.php',
+                        3 => 'Updating root package',
+                        4 => 'Running an update to install optional packages',
+                        5 => 'Updating composer.json',
+                    };
+                    $this->assertStringContainsString($contains, $message);
+                } catch (ExpectationFailedException $e) {
+                    $constraintFailures[] = $e;
+                    throw $e;
+                }
+            });
 
-        $this->setUpComposerInstaller(['laminas/laminas-db']);
-
-        $this->io
-            ->write(Argument::containingString('Running an update to install optional packages'))
-            ->shouldBeCalled();
-
+        $this->setUpComposerInstaller(['laminas/laminas-db'], 0);
         $this->setUpComposerJson();
-        $this->io->write(Argument::containingString('Updating composer.json'))->shouldBeCalled();
 
         $installer = $this->installer;
         $this->assertNull($installer());
+
+        $escapedFailure = array_shift($constraintFailures);
+        if ($escapedFailure) {
+            throw $escapedFailure;
+        }
     }
 }

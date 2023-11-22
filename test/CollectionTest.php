@@ -37,7 +37,7 @@ class CollectionTest extends TestCase
         $this->assertInstanceOf(Collection::class, Collection::create(new ArrayObject([])));
     }
 
-    public function invalidCollections(): array
+    public static function invalidCollections(): array
     {
         return [
             'null'       => [null],
@@ -76,7 +76,7 @@ class CollectionTest extends TestCase
         Collection::create($items);
     }
 
-    public function collectionsForArrays(): array
+    public static function collectionsForArrays(): array
     {
         $array = [
             'foo' => 'bar',

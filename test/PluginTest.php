@@ -8,28 +8,23 @@ use Composer\Composer;
 use Composer\IO\IOInterface;
 use Laminas\SkeletonInstaller\Plugin;
 use PHPUnit\Framework\TestCase;
-use Prophecy\PhpUnit\ProphecyTrait;
 use ReflectionProperty;
 
 class PluginTest extends TestCase
 {
-    use ProphecyTrait;
-
-    public function testActivateSetsComposerAndIoProperties()
+    public function testActivateSetsComposerAndIoProperties(): void
     {
-        $composer = $this->prophesize(Composer::class)->reveal();
-        $io       = $this->prophesize(IOInterface::class)->reveal();
+        $composer = self::createStub(Composer::class);
+        $io       = self::createStub(IOInterface::class);
 
         $plugin = new Plugin();
         $plugin->activate($composer, $io);
 
         $rComposer = new ReflectionProperty($plugin, 'composer');
-        $rComposer->setAccessible(true);
 
         $this->assertSame($composer, $rComposer->getValue($plugin));
 
         $rIo = new ReflectionProperty($plugin, 'io');
-        $rIo->setAccessible(true);
 
         $this->assertSame($io, $rIo->getValue($plugin));
     }
